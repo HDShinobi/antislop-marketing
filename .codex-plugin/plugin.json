@@ -1,0 +1,8 @@
+{
+  "name": "antislop-marketing",
+  "version": "0.1.0",
+  "description": "Path probe.",
+  "author": { "name": "HDShinobi" },
+  "license": "MIT",
+  "skills": "./skills/"
+}

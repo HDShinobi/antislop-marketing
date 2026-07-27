@@ -1,0 +1,9 @@
+{
+  "name": "antislop-marketing",
+  "id": "antislop-marketing",
+  "owner": { "name": "HDShinobi" },
+  "metadata": { "description": "Anti-AI-slop writing for marketing work.", "version": "0.1.0" },
+  "plugins": [
+    { "name": "antislop-marketing", "source": "./", "description": "Path probe.", "version": "0.1.0" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "antislop-marketing",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test tests/",
+    "test:fixtures": "node tests/fixtures.mjs",
+    "scan": "node bin/scan.mjs",
+    "validate-packs": "node bin/validate-pack.mjs --all"
+  }
+}
