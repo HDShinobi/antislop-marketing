@@ -1,0 +1,32 @@
+{
+  "tier": "R",
+  "lang": "vi",
+  "counted": {
+    "dash": 0,
+    "banlist": 0,
+    "mt_artifacts": 0,
+    "superlative": 0,
+    "puffery": 1,
+    "comparative": 0,
+    "eval_candidate": 0,
+    "same_shape_run": 1,
+    "colon_outside_list": 1,
+    "short_paragraph_ratio": [
+      2,
+      2
+    ]
+  },
+  "rules": [
+    "VI-PUFFERY"
+  ],
+  "spans": [
+    {
+      "rule": "VI-PUFFERY",
+      "span": [
+        14,
+        23
+      ],
+      "text": "vượt trội"
+    }
+  ]
+}

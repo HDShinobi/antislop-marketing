@@ -1,0 +1,68 @@
+{
+  "tier": "R",
+  "lang": "vi",
+  "counted": {
+    "dash": 1,
+    "banlist": 1,
+    "mt_artifacts": 0,
+    "superlative": 1,
+    "puffery": 1,
+    "comparative": 0,
+    "eval_candidate": 1,
+    "same_shape_run": 1,
+    "colon_outside_list": 0,
+    "short_paragraph_ratio": [
+      3,
+      3
+    ]
+  },
+  "rules": [
+    "CORE-DASH",
+    "VI-BANLIST",
+    "VI-EVAL-CANDIDATE",
+    "VI-PUFFERY",
+    "VI-SUPERLATIVE"
+  ],
+  "spans": [
+    {
+      "rule": "VI-EVAL-CANDIDATE",
+      "span": [
+        27,
+        34
+      ],
+      "text": "tận tâm"
+    },
+    {
+      "rule": "CORE-DASH",
+      "span": [
+        35,
+        36
+      ],
+      "text": "—"
+    },
+    {
+      "rule": "VI-PUFFERY",
+      "span": [
+        68,
+        77
+      ],
+      "text": "vượt trội"
+    },
+    {
+      "rule": "VI-BANLIST",
+      "span": [
+        79,
+        113
+      ],
+      "text": "đóng vai trò quan trọng trong việc"
+    },
+    {
+      "rule": "VI-SUPERLATIVE",
+      "span": [
+        143,
+        149
+      ],
+      "text": "số một"
+    }
+  ]
+}

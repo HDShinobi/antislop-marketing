@@ -1,0 +1,21 @@
+{
+  "tier": "R",
+  "lang": "vi",
+  "counted": {
+    "dash": 0,
+    "banlist": 0,
+    "mt_artifacts": 0,
+    "superlative": 0,
+    "puffery": 0,
+    "comparative": 0,
+    "eval_candidate": 0,
+    "same_shape_run": 1,
+    "colon_outside_list": 0,
+    "short_paragraph_ratio": [
+      0,
+      1
+    ]
+  },
+  "rules": [],
+  "spans": []
+}

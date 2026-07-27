@@ -1,0 +1,16 @@
+{
+  "lang": "en",
+  "banlist": ["plays a crucial role"],
+  "mt_artifacts": [],
+  "superlative": ["the best"],
+  "puffery": ["amazing"],
+  "comparative": ["better"],
+  "evaluative": ["good"],
+  "abbreviations": ["e.g.", "i.e."],
+  "exceptions": {},
+  "openers": { "dai_tu": ["we"], "lien_tu": ["but"], "trang_ngu": ["after"] },
+  "tackon": ["thereby"],
+  "config_tokens": ["campaign"],
+  "loanwords": [],
+  "tier_keywords": { "R": ["report"], "P": ["proposal"], "C": ["caption"] }
+}

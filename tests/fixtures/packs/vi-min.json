@@ -1,0 +1,20 @@
+{
+  "lang": "vi",
+  "banlist": ["đóng vai trò quan trọng trong việc"],
+  "mt_artifacts": ["được thực hiện bởi"],
+  "superlative": ["hàng đầu", "số một"],
+  "puffery": ["vượt trội"],
+  "comparative": ["hơn", "gấp"],
+  "evaluative": ["tận tâm", "tốt", "hiệu quả"],
+  "abbreviations": ["v.v.", "TP."],
+  "exceptions": { "hàng đầu": ["hàng đầu tiên"] },
+  "openers": {
+    "dai_tu": ["chúng tôi", "tôi", "bên mình"],
+    "lien_tu": ["nhưng", "và", "tuy nhiên"],
+    "trang_ngu": ["trong", "sau khi", "với"]
+  },
+  "tackon": ["góp phần", "mang lại"],
+  "config_tokens": ["campaign", "pixel", "tracking"],
+  "loanwords": ["ROAS", "CPA", "remarketing"],
+  "tier_keywords": { "R": ["báo cáo"], "P": ["đề xuất"], "C": ["caption"] }
+}
