@@ -10,12 +10,16 @@
 
 ## Global Constraints
 
+- **The spec lives at `docs/superpowers/specs/2026-07-26-antislop-marketing-design.md`**, relative to the repo root. Any task that says "per spec section N" means that file. Read the named section before writing the file it describes.
+
 - **Zero external dependencies in `bin/`.** No YAML parser, no POS tagger, no sentence-splitting library. Kết quả phải không đổi theo phiên bản dependency.
 - **JSON, never YAML**, for every machine-readable file and fenced data block. Node has `JSON.parse` built in; it has no YAML parser.
 - **`span` is a pair of UTF-16 code unit offsets** into the original file string, half-open `[start, end)`. Not bytes, not grapheme clusters. `text` must equal `source.slice(...span)` exactly.
+- **The pack schema has exactly fourteen keys.** See spec section 6.2.
 - **`counted` has exactly nine keys**: `dash`, `banlist`, `mt_artifacts`, `puffery`, `comparative`, `eval_candidate`, `same_shape_run`, `colon_outside_list`, `short_paragraph_ratio`.
 - **`null` means "not measured", `0` means "measured and clean".** Never substitute one for the other.
 - **No em dash (`—`) or en dash (`–`) anywhere in repo prose.** CI enforces this on `README.md`, `README.vi.md`, and everything in `examples/`.
+- **Matching boundary is a character boundary plus a per-pack `exceptions` map.** The spec removed the "syllable boundary" rule because it was not implementable; do not reintroduce it.
 - **Rule ID format:** `<SCOPE>-<NAME>`, uppercase, hyphen-separated. `SCOPE` is `CORE`, `EVID`, or a language code (`VI`, `EN`). IDs never change when rule wording changes.
 - **License MIT.** `NOTICE` credits `adenaufal/anti-slop-writing` and `blader/humanizer`, both MIT.
 - **All prose in the repo is bilingual**: `README.md` in English, `README.vi.md` in Vietnamese. Rule files are single-language by design.
@@ -91,13 +95,26 @@ This is blocking item 1 from spec section 12. It runs first because its result d
 **Files:**
 - Create: `package.json`
 - Create: `.claude-plugin/plugin.json`
-- Create: `bin/probe.mjs` (temporary, deleted in step 7)
-- Create: `skills/antislop-probe/SKILL.md` (temporary, deleted in step 7)
+- Create: `.claude-plugin/marketplace.json`
+- Create: `.codex-plugin/plugin.json`
+- Create: `bin/probe.mjs` (temporary, deleted in step 8)
+- Create: `references/probe.txt` (temporary, deleted in step 8)
+- Create: `skills/antislop-probe/SKILL.md` (temporary, deleted in step 8)
 - Create: `docs/superpowers/notes/path-resolution.md`
 
 **Interfaces:**
 - Consumes: nothing
 - Produces: a decision recorded in `docs/superpowers/notes/path-resolution.md`. Either `LAYOUT=root` (keep `references/` and `bin/` at plugin root) or `LAYOUT=nested` (move both under `skills/antislop-write/`). Every later task reads this note before writing a path.
+
+- [ ] **Step 0: Initialise the repository**
+
+```bash
+mkdir -p ~/Projects/antislop-marketing && cd ~/Projects/antislop-marketing
+git init
+printf '.DS_Store\n**/.DS_Store\nnode_modules/\n' > .gitignore
+```
+
+Skip `git init` if the directory is already a repository. Every later task assumes `git` works from the repo root.
 
 - [ ] **Step 1: Create package.json**
 
@@ -160,34 +177,85 @@ Do all three, then report each result as PASS or FAIL with the resolved absolute
 3. Report your current working directory.
 ```
 
-Also create `references/probe.txt` containing the single line `probe-marker-7431`.
+Also create `references/probe.txt` containing the single line `probe-marker-7431`. Its only job is to prove a skill can read a file two levels above its own directory.
 
-- [ ] **Step 5: Install into both harnesses and run the probe**
+- [ ] **Step 5: Create both marketplace manifests**
+
+The probe cannot be installed without these. Claude Code needs a `marketplace.json` before `/plugin marketplace add` will accept a local directory, and Codex needs its own manifest entirely.
+
+`.claude-plugin/marketplace.json`:
+
+```json
+{
+  "name": "antislop-marketing",
+  "id": "antislop-marketing",
+  "owner": { "name": "HDShinobi" },
+  "metadata": { "description": "Anti-AI-slop writing for marketing work.", "version": "0.1.0" },
+  "plugins": [
+    { "name": "antislop-marketing", "source": "./", "description": "Path probe.", "version": "0.1.0" }
+  ]
+}
+```
+
+`.codex-plugin/plugin.json`:
+
+```json
+{
+  "name": "antislop-marketing",
+  "version": "0.1.0",
+  "description": "Path probe.",
+  "author": { "name": "HDShinobi" },
+  "license": "MIT",
+  "skills": "./skills/"
+}
+```
+
+Task 16 replaces both with the real manifests. These exist only so the probe can be installed.
+
+- [ ] **Step 6: Install into both harnesses and run the probe from outside the repo**
 
 ```bash
-cd ~/Projects/antislop-marketing
-mkdir -p /tmp/antislop-probe-cwd && cd /tmp/antislop-probe-cwd
+# Claude Code: add the checkout as a local marketplace, then install
+claude
+# inside the REPL:
+#   /plugin marketplace add ~/Projects/antislop-marketing
+#   /plugin install antislop-marketing@antislop-marketing
+#   /exit
 
-claude -p "Run the antislop path probe" --permission-mode acceptEdits
+# Codex: same idea, from the shell
+codex plugin marketplace add ~/Projects/antislop-marketing
+codex plugin add antislop-marketing@antislop-marketing
+
+# Now run the probe with CWD OUTSIDE the repo. This is the whole point.
+mkdir -p /tmp/antislop-probe-cwd && cd /tmp/antislop-probe-cwd
+claude -p "Run the antislop path probe"
 codex exec "Run the antislop path probe"
 ```
 
-If the marketplace install path differs on your machine, use whatever local-marketplace mechanism each CLI documents. The point of the step is that CWD is `/tmp/antislop-probe-cwd`, not the repo.
+If either CLI rejects the local path, consult that CLI's own `--help` for its local-marketplace flag and record the working command in the note file. Do not skip the step: the LAYOUT decision that every later task depends on comes from here.
 
-- [ ] **Step 6: Record the decision**
+- [ ] **Step 7: Record the decision**
 
 Write `docs/superpowers/notes/path-resolution.md` with a table: harness, step 1 result, step 2 result, resolved path. Then one line: `LAYOUT=root` if both harnesses passed both reads, otherwise `LAYOUT=nested`.
 
 If `LAYOUT=nested`, also record that `counted_source` can still be `"scan"` as long as step 2 passed; only step 1 failing forces the nested layout.
 
-- [ ] **Step 7: Delete the probe and commit**
+- [ ] **Step 8: Uninstall the probe, delete it, and commit**
 
 ```bash
+# uninstall first, so a stale probe skill cannot shadow the real ones later
+claude
+#   /plugin uninstall antislop-marketing@antislop-marketing
+#   /exit
+codex plugin remove antislop-marketing
+
 cd ~/Projects/antislop-marketing
 rm -rf skills/antislop-probe bin/probe.mjs references/probe.txt
-git add package.json .claude-plugin/plugin.json docs/superpowers/notes/path-resolution.md
+git add .gitignore package.json .claude-plugin .codex-plugin docs/superpowers/notes/path-resolution.md
 git commit -m "chore: verify plugin path resolution in Claude Code and Codex"
 ```
+
+Record the exact uninstall commands that worked in the note file too. Task 17's runner needs them.
 
 ---
 
@@ -319,18 +387,22 @@ export const PACK_SCHEMA = {
   config_tokens:  { type: "string[]" },
   loanwords:      { type: "string[]" },
   cadence_band:   { type: "pair|null" },
+  exceptions:     { type: "freeobject", of: "string[]" },
   tier_keywords:  { type: "object", keys: ["R", "P", "C"], of: "string[]" },
 }
 
-const FENCE = /^```json\s+antislop-pack\s*$/m
+const FENCE = /^```json\s+antislop-pack\s*$/
 
+// Spec 6.2: a pack contains EXACTLY one antislop-pack block. Two is an error,
+// not a silent first-wins.
 export function extractPackBlock(markdown) {
   const lines = markdown.split("\n")
-  const start = lines.findIndex((l) => FENCE.test(l))
-  if (start === -1) return null
-  const end = lines.indexOf("```", start + 1)
+  const starts = lines.reduce((acc, l, i) => (FENCE.test(l) ? [...acc, i] : acc), [])
+  if (starts.length === 0) return null
+  if (starts.length > 1) return { duplicate: starts.length }
+  const end = lines.indexOf("```", starts[0] + 1)
   if (end === -1) return null
-  return lines.slice(start + 1, end).join("\n")
+  return lines.slice(starts[0] + 1, end).join("\n")
 }
 
 const isStringArray = (v) => Array.isArray(v) && v.every((x) => typeof x === "string")
@@ -351,6 +423,15 @@ function checkField(name, spec, value, errors) {
         errors.push(`${name}: expected [min, max] integers or null`)
       }
       break
+    case "freeobject": {
+      if (typeof value !== "object" || value === null || Array.isArray(value)) {
+        errors.push(`${name}: expected object`); break
+      }
+      for (const [k, v] of Object.entries(value)) {
+        if (!isStringArray(v)) errors.push(`${name}.${k}: expected array of strings`)
+      }
+      break
+    }
     case "object": {
       if (typeof value !== "object" || value === null || Array.isArray(value)) {
         errors.push(`${name}: expected object`); break
@@ -367,9 +448,12 @@ function checkField(name, spec, value, errors) {
   }
 }
 
-export function parsePack(markdown) {
+export function parsePack(markdown, expectedLang) {
   const raw = extractPackBlock(markdown)
   if (raw === null) return { ok: false, errors: ["no fenced json antislop-pack block found"], warnings: [] }
+  if (typeof raw === "object") {
+    return { ok: false, errors: [`expected exactly one antislop-pack block, found ${raw.duplicate}`], warnings: [] }
+  }
 
   let pack
   try { pack = JSON.parse(raw) }
@@ -380,6 +464,10 @@ export function parsePack(markdown) {
   for (const [name, spec] of Object.entries(PACK_SCHEMA)) checkField(name, spec, pack[name], errors)
   for (const k of Object.keys(pack)) {
     if (!(k in PACK_SCHEMA)) warnings.push(`unknown key ignored: ${k}`)
+  }
+  // Spec 6.2 schema row for `lang`: it must match the key in languages.json.
+  if (expectedLang !== undefined && pack.lang !== expectedLang) {
+    errors.push(`lang: "${pack.lang}" does not match its languages.json key "${expectedLang}"`)
   }
   return errors.length ? { ok: false, errors, warnings } : { ok: true, pack, warnings }
 }
@@ -409,12 +497,18 @@ const here = new URL("../references/", import.meta.url)
 const args = process.argv.slice(2)
 const files = args.includes("--all")
   ? Object.values(JSON.parse(readFileSync(new URL("languages.json", here), "utf8")))
-  : args
+  : args.filter((a) => !a.startsWith("--"))
+
+const registry = JSON.parse(readFileSync(new URL("languages.json", here), "utf8"))
+const langOf = Object.fromEntries(Object.entries(registry).map(([c, f]) => [f, c]))
 
 let failed = false
 for (const f of files) {
   const url = args.includes("--all") ? new URL(f, here) : new URL(f, `file://${process.cwd()}/`)
-  const r = parsePack(readFileSync(url, "utf8"))
+  let text
+  try { text = readFileSync(url, "utf8") }
+  catch { failed = true; console.error(`ERROR ${f}: not found`); continue }
+  const r = parsePack(text, langOf[f])
   for (const w of r.warnings ?? []) console.warn(`WARN  ${f}: ${w}`)
   if (r.ok) { console.log(`OK    ${f}`) }
   else { failed = true; for (const e of r.errors) console.error(`ERROR ${f}: ${e}`) }
@@ -441,7 +535,8 @@ git commit -m "feat(pack): language pack schema, parser and validator"
 **Interfaces:**
 - Consumes: nothing from earlier tasks.
 - Produces: `splitBlocks(text: string): Block[]` where
-  `Block = { index: number, kind: "paragraph"|"list_item"|"heading"|"table"|"table_cell", span: [number, number], text: string, parent?: number, children?: number[] }`.
+  `Block = { index: number, kind: "paragraph"|"list_item"|"heading"|"table"|"table_cell", span: [number, number], text: string, parent?: number, children?: number[], row?: number }`.
+  `row` is present on `table_cell` only: 0 for the header row, 1 and up for body rows. Stamping it here means no later module has to re-derive table structure from raw offsets.
   Blocks are returned in document order. A `table` block has `text: ""` and a `children` array. Code fences produce no blocks at all.
 
 - [ ] **Step 1: Write the failing tests**
@@ -494,6 +589,12 @@ test("a table produces one parent plus one block per body cell", () => {
   assert.ok(cells.every((c) => c.parent === parent.index))
   assert.equal(cells[0].text, "A")
   assert.equal(cells[2].text, "1")
+})
+
+test("table cells carry their row index, header row is 0", () => {
+  const b = splitBlocks("| A | B |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |\n")
+  const cells = b.filter((x) => x.kind === "table_cell")
+  assert.deepEqual(cells.map((c) => c.row), [0, 0, 1, 1, 2, 2])
 })
 
 test("code fences produce no blocks", () => {
@@ -570,6 +671,7 @@ export function splitBlocks(text) {
       const parentEnd = rows[rows.length - 1].end
       const parentIndex = push({ kind: "table", span: [parentStart, parentEnd], text: "", children: [] })
       const children = []
+      let rowNo = 0
       for (const row of rows) {
         if (TABLE_SEP_RE.test(row.text)) continue
         let cursor = row.start
@@ -585,11 +687,13 @@ export function splitBlocks(text) {
                 span: [cursor + lead, cursor + lead + body.length],
                 text: body,
                 parent: parentIndex,
+                row: rowNo,
               }))
             }
           }
           cursor += part.length + 1
         }
+        rowNo++
       }
       blocks[parentIndex].children = children
       continue
@@ -616,7 +720,7 @@ export function splitBlocks(text) {
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `node --test tests/blocks.test.mjs`
-Expected: PASS, 7 tests
+Expected: PASS, 8 tests
 
 - [ ] **Step 5: Commit**
 
@@ -919,6 +1023,7 @@ git commit -m "feat(scan): sentence signature and same_shape_run with khac guard
 - Consumes: `Pack` from Task 2.
 - Produces: `matchLists(blockText: string, pack: Pack, offset: number): Match[]` where
   `Match = { list: "banlist"|"mt_artifacts"|"puffery"|"comparative"|"evaluative", term: string, span: [number, number], text: string }`.
+  Boundary is a character boundary (no adjacent letter or digit), plus the `exceptions` suppression from spec 6.2. There is no syllable-level analysis: the spec removed that rule because it is not implementable without a tokenizer.
   `offset` is the block's absolute start, so `span` comes back absolute. One position is reported once, by the first list in priority order `banlist, mt_artifacts, puffery, comparative, evaluative`.
   Also `hasDataToken(blockText: string, pack: Pack): boolean`.
 
@@ -938,6 +1043,7 @@ const PACK = {
   comparative: ["hơn", "nhất"],
   evaluative: ["tốt", "hiệu quả"],
   config_tokens: ["campaign", "pixel"],
+  exceptions: { "hàng đầu": ["hàng đầu tiên"] },
 }
 
 test("matches are case insensitive", () => {
@@ -950,9 +1056,19 @@ test("diacritics are significant", () => {
   assert.equal(matchLists("San pham vuot troi.", PACK, 0).length, 0)
 })
 
-test("matches respect syllable boundaries", () => {
+test("boundaries reject a term glued to another word", () => {
   assert.equal(matchLists("Thương hiệu hàng đầu.", PACK, 0).length, 1)
+  assert.equal(matchLists("Sản phẩm vượttrội.", PACK, 0).length, 0)
+})
+
+test("exceptions suppress a match inside a longer listed phrase", () => {
   assert.equal(matchLists("Là hàng đầu tiên trong kho.", PACK, 0).length, 0)
+})
+
+test("exceptions suppress by position, not by presence", () => {
+  const m = matchLists("Vừa hàng đầu tiên vừa hàng đầu thị trường.", PACK, 0)
+  assert.equal(m.length, 1)
+  assert.equal(m[0].span[0], 22)
 })
 
 test("collapsed whitespace still matches", () => {
@@ -970,6 +1086,10 @@ test("span is absolute and slices back to the term", () => {
   const src = "AAAA Sản phẩm vượt trội."
   const m = matchLists(src.slice(5), PACK, 5)
   assert.equal(src.slice(...m[0].span), "vượt trội")
+})
+
+test("hasDataToken ignores digits inside a code span", () => {
+  assert.equal(hasDataToken("Đội ngũ tận tâm, xem `run(3)`.", PACK), false)
 })
 
 test("hasDataToken finds numbers, dates, urls and config tokens", () => {
@@ -998,6 +1118,18 @@ function termRegex(term) {
   return new RegExp(`(?<![\\p{L}\\p{N}])${pattern}(?![\\p{L}\\p{N}])`, "giu")
 }
 
+// Spec 6.2: a hit is dropped when it sits wholly inside one of the term's
+// exception phrases at that same position. Containment is positional, so the
+// same term can be suppressed in one place and kept in another.
+function suppressedByException(blockText, term, start, end, exceptions) {
+  for (const phrase of exceptions?.[term] ?? []) {
+    for (const e of blockText.matchAll(termRegex(phrase))) {
+      if (start >= e.index && end <= e.index + e[0].length) return true
+    }
+  }
+  return false
+}
+
 export function matchLists(blockText, pack, offset = 0) {
   const taken = []
   const out = []
@@ -1009,6 +1141,7 @@ export function matchLists(blockText, pack, offset = 0) {
         const start = m.index
         const end = start + m[0].length
         if (overlaps(start, end)) continue
+        if (suppressedByException(blockText, term, start, end, pack.exceptions)) continue
         taken.push([start, end])
         out.push({ list, term, span: [start + offset, end + offset], text: m[0] })
       }
@@ -1021,18 +1154,22 @@ const NUMBER_RE = /\d/
 const DATE_RE = /\d{1,4}[/-]\d{1,2}([/-]\d{1,4})?|tháng\s+\d/iu
 const URL_RE = /https?:\/\/|[\w-]+\.(com|vn|net|org|io)\b/i
 
+// Spec section 10: the number pattern is a digit appearing OUTSIDE a code span.
+const stripCodeSpans = (t) => t.replace(/`[^`]*`/g, " ")
+
 export function hasDataToken(blockText, pack) {
-  if (NUMBER_RE.test(blockText)) return true
-  if (DATE_RE.test(blockText)) return true
-  if (URL_RE.test(blockText)) return true
-  return (pack.config_tokens ?? []).some((t) => termRegex(t).test(blockText))
+  const text = stripCodeSpans(blockText)
+  if (NUMBER_RE.test(text)) return true
+  if (DATE_RE.test(text)) return true
+  if (URL_RE.test(text)) return true
+  return (pack.config_tokens ?? []).some((t) => termRegex(t).test(text))
 }
 ```
 
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `node --test tests/lexicon.test.mjs`
-Expected: PASS, 7 tests
+Expected: PASS, 10 tests
 
 - [ ] **Step 5: Commit**
 
@@ -1078,8 +1215,13 @@ test("dashes inside a code fence are not counted", () => {
   assert.equal(countDashes(splitBlocks(src)).count, 0)
 })
 
-test("a colon introducing a list is not counted", () => {
+test("a colon introducing a list is not counted, even across a blank line", () => {
   const src = "Ba việc:\n\n- một\n- hai\n"
+  assert.equal(countColonsOutsideList(src, splitBlocks(src)), 0)
+})
+
+test("a colon introducing a numbered line is not counted", () => {
+  const src = "Ba bước:\n\n1 chuẩn bị\n2 chạy\n"
   assert.equal(countColonsOutsideList(src, splitBlocks(src)), 0)
 })
 
@@ -1107,6 +1249,9 @@ Expected: FAIL with `Cannot find module '../bin/lib/counters.mjs'`
 - [ ] **Step 3: Implement counters.mjs**
 
 ```js
+// shortParagraphRatio needs sentence counts, so this module depends on
+// sentences.mjs. That is the one cross-module edge in bin/lib/ and it is
+// deliberate: the alternative is duplicating the splitter.
 import { splitSentences } from "./sentences.mjs"
 
 const DASH_RE = /[\u2014\u2013]/g
@@ -1133,10 +1278,14 @@ export function countColonsOutsideList(source, blocks) {
       const before = source.slice(Math.max(0, abs - 8), abs)
       if (/https?$/.test(before)) continue
       const lineIndex = source.slice(0, abs).split("\n").length - 1
-      const rest = lines[lineIndex].slice(lines[lineIndex].indexOf(":") + 1)
+      const colOnLine = abs - (source.lastIndexOf("\n", abs - 1) + 1)
+      const rest = lines[lineIndex].slice(colOnLine + 1)
       if (rest.trim() === "") {
-        const next = (lines[lineIndex + 1] ?? "").trim()
-        if (/^([-*+]|\||\d+\.)/.test(next)) continue
+        // Skip blank lines: "Ba việc:\n\n- một" still introduces a list.
+        let n = lineIndex + 1
+        while (n < lines.length && lines[n].trim() === "") n++
+        // Spec: exempt when the next line starts with -, *, | or a digit.
+        if (/^([-*+]|\||\d)/.test((lines[n] ?? "").trim())) continue
       }
       const inCode = (b.text.slice(0, i).match(/`/g) ?? []).length % 2 === 1
       if (inCode) continue
@@ -1159,7 +1308,7 @@ export function shortParagraphRatio(blocks, abbreviations = []) {
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `node --test tests/counters.test.mjs`
-Expected: PASS, 6 tests
+Expected: PASS, 7 tests
 
 - [ ] **Step 5: Commit**
 
@@ -1179,9 +1328,9 @@ git commit -m "feat(scan): dash, colon and short-paragraph counters"
 **Interfaces:**
 - Consumes: `Block[]` from Task 3.
 - Produces:
-  - `isDataTable(parent: Block, blocks: Block[], source: string): boolean` is true when more than half of the non-empty body cells contain a number token. The header row is excluded from both numerator and denominator.
-  - `countColumns(parent: Block, blocks: Block[], source: string): number` counts the cells that start before the parent's first newline.
-  - `resolveTiers(blocks: Block[], opts: { tier: "R"|"P"|"C", tierMap?: Array<{block:number, tier:string}>, source: string }): Map<number, { tier: string, tier_source: "document"|"data_table"|"tier_map" }>`
+  - `isDataTable(parent: Block, blocks: Block[]): boolean` is true when more than half of the non-empty body cells contain a number token. The header row is excluded from both numerator and denominator.
+  - `bodyCells(parent: Block, blocks: Block[]): Block[]` returns non-empty cells with `row > 0`.
+  - `resolveTiers(blocks: Block[], opts: { tier: "R"|"P"|"C", tierMap?: Array<{block:number, tier:string}> }): Map<number, { tier: string, tier_source: "document"|"data_table"|"tier_map" }>`
   - Strictness order `C < P < R`. Effective tier is the strictest of the three sources, so `tierMap` can raise but never lower.
 
 - [ ] **Step 1: Write the failing tests**
@@ -1199,12 +1348,12 @@ const PROSE = "| Tính năng | Mô tả |\n|---|---|\n| Lọc RO | Loại bỏ k
 
 test("a numeric table is a data table at 4 of 6", () => {
   const b = splitBlocks(DATA)
-  assert.equal(isDataTable(b.find((x) => x.kind === "table"), b, DATA), true)
+  assert.equal(isDataTable(b.find((x) => x.kind === "table"), b), true)
 })
 
 test("a prose table is not a data table at 1 of 4", () => {
   const b = splitBlocks(PROSE)
-  assert.equal(isDataTable(b.find((x) => x.kind === "table"), b, PROSE), false)
+  assert.equal(isDataTable(b.find((x) => x.kind === "table"), b), false)
 })
 
 test("column count comes from the first row", () => {
@@ -1212,13 +1361,13 @@ test("column count comes from the first row", () => {
   const four = "| A | B | C | D |\n|---|---|---|---|\n| 1 | 2 | 3 | 4 |\n"
   const b2 = splitBlocks(two)
   const b4 = splitBlocks(four)
-  assert.equal(isDataTable(b2.find((x) => x.kind === "table"), b2, two), true)
-  assert.equal(isDataTable(b4.find((x) => x.kind === "table"), b4, four), true)
+  assert.equal(isDataTable(b2.find((x) => x.kind === "table"), b2), true)
+  assert.equal(isDataTable(b4.find((x) => x.kind === "table"), b4), true)
 })
 
 test("a data table forces tier R inside a P document", () => {
   const b = splitBlocks(DATA)
-  const t = resolveTiers(b, { tier: "P", source: DATA })
+  const t = resolveTiers(b, { tier: "P" })
   const parent = b.find((x) => x.kind === "table")
   assert.equal(t.get(parent.index).tier, "R")
   assert.equal(t.get(parent.index).tier_source, "data_table")
@@ -1227,7 +1376,7 @@ test("a data table forces tier R inside a P document", () => {
 
 test("tierMap can raise a paragraph from C to R", () => {
   const b = splitBlocks("Một đoạn văn.\n")
-  const t = resolveTiers(b, { tier: "C", tierMap: [{ block: 0, tier: "R" }], source: "Một đoạn văn.\n" })
+  const t = resolveTiers(b, { tier: "C", tierMap: [{ block: 0, tier: "R" }] })
   assert.equal(t.get(0).tier, "R")
   assert.equal(t.get(0).tier_source, "tier_map")
 })
@@ -1235,14 +1384,14 @@ test("tierMap can raise a paragraph from C to R", () => {
 test("tierMap cannot lower a data table below R", () => {
   const b = splitBlocks(DATA)
   const parent = b.find((x) => x.kind === "table")
-  const t = resolveTiers(b, { tier: "P", tierMap: [{ block: parent.index, tier: "C" }], source: DATA })
+  const t = resolveTiers(b, { tier: "P", tierMap: [{ block: parent.index, tier: "C" }] })
   assert.equal(t.get(parent.index).tier, "R")
   assert.equal(t.get(parent.index).tier_source, "data_table")
 })
 
 test("a plain paragraph inherits the document tier", () => {
   const src = "Một đoạn văn.\n"
-  const t = resolveTiers(splitBlocks(src), { tier: "P", source: src })
+  const t = resolveTiers(splitBlocks(src), { tier: "P" })
   assert.equal(t.get(0).tier, "P")
   assert.equal(t.get(0).tier_source, "document")
 })
@@ -1257,35 +1406,29 @@ Expected: FAIL with `Cannot find module '../bin/lib/tiers.mjs'`
 
 ```js
 const RANK = { C: 0, P: 1, R: 2 }
-const NAME = ["C", "P", "R"]
-const stricter = (a, b) => (RANK[a] >= RANK[b] ? a : b)
 
-export function isDataTable(parent, blocks, source) {
+export function isDataTable(parent, blocks) {
   if (!parent || parent.kind !== "table") return false
-  const columns = countColumns(parent, blocks, source)
-  const cells = (parent.children ?? []).map((i) => blocks[i]).filter((c) => c && c.text.trim() !== "")
-  const body = cells.slice(columns)
+  const body = bodyCells(parent, blocks)
   if (body.length === 0) return false
   const numeric = body.filter((c) => /\d/.test(c.text)).length
-  return numeric * 2 > body.length
+  return numeric * 2 > body.length   // strict majority: exactly half does not qualify
 }
 
-// The header row is the run of cells that start before the parent's first newline.
-export function countColumns(parent, blocks, source) {
-  const cells = (parent.children ?? []).map((i) => blocks[i])
-  if (cells.length === 0) return 0
-  const firstNewline = source.indexOf("\n", parent.span[0])
-  const headerEnd = firstNewline === -1 ? parent.span[1] : firstNewline
-  return cells.filter((c) => c.span[0] < headerEnd).length
+// blocks.mjs stamps `row` on every table_cell, so no offset arithmetic here.
+export function bodyCells(parent, blocks) {
+  return (parent.children ?? [])
+    .map((i) => blocks[i])
+    .filter((c) => c && c.row > 0 && c.text.trim() !== "")
 }
 
-export function resolveTiers(blocks, { tier, tierMap = [], source }) {
+export function resolveTiers(blocks, { tier, tierMap = [] }) {
   const forced = new Map(tierMap.map((e) => [e.block, e.tier]))
   const result = new Map()
 
   const dataTableBlocks = new Set()
   for (const b of blocks) {
-    if (b.kind === "table" && isDataTable(b, blocks, source)) {
+    if (b.kind === "table" && isDataTable(b, blocks)) {
       dataTableBlocks.add(b.index)
       for (const c of b.children ?? []) dataTableBlocks.add(c)
     }
@@ -1293,17 +1436,17 @@ export function resolveTiers(blocks, { tier, tierMap = [], source }) {
 
   for (const b of blocks) {
     let effective = tier
-    let source = "document"
+    let origin = "document"
     if (forced.has(b.index) && RANK[forced.get(b.index)] > RANK[effective]) {
       effective = forced.get(b.index)
-      source = "tier_map"
+      origin = "tier_map"
     }
     if (dataTableBlocks.has(b.index)) {
-      const raised = stricter(effective, "R")
-      if (raised === "R" && effective !== "R") { effective = "R"; source = "data_table" }
-      else if (effective === "R" && source !== "tier_map") source = "data_table"
+      // Spec 3.2: R for data regions is a floor. tierMap may raise, never lower.
+      if (RANK[effective] < RANK.R) { effective = "R"; origin = "data_table" }
+      else if (origin === "document") origin = "data_table"
     }
-    result.set(b.index, { tier: effective, tier_source: source })
+    result.set(b.index, { tier: effective, tier_source: origin })
   }
   return result
 }
@@ -1400,7 +1543,10 @@ test("langMap selects a pack per block", () => {
 })
 
 test("blocks report effective tier and source", () => {
-  const r = scan("| Kênh | CPA |\n|---|---|\n| Search | 31 |\n", { tier: "C", lang: "vi", packs })
+  // 3 columns so the body is [Search, 12400, 31]: 2 of 3 numeric clears the
+  // strict-majority threshold. A 2-column table would be exactly 1 of 2 and
+  // would NOT be a data table.
+  const r = scan("| Kênh | Chi phí | CPA |\n|---|---|---|\n| Search | 12400 | 31 |\n", { tier: "C", lang: "vi", packs })
   const parent = r.blocks.find((b) => b.kind === "table")
   assert.equal(parent.tier, "R")
   assert.equal(parent.tier_source, "data_table")
@@ -1448,7 +1594,7 @@ const SCANNABLE = new Set(["paragraph", "list_item", "heading", "table_cell"])
 
 export function scan(text, { tier, lang, langMap = [], tierMap = [], packs = {} }) {
   const blocks = splitBlocks(text)
-  const tiers = resolveTiers(blocks, { tier, tierMap, source: text })
+  const tiers = resolveTiers(blocks, { tier, tierMap })
   const langOf = new Map(langMap.map((e) => [e.block, e.lang]))
 
   const blockInfo = blocks.map((b) => {
@@ -1461,10 +1607,11 @@ export function scan(text, { tier, lang, langMap = [], tierMap = [], packs = {} 
   })
 
   const findings = []
+  // One flag: spec section 10 nulls the lexical counters and same_shape_run
+  // under the same condition, so they cannot diverge.
   let lexicalRan = false
   const perList = Object.fromEntries(LIST_PRIORITY.map((k) => [k, 0]))
   let runMax = 0
-  let runRan = false
 
   for (const b of blocks) {
     if (!SCANNABLE.has(b.kind) || b.text === "") continue
@@ -1472,7 +1619,6 @@ export function scan(text, { tier, lang, langMap = [], tierMap = [], packs = {} 
     const pack = info.lang ? packs[info.lang] : undefined
     if (!pack) continue
     lexicalRan = true
-    runRan = true
 
     const blockHasData = hasDataToken(b.text, pack)
     for (const m of matchLists(b.text, pack, b.span[0])) {
@@ -1508,7 +1654,7 @@ export function scan(text, { tier, lang, langMap = [], tierMap = [], packs = {} 
       puffery: lexicalRan ? perList.puffery : null,
       comparative: lexicalRan ? perList.comparative : null,
       eval_candidate: lexicalRan ? perList.evaluative : null,
-      same_shape_run: runRan ? runMax : null,
+      same_shape_run: lexicalRan ? runMax : null,
       colon_outside_list: countColonsOutsideList(text, blocks),
       short_paragraph_ratio: shortParagraphRatio(blocks, primaryAbbr),
     },
@@ -1531,7 +1677,9 @@ export function loadPacks() {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const argv = process.argv.slice(2)
   const get = (flag) => { const i = argv.indexOf(flag); return i === -1 ? undefined : argv[i + 1] }
-  const file = argv[argv.length - 1]
+  const positional = argv.filter((a, i) => !a.startsWith("--") && !(argv[i - 1] ?? "").startsWith("--"))
+  const file = positional[0]
+  if (!file) { console.error("usage: scan.mjs [--tier R|P|C] [--lang xx] [--lang-map f.json] <file.md>"); process.exit(2) }
   const langMapPath = get("--lang-map")
   const result = scan(readFileSync(file, "utf8"), {
     tier: get("--tier") ?? "P",
@@ -1604,11 +1752,19 @@ Populate from spec section 6.5 plus the four-list table in 6.2:
 - `tier_keywords.R`: báo cáo, audit, phân tích, tổng kết, performance, số liệu
 - `tier_keywords.P`: proposal, đề xuất, kế hoạch, plan, SoW, roadmap, báo giá, pitch
 - `tier_keywords.C`: caption, post, ad copy, content, email marketing, landing, tagline, blog
+- `exceptions`: `{ "hàng đầu": ["hàng đầu tiên"], "vượt": ["vượt qua"] }`
+
+Section 6.5 of the spec also defines two Vietnamese rules that `scan.mjs` cannot count, because both need context a per-block lexical scan does not have. They live in the prose sections with stable IDs so `antislop-check` can still report them:
+
+- `VI-NOMINALIZATION`: "việc triển khai" becomes "triển khai", "quá trình tối ưu hoá" becomes "tối ưu". Context-dependent, because "việc" is not always padding.
+- `VI-ADDRESS-CONSISTENCY`: pick one form of address and hold it for the whole document. Needs cross-block tracking, which is outside a block scanner.
+
+Write both into section 3 of `vi.md` with their IDs, and state plainly that `scan.mjs` does not count them.
 
 - [ ] **Step 3: Validate**
 
 Run: `node bin/validate-pack.mjs --all`
-Expected: `OK    vi.md`, and an ERROR line for `en.md` because it does not exist yet.
+Expected: `OK    vi.md` and `ERROR en.md: not found`, exit code 1. The missing English pack is expected at this point; Task 11 creates it.
 
 - [ ] **Step 4: Confirm the scanner loads it**
 
@@ -1655,6 +1811,7 @@ Section 1 records `lang: en`, `nhãn: cộng đồng`. Section 7 states that `[1
 - `tier_keywords.R`: report, audit, analysis, recap, performance, metrics
 - `tier_keywords.P`: proposal, plan, SoW, roadmap, quote, pitch
 - `tier_keywords.C`: caption, post, ad copy, content, email, landing, tagline, blog
+- `exceptions`: `{}` (English has no known collisions yet; the key is still required)
 
 - [ ] **Step 3: Validate both packs**
 
@@ -1716,7 +1873,8 @@ git commit -m "feat(core): language-neutral rule set with stable rule IDs"
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: rule IDs `EVID-UNBACKED`, `EVID-PROVENANCE-UNKNOWN`, `EVID-SOURCE-UNKNOWN`, and the do-not-flag guard list used only by `antislop-check`.
+- Produces: rule IDs `EVID-UNBACKED`, `EVID-PROVENANCE-UNKNOWN`, `EVID-SOURCE-UNKNOWN` (no language prefix), plus the language-prefixed `<LANG>-PUFFERY-UNLISTED` and `<LANG>-COMPARATIVE-UNLISTED`, plus the do-not-flag guard list used only by `antislop-check`.
+- The prefix rule is fixed in spec section 10, Rule ID: a code carries a language prefix if and only if it arises from one language's vocabulary. Evidence judgements are language-neutral reasoning, so `EVID-*` is never prefixed; the finding already carries a `lang` field.
 
 - [ ] **Step 1: Write evidence.md**
 
@@ -1728,7 +1886,7 @@ From spec section 5.4 and the two provenance sub-sections of 3.1:
 - The tier P distinction between claims about reality and statements of intent, with the four examples from spec 3.1.
 - The comparator requirement for comparative and superlative claims.
 - Provenance: `.antislop-claims.txt` for condition (b), and the three-outcome table for condition (a). State plainly that the third verdict is `chưa xác định`, that it is not a violation, and that it must be displayed on its own row.
-- The open-class principle: the three word lists are a floor, not a gate. `antislop-check` scans semantically and independently, and reports what it finds beyond the lists as `*-EVID-UNBACKED`, `*-PUFFERY-UNLISTED`, `*-COMPARATIVE-UNLISTED`.
+- The open-class principle: the three word lists are a floor, not a gate. `antislop-check` scans semantically and independently, and reports what it finds beyond the lists as `EVID-UNBACKED` (unprefixed), `<LANG>-PUFFERY-UNLISTED` and `<LANG>-COMPARATIVE-UNLISTED` (prefixed).
 
 - [ ] **Step 2: Write false-positives.md**
 
@@ -1776,9 +1934,16 @@ Sections, in order:
 3. **Print the declaration line, then continue.** No question, no waiting.
 4. **Minimum input and missing data**, from spec 4.1: the absolute rule against inventing facts, the four kinds of fact, the per-tier minimum, the three escalation levels, the `[cần ...]` label format, and the `[ví dụ]` rule for illustrative numbers.
 5. **Write, then self-check silently.** Only the final text is printed unless the user asks for the draft.
-6. **The tier-specific checklist**, drawn from `core.md` plus the loaded language pack.
+6. **Unregistered language and true bilingual documents**, from spec 6.3. Both skills need this section, worded identically.
 
-Keep the file under about 140 lines. Detail belongs in `references/`, not here.
+   - Language not in `languages.json`: load `core.md` and `evidence.md` only. Never substitute a nearby pack; Thai does not get `vi.md`. Declare it in the line: `[P · mức 2 · trang trọng · th (chưa có pack)]`. Print one follow-up line after the output saying the vocabulary, address, particle and cadence rules were not applied for this language.
+   - Loanwords do not switch packs. Vietnamese prose carrying `ROAS`, `remarketing`, `audience` stays a single-language document.
+   - True bilingual, meaning complete sentences in two languages: load both packs, apply per block, declare both: `[P · mức 2 · trang trọng · vi+en]`.
+   - The boundary: a secondary language appearing only as words and noun phrases is loanwords; a secondary language with complete sentences of its own is bilingual. No percentage threshold.
+
+7. **The tier-specific checklist**, drawn from `core.md` plus the loaded language pack.
+
+Keep the file under about 160 lines. Detail belongs in `references/`, not here.
 
 - [ ] **Step 3: Manual smoke test**
 
@@ -1817,12 +1982,16 @@ description: Audit an existing document for AI writing tells and unbacked claims
 
 - [ ] **Step 2: Write the body**
 
-1. **Run the scanner first.** Resolve `bin/scan.mjs` relative to this skill's own directory, not the working directory. Copy `counted` verbatim and set `counted_source` to `"scan"`. If Node is unavailable, count by reading, set `"model"`, and label the numbers as estimates in the human table.
-2. **Copy `findings_mechanical` verbatim.** Not one code, span or text may be altered.
-3. **Then judge, independently.** Read the whole document. The three word lists are a floor; find evaluative claims, strong marketing claims and comparatives that the lists missed, and report them in `findings_judged`.
-4. **Apply `false-positives.md` before reporting.** Look for clusters, not isolated tells.
-5. **The three verdicts.** `đạt`, `vi phạm`, `chưa xác định`. The third is not a violation and gets its own row.
-6. **Output format.** The human table from spec 8.1, then the JSON block only when the request says `json`.
+1. **Infer tier and language first, and print the declaration line.** Same decision table as `antislop-write` (spec 3.2), but the language rule is different and stricter: for checking, the language is **the language of the block being checked, period**. One signal, no fallback, and the language of the request is irrelevant (spec 4.2). A Vietnamese request about an English document loads the `en` pack.
+
+2. **Run the scanner.** Resolve `bin/scan.mjs` relative to this skill's own directory, not the working directory. Copy `counted` verbatim and set `counted_source` to `"scan"`. If Node is unavailable, count by reading, set `"model"`, and label the numbers as estimates in the human table.
+3. **Copy `findings_mechanical` verbatim.** Not one code, span or text may be altered.
+4. **Then judge, independently.** Read the whole document. The three word lists are a floor; find evaluative claims, strong marketing claims and comparatives that the lists missed, and report them in `findings_judged`.
+5. **Apply `false-positives.md` before reporting.** Look for clusters, not isolated tells.
+6. **The three verdicts.** `đạt`, `vi phạm`, `chưa xác định`. The third is not a violation and gets its own row.
+7. **Unregistered language and true bilingual documents.** Identical to the section in `antislop-write`, spec 6.3. For an unregistered language the JSON block still appears, with the lexical counters set to `null` rather than `0`, because `null` means not measured and `0` means measured and clean.
+
+8. **Output format.** The human table from spec 8.1, then the JSON block only when the request says `json`.
 
 - [ ] **Step 3: Manual smoke test on a known-bad document**
 
@@ -1947,7 +2116,7 @@ Blocking item 3 from spec section 12 is resolved inside this task: the exact loc
 - Create: `tests/fixtures.mjs`
 - Create: `tests/fixtures/judged/unbacked-vi.md` and `.expect.json`
 - Create: `tests/fixtures/judged/clean-vi.md` and `.expect.json`
-- Create: `docs/superpowers/notes/headless-install.md`
+- Modify: `docs/superpowers/notes/path-resolution.md`
 
 **Interfaces:**
 - Consumes: both skills, `bin/scan.mjs`.
@@ -1955,19 +2124,43 @@ Blocking item 3 from spec section 12 is resolved inside this task: the exact loc
 
 - [ ] **Step 1: Write the two judged fixtures**
 
-`unbacked-vi.md` contains `Đội ngũ tận tâm.` standing alone in its own paragraph, with no data token anywhere in the block, and `Tốt nhất thị trường.` with no comparison set.
+Both fixtures open with a heading that carries a tier keyword, so the skill infers the same tier the runner scans with. Without it the skill would fall back to tier P and the two sides would disagree.
+
+`unbacked-vi.md`:
+
+```markdown
+# Báo cáo hiệu quả tháng 6
+
+Đội ngũ tận tâm.
+
+Sản phẩm đứng đầu phân khúc.
+```
+
+`Đội ngũ tận tâm.` stands alone in a block with no data token. `tận tâm` is in the vi pack's `evaluative` list, so the scanner reports `VI-EVAL-CANDIDATE` mechanically and the model must judge it `EVID-UNBACKED`.
+
+`đứng đầu` is **also** in the vi pack's `comparative` list, so the mechanical code is `VI-COMPARATIVE`, not `VI-COMPARATIVE-UNLISTED`. The judged finding is that the comparison has no stated comparator.
+
 Its `.expect.json`:
 
 ```json
 {
   "tier": "R", "lang": "vi",
-  "must_flag": ["EVID-UNBACKED", "VI-COMPARATIVE-UNLISTED"],
+  "must_flag": ["EVID-UNBACKED"],
   "must_not_flag": ["EVID-PROVENANCE-UNKNOWN"]
 }
 ```
 
-`clean-vi.md` is a short report where every evaluative word sits next to a number.
-Its `.expect.json` has an empty `must_flag` and `must_not_flag: ["EVID-UNBACKED"]`.
+Do **not** put `VI-COMPARATIVE-UNLISTED` in `must_flag`. Per spec section 10, the `-UNLISTED` codes are reserved for terms the model finds that are absent from the pack. A term already in the pack produces its plain mechanical code, and that code lives in `findings_mechanical`, which is deep-compared rather than set-matched.
+
+`clean-vi.md`:
+
+```markdown
+# Báo cáo hiệu quả tháng 6
+
+CPA giảm từ 42 đô xuống 31 đô, tức 26 phần trăm. ROAS đạt 3.4 so với mục tiêu 2.8.
+```
+
+Its `.expect.json` has `"must_flag": []` and `"must_not_flag": ["EVID-UNBACKED"]`.
 
 Only unambiguous cases go here. If choosing the expectation takes more than a few seconds of thought, the sample belongs in `examples/` instead.
 
@@ -1994,7 +2187,32 @@ function lastJsonBlock(out) {
   return JSON.parse(blocks[blocks.length - 1][1])
 }
 
+// Spec section 10 requires three ordered steps: install, canary, uninstall.
+// The install and uninstall commands are the ones pinned in
+// docs/superpowers/notes/path-resolution.md during Task 1.
+const REPO = new URL("..", import.meta.url).pathname
+const INSTALL = {
+  claude: [["claude", ["plugin", "marketplace", "add", REPO]],
+           ["claude", ["plugin", "install", "antislop-marketing@antislop-marketing"]]],
+  codex:  [["codex", ["plugin", "marketplace", "add", REPO]],
+           ["codex", ["plugin", "add", "antislop-marketing@antislop-marketing"]]],
+}
+const UNINSTALL = {
+  claude: [["claude", ["plugin", "uninstall", "antislop-marketing@antislop-marketing"]]],
+  codex:  [["codex", ["plugin", "remove", "antislop-marketing"]]],
+}
+const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8", stdio: "pipe" })
+
 console.log(`runner: ${RUNNER}`)
+console.log("install: putting this checkout into the local registry")
+for (const [c, a] of INSTALL[RUNNER]) run(c, a)
+
+// Uninstall on every exit path, including a thrown error or a failed fixture.
+process.on("exit", () => {
+  try { for (const [c, a] of UNINSTALL[RUNNER]) run(c, a) }
+  catch (e) { console.error(`uninstall failed, clean up by hand: ${e.message}`) }
+})
+
 console.log("canary: checking the skill is actually loaded")
 const canary = ask("Dùng antislop-write. Viết đúng một câu về CPA tháng này là 31 đô. In dòng khai báo tier.")
 if (!CANARY.test(canary)) {
@@ -2003,6 +2221,22 @@ if (!CANARY.test(canary)) {
   process.exit(2)
 }
 console.log("canary: ok")
+
+// Spec section 10: at least one scan must run with CWD outside the repo, or
+// the path-resolution bug never surfaces in CI.
+console.log("outside-cwd: running the scanner from /tmp")
+{
+  const fixture = new URL("./fixtures/mechanical/outside-cwd.md", import.meta.url).pathname
+  const scanner = new URL("../bin/scan.mjs", import.meta.url).pathname
+  const out = execFileSync("node", [scanner, "--tier", "R", "--lang", "vi", fixture],
+                           { encoding: "utf8", cwd: "/tmp" })
+  const parsed = JSON.parse(out)
+  if (typeof parsed.counted?.dash !== "number") {
+    console.error("OUTSIDE-CWD FAILED: scanner could not resolve its packs from /tmp")
+    process.exit(2)
+  }
+  console.log("outside-cwd: ok")
+}
 
 let failed = 0
 const dir = new URL("./fixtures/judged/", import.meta.url)
@@ -2015,7 +2249,11 @@ for (const name of readdirSync(dir).filter((n) => n.endsWith(".md"))) {
   const got = lastJsonBlock(ask(`Dùng antislop-check trên file ${path}. Xuất json.`))
 
   const problems = []
+  for (const k of ["tier", "lang", "counted_source", "counted", "findings_mechanical", "findings_judged"]) {
+    if (!(k in got)) problems.push(`json block is missing required key: ${k}`)
+  }
   if (got.counted_source !== "scan") problems.push(`counted_source=${got.counted_source}, expected "scan"`)
+  if (got.tier !== exp.tier) problems.push(`tier=${got.tier}, fixture declares ${exp.tier}`)
   for (const k of Object.keys(local.counted)) {
     if (JSON.stringify(got.counted?.[k]) !== JSON.stringify(local.counted[k])) {
       problems.push(`counted.${k}: agent ${JSON.stringify(got.counted?.[k])} vs scan ${JSON.stringify(local.counted[k])}`)
@@ -2045,14 +2283,16 @@ ANTISLOP_RUNNER=claude node tests/fixtures.mjs
 ANTISLOP_RUNNER=codex  node tests/fixtures.mjs
 ```
 
-- [ ] **Step 5: Record the install and uninstall commands**
+- [ ] **Step 5: Reconcile the commands with the note from Task 1**
 
-Write `docs/superpowers/notes/headless-install.md` with the exact commands that made the canary pass on each backend, and the matching uninstall commands. This is the deliverable for blocking item 3.
+`INSTALL` and `UNINSTALL` in the runner must match the commands recorded in `docs/superpowers/notes/path-resolution.md` during Task 1 Step 8. If Step 4 above needed different commands, update both the runner and that note so there is one source of truth.
+
+Append a short section to that note titled "Headless install", listing the final commands per backend. This closes blocking item 3 in spec section 12.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add tests/fixtures.mjs tests/fixtures/judged package.json docs/superpowers/notes/headless-install.md
+git add tests/fixtures.mjs tests/fixtures/judged package.json docs/superpowers/notes/path-resolution.md
 git commit -m "test: tier-2 fixture runner with canary probe and verbatim-copy check"
 ```
 
@@ -2164,7 +2404,7 @@ git commit -m "test: examples, self-scan manifest and CI"
 ### Task 19: README, NOTICE, LICENSE, CONTRIBUTING
 
 **Files:**
-- Create: `README.md`, `README.vi.md`, `NOTICE`, `LICENSE`, `CONTRIBUTING.md`
+- Create: `README.md`, `README.vi.md`, `NOTICE`, `LICENSE`, `LICENSE-THIRD-PARTY`, `CONTRIBUTING.md`
 
 **Interfaces:**
 - Consumes: everything.
@@ -2207,7 +2447,7 @@ Same structure in Vietnamese. Scanned at tier P with the `vi` pack.
 
 - [ ] **Step 4: Write CONTRIBUTING.md**
 
-The language pack template: the eight prose section headings, and an empty `json antislop-pack` block with every one of the thirteen keys present and empty. Plus the three status labels and what each requires, and the instruction to run `node bin/validate-pack.mjs --all` before opening a pull request.
+The language pack template: the eight prose section headings, and an empty `json antislop-pack` block with every one of the fourteen keys present and empty. Plus the three status labels and what each requires, and the instruction to run `node bin/validate-pack.mjs --all` before opening a pull request.
 
 - [ ] **Step 5: Run the full suite**
 
