@@ -4,6 +4,7 @@
 // Not wired into CI: it calls a model, costs money, and is not deterministic.
 //   ANTISLOP_RUNNER=claude node tests/fixtures.mjs
 //   ANTISLOP_RUNNER=codex  node tests/fixtures.mjs
+//   ANTISLOP_FIXTURE_FILTER=readme node tests/fixtures.mjs
 //
 // Spec section 9 requires three ordered steps: install, canary, uninstall.
 // Codex copies the plugin into its cache at install time, so a source edit has
@@ -29,6 +30,7 @@ import { listFixtures } from "./fixture-list.mjs"
 
 const RUNNER = process.env.ANTISLOP_RUNNER ?? "claude"
 const FORCE = process.env.ANTISLOP_FIXTURE_FORCE === "1"
+const FILTER = process.env.ANTISLOP_FIXTURE_FILTER
 
 // fileURLToPath, not .pathname: a URL path is percent-encoded, so a checkout
 // under a directory with a space in its name comes back with %20 in it and
@@ -191,7 +193,14 @@ console.log("outside-cwd: running the scanner from /tmp")
 const packs = loadPacks()
 let failed = 0
 
-for (const { name, path, exp } of listFixtures()) {
+const fixtures = listFixtures().filter((f) => !FILTER || f.name.includes(FILTER))
+if (fixtures.length === 0) {
+  console.error(`no fixture name contains ${JSON.stringify(FILTER)}`)
+  cleanup()
+  process.exit(2)
+}
+
+for (const { name, path, exp } of fixtures) {
   const src = readFileSync(path, "utf8")
 
   const local = scan(src, { tier: exp.tier, lang: exp.lang, packs })

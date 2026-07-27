@@ -1,8 +1,8 @@
-# Language pack: tiếng Việt
+# Gói ngôn ngữ tiếng Việt
 
-Mục này mô tả, không liệt kê. Mọi token thực thi được nằm trong khối JSON
-`antislop-pack` ở cuối file. Liệt kê hai chỗ thì skill và `scan.mjs` sẽ thực
-thi hai bộ rule khác nhau.
+Phần này giải thích các lựa chọn ngôn ngữ. Mọi mục từ mà scanner sử dụng đều
+nằm trong khối JSON `antislop-pack` ở cuối file. Nếu liệt kê ở hai chỗ, skill
+và `scan.mjs` có thể áp dụng hai bộ quy tắc khác nhau.
 
 ## 1. Metadata
 
@@ -13,17 +13,23 @@ thi hai bộ rule khác nhau.
 | Người soát | HDShinobi, người bản xứ, làm marketing performance |
 | Ngày soát | 2026-07-27 |
 
-## 2. Ban list
+Khi viết hoặc kiểm tra nội dung tiếng Việt dành cho người đọc, tải thêm
+`vi-editorial.md`. Tài liệu đó quy định cách xử lý tiêu đề, câu đầy đủ, tham
+chiếu, pha ngôn ngữ, giọng biên tập và kiến trúc thông tin. Các quy tắc này
+không nằm trong JSON vì chúng cần hiểu người đọc và toàn văn bản, không thể đếm
+bằng scanner.
+
+## 2. Danh sách cấm
 
 Cụm không bao giờ được dùng, bất kể tier. Ba nhóm.
 
 Trong file này mọi cụm đều viết trong backtick. Backtick nghĩa là cụm đang được
 **gọi tên**, không phải đang được dùng, và `scan.mjs` bỏ qua code span đúng vì
-lý do đó. Nhờ vậy một pack mô tả được ban list của chính nó mà không tự đỏ khi
-self-scan.
+lý do đó. Nhờ vậy một gói ngôn ngữ có thể mô tả danh sách cấm của chính nó mà
+không tự báo lỗi khi repo quét lại tài liệu.
 
-**Bản dịch của các tell AI tiếng Anh.** Nhóm này lộ nhất vì nó không phải cách
-người Việt nói, mà là cách máy dịch một khuôn tiếng Anh.
+**Bản dịch của các dấu hiệu AI trong tiếng Anh.** Nhóm này lộ nhất vì nó không
+phải cách người Việt nói, mà là cách máy dịch một khuôn tiếng Anh.
 
 `đóng vai trò quan trọng trong việc` là bản dịch của `plays a crucial role in`.
 `không chỉ ... mà còn` là negative parallelism. `góp phần` và
@@ -41,10 +47,10 @@ báo hiệu rằng một đoạn sắp bắt đầu hoặc vừa kết thúc.
 **Tàn dư hội thoại.** `Hy vọng bài viết mang lại`, `Chúc bạn thành công`.
 Đây là chữ của chatbot bị dán nhầm vào tài liệu.
 
-## 3. Cụm công thức, và hai rule chỉ model áp được
+## 3. Cụm công thức và hai quy tắc chỉ mô hình áp dụng được
 
-Hai rule dưới đây `scan.mjs` không đếm, vì cả hai cần ngữ cảnh mà một phép quét
-theo khối không có. Chúng có mã riêng để `antislop-check` báo được.
+`scan.mjs` không đếm hai quy tắc dưới đây vì chúng cần ngữ cảnh mà một phép quét
+theo khối không có. Mỗi quy tắc có mã riêng để `antislop-check` báo được.
 
 **`VI-NOMINALIZATION`.** Danh từ hoá chỗ một động từ gánh được.
 
@@ -120,8 +126,8 @@ Báo cáo tiếng Việt chêm thuật ngữ tiếng Anh là chuẩn ngành, kh�
 ngôn ngữ. Skill không được dịch `remarketing` thành `tiếp thị lại`, cũng không
 được dịch `insight` thành `sự thấu hiểu`. Danh sách ở khoá `loanwords`.
 
-Từ mượn không kích hoạt pack thứ hai. Một báo cáo dày thuật ngữ vẫn là văn bản
-một ngôn ngữ.
+Từ mượn không kích hoạt gói ngôn ngữ thứ hai. Một báo cáo dày thuật ngữ vẫn là
+văn bản một ngôn ngữ.
 
 ## Từ đã soát và cố ý không đưa vào
 
@@ -130,14 +136,15 @@ phải slop. `Đội ngũ chuyên nghiệp` trong một proposal đọc bình th
 người viết chứng minh chữ đó mỗi lần sẽ tạo ma sát trên hầu hết tài liệu mà
 không đổi lại được gì.
 
-Đây là quyết định của người bản xứ soát pack, và nó là nội dung thật của nhãn
+Đây là quyết định của người Việt đã soát gói ngôn ngữ và là cơ sở cho nhãn
 `soát rồi` ở mục 1.
 
-## Cơ sở pháp lý của rule cực cấp
+## Cơ sở pháp lý của quy tắc về từ cực cấp
 
-Rule "tier C cấm cực cấp" ở `core.md` mục 2 là rule cứng cho thị trường Việt
-Nam, và đây là chỗ ghi vì sao. `core.md` không chứa token của ngôn ngữ nào nên
-không dẫn được luật của một nước; pack là chỗ đúng.
+Quy tắc “tier C cấm từ cực cấp” ở mục 2 của `core.md` được áp dụng mặc định cho
+thị trường Việt Nam. Phần này giải thích cơ sở của quy tắc đó. `core.md` không
+chứa mục từ riêng của từng ngôn ngữ nên cơ sở pháp lý được đặt trong gói tiếng
+Việt.
 
 | Văn bản | Nội dung |
 |---|---|
@@ -157,10 +164,11 @@ Nguồn:
 - <https://dms.gov.vn/tin-chi-tiet/-/chi-tiet/noi-dung-quang-cao-su-dung-tu-nhat-duy-nhat-tot-nhat-so-mot-hoac-cac-tu-ngu-co-y-nghia-tuong-tu-chi-%C4%91uoc-phep-khi-nao--70657-3.html>
 - <https://vcci.com.vn/legal-document/nghi-dinh-382021nd-cp-quy-dinh-xu-phat-vi-pham-hanh-chinh-trong-linh-vuc-van-hoa-va-quang-cao>
 
-Bản trước của repo nói Meta, Google và TikTok đều từ chối quảng cáo mang cực
-cấp, kể cả khi có căn cứ. Câu đó không đứng được. TikTok có cấm absolute term
-thật, Google thì xét claim theo độ chính xác chứ không theo từ vựng, và không
-nguồn nào nói mọi nền tảng đều chặn. Xem `en.md` mục "Cực cấp ngoài Việt Nam".
+Bản trước của repo nói Meta, Google và TikTok đều từ chối quảng cáo có từ cực
+cấp, kể cả khi có căn cứ. Nhận định đó không đủ cơ sở. TikTok cấm một số cụm từ
+tuyệt đối, còn Google đánh giá độ chính xác của nội dung khẳng định thay vì chỉ
+dựa vào từ vựng. Không có nguồn nào cho thấy mọi nền tảng đều từ chối các quảng
+cáo này. Xem mục “Cực cấp ngoài Việt Nam” trong `en.md`.
 
 ## Ngoại lệ khớp
 
@@ -321,7 +329,9 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
     ],
     "P": [
       "proposal", "đề xuất", "kế hoạch", "plan", "sow", "roadmap",
-      "báo giá", "pitch", "phương án"
+      "báo giá", "pitch", "phương án", "readme", "tài liệu hướng dẫn",
+      "hướng dẫn sử dụng", "tài liệu sản phẩm", "chính sách",
+      "ghi chú phát hành"
     ],
     "C": [
       "caption", "post", "ad copy", "content", "email marketing",

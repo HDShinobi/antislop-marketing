@@ -155,9 +155,15 @@
       "properties": {
         "evidence_backed": { "$ref": "#/$defs/verdict" },
         "comparator_named": { "$ref": "#/$defs/verdict" },
-        "register_uniform": { "$ref": "#/$defs/verdict" },
+        "register_uniform": {
+          "description": "Legacy aggregate for sentence completeness, code-switching and editorial tone. Read findings_judged for the specific rule.",
+          "$ref": "#/$defs/verdict"
+        },
         "four_part_arc": { "$ref": "#/$defs/verdict" },
-        "reader_addressed": { "$ref": "#/$defs/verdict" },
+        "reader_addressed": {
+          "description": "Legacy aggregate for information architecture, heading clarity and referent clarity. Read findings_judged for the specific rule.",
+          "$ref": "#/$defs/verdict"
+        },
         "provenance": {
           "description": "`chưa xác định` when no .antislop-claims.txt exists, which is the EVID-PROVENANCE-UNKNOWN case and is not a violation.",
           "$ref": "#/$defs/verdict"

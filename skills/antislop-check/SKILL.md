@@ -1,6 +1,6 @@
 ---
 name: antislop-check
-description: Audit an existing document for AI writing tells and unbacked claims, in Vietnamese or English, and rewrite it on request. Use when asked to review, check, audit, proofread or clean up existing copy, a report, an audit, a proposal, ad text or a caption.
+description: Review and edit existing Vietnamese or English prose for AI writing tells, weak information architecture, unclear headings, unnatural tone, unnecessary code-switching and unbacked claims. Use for reviews, editorial checks, proofreading and rewrites of marketing copy, reports, proposals, README files, product documentation, policies, guides, emails, landing pages, ad text and captions.
 ---
 
 # antislop-check
@@ -8,10 +8,14 @@ description: Audit an existing document for AI writing tells and unbacked claims
 Paths below are relative to this skill's own directory, not to the working
 directory.
 
-## 1. Infer the tier and language, and declare them
+## 1. Infer tier, document profile and language
 
 Tier: the decision table in `../../references/core.md` section 2, same as when
 writing.
+
+Document profile: infer the form of the target, not the action in the request.
+A request to review a README means profile README and normally tier P. The word
+“review” does not turn it into a tier R report.
 
 Language: **the language of the block being checked. One signal, no fallback.**
 The language of the request is irrelevant. A Vietnamese request about an English
@@ -59,6 +63,10 @@ filter, do not reorder, do not add.
 ## 5. Then judge, independently
 
 Load `../../references/evidence.md` and `../../references/false-positives.md`.
+For every Vietnamese human-facing document, also load
+`../../references/vi-editorial.md`. This includes README files, product
+documentation and policies; they are prose for a reader even when they live in
+a code repository.
 
 **The word lists are a floor, not a gate.** Do not treat
 `findings_mechanical` as the complete list of places worth examining. Read the
@@ -76,6 +84,24 @@ appeared; whether the nearby fact actually proves it is your call.
 
 Also judge what no scanner can reach: register uniformity, the four-part
 argument arc, and the fourth tell family in `core.md` section 6.
+
+For Vietnamese, run the two editorial passes from `vi-editorial.md` after the
+evidence pass. Do not stop because the mechanical counters are clean. Inspect
+the whole document for:
+
+- information ordered for the writer rather than the reader;
+- vague or compressed headings;
+- sentence fragments in explanatory prose;
+- unclear referents such as “nó”, “bộ này” or “cái đó”;
+- avoidable English terms and inconsistent terminology;
+- forced punchiness, defensive phrasing or register changes.
+
+Put these findings in `findings_judged` with the stable `VI-*` codes from that
+reference. Map architecture, heading and referent failures to the legacy
+aggregate `judged.reader_addressed`. Map sentence, code-switch and
+editorial-tone failures to the legacy aggregate `judged.register_uniform`.
+Keep the specific `VI-*` code in `findings_judged`; the aggregate key names
+predate the Vietnamese editorial layer and do not replace a specific finding.
 
 ## 6. Apply false-positives.md before reporting
 
@@ -136,9 +162,9 @@ The table for the reader, always:
 PHÁN ĐOÁN
   bằng chứng chống lưng          cần sửa   3/5 ứng viên thiếu
   mốc so sánh nêu rõ              đạt
-  giọng nhất quán quá mức       cần sửa
+  câu chữ và giọng biên tập     cần sửa
   cung lập luận 4 phần            đạt
-  câu không có người nhận         đạt
+  cấu trúc và hướng tới người đọc  đạt
   nguồn claim đã duyệt      chưa xác định   không có .antislop-claims.txt
 
 KẾT LUẬN: CẦN SỬA
@@ -151,12 +177,18 @@ object, and the JSON key never changes with the document's language:
 |---|---|
 | bằng chứng chống lưng | `evidence_backed` |
 | mốc so sánh nêu rõ | `comparator_named` |
-| giọng nhất quán quá mức | `register_uniform` |
+| câu chữ và giọng biên tập | `register_uniform` |
 | cung lập luận 4 phần | `four_part_arc` |
-| câu không có người nhận | `reader_addressed` |
+| cấu trúc và hướng tới người đọc | `reader_addressed` |
 | nguồn claim đã duyệt | `provenance` |
 
-Then the specific locations. Then a rewrite, only if asked.
+Then the specific locations. For editorial findings, explain the reader impact
+and give one replacement that fits the surrounding section. Do not merely say
+that a sentence “sounds like AI”.
+
+Then a rewrite, only if asked. “Review”, “check” and “audit” ask for findings,
+not an automatic rewrite. “Fix”, “clean up”, “edit” and “rewrite” authorize the
+rewrite.
 
 **The JSON block appears only when the request contains the word `json`.** One
 condition, no others: not the tier, not the language, not whether the document

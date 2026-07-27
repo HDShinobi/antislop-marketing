@@ -1,6 +1,6 @@
 ---
 name: antislop-write
-description: Write marketing reports, plans and content in Vietnamese or English without AI writing tells, keeping professional and marketing vocabulary intact. Use when writing or drafting a report, audit, monthly recap, proposal, plan, SoW, quote, pitch, ad copy, caption, email or landing page copy.
+description: Write or edit natural Vietnamese or English prose without AI writing tells while preserving facts and necessary professional vocabulary. Use for marketing reports, proposals, plans, ads and captions, and for human-facing README files, product documentation, policies, guides, emails, landing pages and release notes.
 ---
 
 # antislop-write
@@ -25,10 +25,19 @@ matching the language you inferred in step 3.
 backing for puffery and comparatives even though it lets ordinary evaluation
 through.
 
+For Vietnamese human-facing prose, also load
+`../../references/vi-editorial.md`. Apply it to every document profile,
+including README files and product documentation. Do not apply it to source
+code, configuration or machine-oriented API schemas.
+
 ## 2. Infer the tier
 
 Use the decision table in `core.md` section 2, with the keyword lists from the
 pack's `tier_keywords`. Default is P when nothing matches.
+
+Infer the document profile separately. A README, guide, policy or product
+document normally uses tier P, but its headings and information order follow
+the document profile. Do not invent a new tier for editorial format.
 
 ## 3. Infer the language
 
@@ -140,6 +149,16 @@ who needs a document to send. Show them only if asked.
 - Paragraphs of uneven length. Not a spray of one-sentence paragraphs.
 - Break the four-part argument arc at least twice.
 - Mid-sentence colons are rare. A colon introducing a list is fine.
+- For Vietnamese, run both passes in `vi-editorial.md`: first content and
+  structure, then the read-aloud editorial pass.
+- Make headings useful to the reader. Use conventional short headings when
+  clear; otherwise name the subject or question.
+- Use complete sentences in explanatory prose. Fragments remain available for
+  labels, bullets and tier C copy.
+- Keep referents explicit and code-switch only where the audience needs the
+  English term.
+- Remove defensive or performatively blunt phrasing. Natural prose can be
+  direct without arguing with the reader.
 
 ### Tier R and P
 

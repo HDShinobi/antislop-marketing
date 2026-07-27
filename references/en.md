@@ -245,7 +245,10 @@ The list grows: add cases as they come up.
   "loanwords": [],
   "tier_keywords": {
     "R": ["report", "audit", "analysis", "recap", "performance", "metrics", "results"],
-    "P": ["proposal", "plan", "sow", "roadmap", "quote", "pitch", "scope"],
+    "P": [
+      "proposal", "plan", "sow", "roadmap", "quote", "pitch", "scope",
+      "readme", "documentation", "user guide", "policy", "release notes"
+    ],
     "C": ["caption", "post", "ad copy", "content", "email", "landing", "tagline", "blog"]
   }
 }

@@ -32,7 +32,16 @@ const CORE_JUDGED = [
 ]
 const EVID_JUDGED = ["EVID-UNBACKED", "EVID-PROVENANCE-UNKNOWN"]
 const UNLISTED_SUFFIX = ["PUFFERY-UNLISTED", "COMPARATIVE-UNLISTED", "SUPERLATIVE-UNLISTED"]
-const VI_ONLY = ["VI-NOMINALIZATION", "VI-ADDRESS-CONSISTENCY"]
+const VI_ONLY = [
+  "VI-NOMINALIZATION",
+  "VI-ADDRESS-CONSISTENCY",
+  "VI-INFORMATION-ARCHITECTURE",
+  "VI-HEADING-CLARITY",
+  "VI-SENTENCE-COMPLETENESS",
+  "VI-REFERENT-CLARITY",
+  "VI-CODE-SWITCH",
+  "VI-EDITORIAL-TONE",
+]
 
 function isJudgeableCode(code) {
   if (CORE_JUDGED.includes(code) || EVID_JUDGED.includes(code) || VI_ONLY.includes(code)) return true
@@ -100,6 +109,11 @@ test("the fixture set covers every registered language, plus an unregistered one
     [...seen].some((l) => !REGISTERED.includes(l)),
     "no judged fixture in an unregistered language, so the null contract is never exercised",
   )
+})
+
+test("the unregistered-language fixture preserves the JSON output condition", () => {
+  const fixture = fixtures.find((f) => !REGISTERED.includes(f.exp.lang))
+  assert.match(fixture.exp.note, /JSON block still appears because the request asked for it/)
 })
 
 test("the fixture set covers both sides of provenance", () => {

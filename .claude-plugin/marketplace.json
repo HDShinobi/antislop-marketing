@@ -3,14 +3,14 @@
   "id": "antislop-marketing",
   "owner": { "name": "HDShinobi" },
   "metadata": {
-    "description": "Anti-AI-slop writing for marketing work, Vietnamese and English.",
+    "description": "Natural human-facing writing without AI tells, in Vietnamese and English.",
     "version": "1.0.1"
   },
   "plugins": [
     {
       "name": "antislop-marketing",
       "source": "./",
-      "description": "Write and audit marketing reports, plans and content without AI writing tells.",
+      "description": "Write and review reports, README files, product documentation and marketing content without AI writing tells.",
       "version": "1.0.1",
       "author": { "name": "HDShinobi" },
       "keywords": ["writing", "marketing", "vietnamese", "anti-slop"],

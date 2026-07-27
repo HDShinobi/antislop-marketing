@@ -35,7 +35,7 @@ Tier controls what may be said. It is inferred, never asked.
 | Tier | Document | Puffery | Evidence |
 |---|---|---|---|
 | **R** | report, audit, analysis | banned | required |
-| **P** | proposal, plan, SoW, quote | conditional | required for claims about reality |
+| **P** | proposal, plan, SoW, quote, README, product documentation | conditional | required for claims about reality |
 | **C** | ad copy, caption, social, blog | allowed when backed, **superlatives banned outright** | not required for ordinary evaluation |
 
 The tier C superlative ban is the one rule here whose grounds sit outside this
@@ -56,12 +56,34 @@ pack's `tier_keywords`, not from this file.
 | the file being edited sits in `reports/` or `audits/` | R |
 | the input is mostly a data table | R |
 | the request carries a P keyword | P |
+| the target is a README, guide, policy or human-facing product document | P |
 | the request carries a C keyword | C |
 | nothing matches | **P** |
 
 P is the default because it is safe in both directions. Guessing P for a report
 lets a few conditional words through, which is visible. Guessing P for a caption
 makes it a little stiff, which is harmless.
+
+### Document profile is separate from tier
+
+Tier controls evidence and marketing claims. It does not decide whether a
+heading is useful, a README is ordered for a new user, or a Vietnamese sentence
+mixes avoidable English terms. Those are editorial questions tied to the
+document form and language.
+
+Infer both:
+
+1. tier, from the table above;
+2. document profile, from the target: continuous prose, README, product guide,
+   policy, email, slide, sheet or another human-facing form.
+
+A request to "review" or "check" does not make the target tier R. Review the
+document under its own tier. A README normally remains P; a performance report
+remains R; ad copy remains C.
+
+Each language pack may point to an editorial reference for document forms that
+need language-specific treatment. Apply that reference in addition to the tier
+rules. Do not create a new tier for formatting or information architecture.
 
 ### Overrides
 

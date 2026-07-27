@@ -1,0 +1,15 @@
+{
+  "tier": "P",
+  "lang": "vi",
+  "lang_declared": "vi",
+  "note": "A Vietnamese README can pass every mechanical counter and still read like compressed AI-edited prose. This fixture requires the model to review information architecture, headings, sentence completeness, referent clarity, avoidable code-switching and performatively blunt tone instead of stopping at the scanner output. The architecture defect is structural rather than lexical: maintainer CI detail sits above everything a user needs, and the file never says how to install or use the plugin.",
+  "must_flag": [
+    "VI-INFORMATION-ARCHITECTURE",
+    "VI-HEADING-CLARITY",
+    "VI-SENTENCE-COMPLETENESS",
+    "VI-REFERENT-CLARITY",
+    "VI-CODE-SWITCH",
+    "VI-EDITORIAL-TONE"
+  ],
+  "must_not_flag": []
+}

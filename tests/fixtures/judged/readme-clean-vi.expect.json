@@ -1,0 +1,15 @@
+{
+  "tier": "P",
+  "lang": "vi",
+  "lang_declared": "vi",
+  "note": "The clean counterpart to readme-editorial-vi.md. Its headings identify the reader question, its explanatory prose uses complete sentences, and its technical terms have stable referents. The expanded editorial checker must leave it alone.",
+  "must_flag": [],
+  "must_not_flag": [
+    "VI-INFORMATION-ARCHITECTURE",
+    "VI-HEADING-CLARITY",
+    "VI-SENTENCE-COMPLETENESS",
+    "VI-REFERENT-CLARITY",
+    "VI-CODE-SWITCH",
+    "VI-EDITORIAL-TONE"
+  ]
+}

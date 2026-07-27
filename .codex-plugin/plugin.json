@@ -1,7 +1,7 @@
 {
   "name": "antislop-marketing",
-  "version": "1.0.0",
-  "description": "Write and audit marketing reports, plans and content without AI writing tells, in Vietnamese and English.",
+  "version": "1.0.1",
+  "description": "Write and review natural human-facing content without AI writing tells, in Vietnamese and English.",
   "author": { "name": "HDShinobi", "url": "https://github.com/HDShinobi" },
   "homepage": "https://github.com/HDShinobi/antislop-marketing",
   "repository": "https://github.com/HDShinobi/antislop-marketing",
@@ -10,14 +10,14 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Antislop Marketing",
-    "shortDescription": "Marketing writing without AI tells, Vietnamese and English",
-    "longDescription": "Writes reports, plans and marketing content that keep professional vocabulary while dropping the structural patterns that read as machine output. Audits existing documents and separates what is mechanically countable from what needs judgement.",
+    "shortDescription": "Natural Vietnamese and English without AI writing tells",
+    "longDescription": "Writes and reviews reports, proposals, README files, product documentation and marketing content. It preserves facts and necessary professional vocabulary while checking mechanical patterns, evidence, information architecture and editorial tone.",
     "developerName": "HDShinobi",
     "category": "Productivity",
     "capabilities": ["Interactive", "Read", "Write"],
     "defaultPrompt": [
       "Viết báo cáo hiệu quả quảng cáo tháng này",
-      "Soát lại bản proposal này giúp tôi"
+      "Review README này và sửa các đoạn còn đọc giống AI"
     ],
     "websiteURL": "https://github.com/HDShinobi/antislop-marketing"
   }

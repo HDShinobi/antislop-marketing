@@ -1,16 +1,19 @@
 # antislop-marketing
 
-Write and audit marketing documents that do not read as machine output, without
-losing the vocabulary a marketing document needs.
+Write and review human-facing documents that do not read like machine output,
+without losing the professional vocabulary they need.
 
-Two skills for Claude Code and Codex. Vietnamese and English.
+The plugin includes two skills for Claude Code and Codex, with support for
+Vietnamese and English.
 
 [Tiếng Việt](README.vi.md)
 
 ## What problem this solves
 
-You write reports, proposals and ad copy with an AI, and the output reads like
-an AI wrote it. Sending that to a client costs you credibility on line one.
+You draft reports, proposals, README files and ad copy with AI, but the result
+still reads like AI wrote it. The problem is often editorial rather than
+lexical: unclear headings, compressed fragments, weak evidence, unnecessary
+code-switching or a tone that tries too hard to sound natural.
 
 Existing anti-slop tools aim at a different target. They are built to defeat AI
 detectors, so they ban the marketing vocabulary you actually need and, in some
@@ -28,8 +31,8 @@ Four things, stated because they decide which rules got cut.
   not the target. The whole T-1 to T-5 group from the upstream source is gone,
   along with every rule that manufactures errors.
 - Not for fiction, academic writing, or theses.
-- Not for code, comments, or technical documentation. Prose written for a reader
-  only.
+- Not for source code, configuration or machine-oriented API schemas. It can
+  edit human-facing README files, product documentation and guides.
 - It does not write your content. It governs how something is said, not what.
 
 ## Install
@@ -44,9 +47,8 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-Node 20 or later, for the scanner. Everything else is Markdown. CI runs the
-declared floor and one version above it, so the number here is tested rather
-than assumed.
+Node 20 or later, for the scanner. Everything else is Markdown. CI tests the
+plugin on Node 20 and 22.
 
 ## Use
 
@@ -77,29 +79,22 @@ The tier decides what may be said. It is inferred, never asked.
 | Tier | Document | Puffery | Evidence |
 |---|---|---|---|
 | **R** | report, audit, analysis | banned | required |
-| **P** | proposal, plan, SoW, quote | conditional | required for claims about reality |
+| **P** | proposal, plan, SoW, README, product documentation | conditional | required for claims about reality |
 | **C** | ad copy, caption, social | allowed when backed, superlatives banned | not required for ordinary evaluation |
 
-Superlatives are banned in tier C for a reason that has nothing to do with
-style, and the reason differs by market.
+For tier C, the plugin does not use claims such as `nhất`, `duy nhất`, `tốt
+nhất` or `số một`. Article 8(11) of Vietnam's 2012 Advertising Law permits
+these terms in advertising only with qualifying proof. The plugin therefore
+uses this as its conservative default for Vietnamese advertising.
 
-**In Vietnam it is statute.** Điều 8 khoản 11 of the 2012 Advertising Law
-prohibits advertising that uses `nhất`, `duy nhất`, `tốt nhất`, `số một` or
-equivalents without qualifying proof. Nghị định 38/2021 Điều 34 puts the fine at
-10 to 20 million đồng, doubled for an organisation. Thông tư 12/2026 of the
-culture ministry, in force since 5 July 2026, sets out what proof qualifies.
-Vietnam is the market this tool was built for, so the rule is a hard one here.
+The legal scope, qualifying evidence and differences between platform policies
+are documented in [`references/vi.md`](references/vi.md). The plugin provides
+editorial guidance, not legal advice for a specific campaign.
 
-**Platform policy is thinner, and worth stating accurately.** TikTok prohibits
-absolute terms about a product outright and gives `Number 1 song on TikTok` as
-its own example. Google reviews claims for accuracy rather than for vocabulary:
-the unreliable-claims policy targets inaccurate or improbable outcomes, not the
-word `best`. So an ad carrying a superlative is not certain to be rejected
-everywhere, and this repo no longer says it is.
-
-Outside Vietnam, read the tier C rule as a deliberately conservative guardrail.
-Turning it into a compliance check means splitting the policy by platform,
-industry and market first. Sources are in `references/vi.md`.
+Document form is separate from tier. A README normally remains tier P, while
+its headings, information order and terminology follow an editorial profile.
+Asking the plugin to review a README does not turn that file into a tier R
+report.
 
 ## What it catches
 
@@ -130,7 +125,7 @@ decoration.
 ## How it is built
 
 The deterministic half is a dependency-free Node scanner. The judgement half
-belongs to the model. Nothing crosses that line.
+belongs to the model.
 
 | Counted, reproducible | Judged, not reproducible |
 |---|---|
@@ -141,6 +136,11 @@ belongs to the model. Nothing crosses that line.
 The word lists are a floor, not a gate. Adjectives are an open class and no
 finite list covers them, so the model reads the whole document independently
 rather than trusting the scanner's list of places to look.
+
+Vietnamese human-facing documents also use
+[`references/vi-editorial.md`](references/vi-editorial.md). That layer covers
+information architecture, headings, sentence completeness, referent clarity,
+code-switching and editorial tone.
 
 ## Language packs
 
