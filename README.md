@@ -44,7 +44,9 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-Node 18 or later, for the scanner. Everything else is Markdown.
+Node 20 or later, for the scanner. Everything else is Markdown. CI runs the
+declared floor and one version above it, so the number here is tested rather
+than assumed.
 
 ## Use
 
@@ -79,9 +81,25 @@ The tier decides what may be said. It is inferred, never asked.
 | **C** | ad copy, caption, social | allowed when backed, superlatives banned | not required for ordinary evaluation |
 
 Superlatives are banned in tier C for a reason that has nothing to do with
-style. Meta, Google and TikTok reject ad copy carrying `number one` or
-`the best` without substantiation they accept, and often reject it even with. A
-rejected ad costs money.
+style, and the reason differs by market.
+
+**In Vietnam it is statute.** Điều 8 khoản 11 of the 2012 Advertising Law
+prohibits advertising that uses `nhất`, `duy nhất`, `tốt nhất`, `số một` or
+equivalents without qualifying proof. Nghị định 38/2021 Điều 34 puts the fine at
+10 to 20 million đồng, doubled for an organisation. Thông tư 12/2026 of the
+culture ministry, in force since 5 July 2026, sets out what proof qualifies.
+Vietnam is the market this tool was built for, so the rule is a hard one here.
+
+**Platform policy is thinner, and worth stating accurately.** TikTok prohibits
+absolute terms about a product outright and gives `Number 1 song on TikTok` as
+its own example. Google reviews claims for accuracy rather than for vocabulary:
+the unreliable-claims policy targets inaccurate or improbable outcomes, not the
+word `best`. So an ad carrying a superlative is not certain to be rejected
+everywhere, and this repo no longer says it is.
+
+Outside Vietnam, read the tier C rule as a deliberately conservative guardrail.
+Turning it into a compliance check means splitting the policy by platform,
+industry and market first. Sources are in `references/vi.md`.
 
 ## What it catches
 
@@ -165,12 +183,31 @@ ANTISLOP_RUNNER=claude npm run test:fixtures   # tier 2, calls a model
 node bin/scan.mjs --tier R --lang vi file.md
 ```
 
+Tier 2 installs the plugin for real, so it reads your registry before touching
+it, leaves alone whatever was already installed, and refuses to run if a
+marketplace of the same name points somewhere other than your checkout.
+`CONTRIBUTING.md` has the detail.
+
+The json block `antislop-check` emits is described by
+`schema/check-output.schema.json`, and the example in the skill is tested
+against both that schema and a real scanner run.
+
 CI runs tiers 1 and 3 only. Tier 2 calls a model and costs money, so it stays
 manual.
 
-The repo scans its own prose. A file that breaks the rules it documents fails
-CI, which is how the `most` entry in the English pack got fixed: bare `most` is
-a quantifier far more often than a superlative.
+The repo scans its own prose, and a file that breaks the rules it documents
+fails CI. That is how the `most` entry in the English pack got fixed: bare
+`most` is a quantifier far more often than a superlative.
+
+Coverage is enforced rather than asserted. Every markdown file in the repo is
+either scanned or listed in `tests/scan-manifest.json` with a reason, and a test
+fails on anything that is neither. Rule files, both skills and both language
+packs are scanned against every registered pack rather than only their own. Six
+counters are checked: dashes, ban list, translation artifacts, superlatives,
+puffery, and runs of same-shaped sentences.
+
+A pack can describe its own ban list because a phrase in backticks is being
+named rather than used, and the scanner skips code spans.
 
 ## Licence
 

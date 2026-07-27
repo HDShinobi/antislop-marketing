@@ -7,9 +7,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 20 is the floor package.json declares. 22 is what development uses.
-        # Testing both catches the class of bug where a shell or a Node version
-        # expands something the other does not.
+        # 20 is the floor engines.node declares, and a test asserts the two
+        # stay in step. 22 is what development uses. Testing both catches the
+        # class of bug where one Node version expands something the other
+        # does not.
         node: ["20", "22"]
     steps:
       - uses: actions/checkout@v4

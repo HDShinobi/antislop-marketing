@@ -125,7 +125,8 @@ If no comparator can be named, drop the comparative word and let the figure
 stand alone. It is usually stronger that way.
 
 At tier C, superlatives are banned even when a comparator exists. That rule is
-about ad platform policy, not about writing; see spec section 3.1.
+not about writing, and its grounds differ by market: statute in Vietnam, a
+conservative guardrail elsewhere. Each language pack carries its own citations.
 
 ---
 
@@ -138,7 +139,11 @@ brand positioning line the client signed off. `antislop-write` knows this,
 because the user just handed it over. `antislop-check` reading an existing file
 does not, and cannot tell an approved tagline from invented puffery.
 
-An optional file, `.antislop-claims.txt` in the working directory:
+An optional file, `.antislop-claims.txt`. Look for it **beside the document
+being checked first, then in the working directory**, and stop at the first one
+found. Beside the document is the case that comes up: a report and the claims
+its client approved travel together, and the person running the check is often
+sitting in a different folder entirely.
 
 ```
 # one approved claim per line, matched verbatim

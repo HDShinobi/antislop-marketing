@@ -95,11 +95,24 @@ Never report a term from the pack's `loanwords`.
 `vi phạm` makes every isolated check red and the user stops opening the tool;
 folding it into `đạt` makes the tool lie.
 
+**These three strings are the whole vocabulary, and they are identifiers rather
+than prose.** A `verdict` field carries one of them and nothing else, in an
+English document exactly as in a Vietnamese one. The sentence saying which fact
+is missing goes in `reason`, which is free text. Putting the sentence in
+`verdict` is what broke the first version of this contract: a consumer that
+switches on `verdict` has no case for `không chống lưng`.
+
+The human table in step 9 is prose and is not bound by this. It reads
+`cần sửa` where the JSON says `vi phạm`.
+
 ## 8. Unregistered language and bilingual documents
 
 Same rules as `antislop-write`, spec section 6.3. For an unregistered language
-the JSON block still appears, with the lexical counters `null` rather than `0`:
-`null` means not measured, `0` means measured and clean.
+the lexical counters come back `null` rather than `0`: `null` means not
+measured, `0` means measured and clean.
+
+That is the only difference. Whether the JSON block is emitted at all is
+decided in step 9 and nothing here changes it.
 
 ## 9. Output
 
@@ -126,26 +139,74 @@ PHÁN ĐOÁN
   giọng nhất quán quá mức       cần sửa
   cung lập luận 4 phần            đạt
   câu không có người nhận         đạt
+  nguồn claim đã duyệt      chưa xác định   không có .antislop-claims.txt
 
 KẾT LUẬN: CẦN SỬA
 ```
 
+Six rows, always all six, in that order. Each maps to one key in the `judged`
+object, and the JSON key never changes with the document's language:
+
+| Row | Key |
+|---|---|
+| bằng chứng chống lưng | `evidence_backed` |
+| mốc so sánh nêu rõ | `comparator_named` |
+| giọng nhất quán quá mức | `register_uniform` |
+| cung lập luận 4 phần | `four_part_arc` |
+| câu không có người nhận | `reader_addressed` |
+| nguồn claim đã duyệt | `provenance` |
+
 Then the specific locations. Then a rewrite, only if asked.
 
-**The JSON block appears only when the request contains the word `json`.** It
-goes last, after the human table, fenced:
+**The JSON block appears only when the request contains the word `json`.** One
+condition, no others: not the tier, not the language, not whether the document
+is clean. It goes last, after the human table, fenced.
+
+The shape is `../../schema/check-output.schema.json`, and that file is the
+contract. The example below is the real output for
+`../../tests/fixtures/judged/unbacked-vi.md`, a four line report reading
+`Đội ngũ tận tâm.` and `Sản phẩm đứng đầu phân khúc.` under a heading. A test
+re-scans that file and fails if this block stops matching, so what you see here
+is what the scanner actually produces:
 
 ```json
 {
   "tier": "R",
   "lang": "vi",
   "counted_source": "scan",
-  "counted": { "...": "copied verbatim from scan.mjs" },
-  "findings_mechanical": [ "copied verbatim from scan.mjs" ],
-  "findings_judged": [
-    { "rule": "EVID-UNBACKED", "span": [412, 431], "text": "cải thiện đáng kể",
-      "lang": "vi", "block": 9, "verdict": "không chống lưng" }
+  "counted": {
+    "dash": 0,
+    "banlist": 0,
+    "mt_artifacts": 0,
+    "superlative": 1,
+    "puffery": 0,
+    "comparative": 0,
+    "eval_candidate": 1,
+    "same_shape_run": 1,
+    "colon_outside_list": 0,
+    "short_paragraph_ratio": [2, 2]
+  },
+  "findings_mechanical": [
+    { "rule": "VI-EVAL-CANDIDATE", "span": [36, 43], "text": "tận tâm",
+      "lang": "vi", "block": 1, "tier": "R", "block_has_data": false },
+    { "rule": "VI-SUPERLATIVE", "span": [55, 63], "text": "đứng đầu",
+      "lang": "vi", "block": 2, "tier": "R" }
   ],
-  "judged": { "register_uniform": "cần sửa", "four_part_dna": "đạt" }
+  "findings_judged": [
+    { "rule": "EVID-UNBACKED", "span": [36, 43], "text": "tận tâm",
+      "lang": "vi", "block": 1, "tier": "R",
+      "verdict": "vi phạm", "reason": "khối không có fact nào chứng minh" },
+    { "rule": "EVID-UNBACKED", "span": [55, 63], "text": "đứng đầu",
+      "lang": "vi", "block": 2, "tier": "R",
+      "verdict": "vi phạm", "reason": "không nêu mốc so sánh" }
+  ],
+  "judged": {
+    "evidence_backed": "vi phạm",
+    "comparator_named": "vi phạm",
+    "register_uniform": "đạt",
+    "four_part_arc": "đạt",
+    "reader_addressed": "đạt",
+    "provenance": "chưa xác định"
+  }
 }
 ```

@@ -1,0 +1,9 @@
+{
+  "tier": "P",
+  "lang": "vi",
+  "lang_declared": "vi",
+  "note": "Puffery at tier P with no .antislop-claims.txt anywhere. The right answer is chưa xác định, not vi phạm: an approved tagline and invented puffery look identical from inside the file, and accusing the approved one is the false positive that makes people stop opening the tool.",
+  "must_flag": [],
+  "must_not_flag": ["EVID-UNBACKED"],
+  "judged": { "provenance": "chưa xác định" }
+}

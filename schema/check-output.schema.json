@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/HDShinobi/antislop-marketing/schema/check-output.schema.json",
+  "title": "antislop-check output",
+  "description": "The fenced json block antislop-check emits when the request asks for json. Read `verdict` as the machine-readable value and `reason` as free text; the human table in the report is prose and is not described here.",
+  "type": "object",
+  "required": [
+    "tier",
+    "lang",
+    "counted_source",
+    "counted",
+    "findings_mechanical",
+    "findings_judged",
+    "judged"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "tier": { "$ref": "#/$defs/tier" },
+    "lang": {
+      "description": "Language of the document, not of the request. Two codes joined by a plus sign for a genuinely bilingual document.",
+      "type": "string",
+      "pattern": "^[a-z]{2,3}(\\+[a-z]{2,3})*$"
+    },
+    "counted_source": {
+      "description": "`scan` means the numbers came from bin/scan.mjs. `model` is the degraded mode used when Node is unavailable, and the numbers are estimates.",
+      "type": "string",
+      "enum": ["scan", "model"]
+    },
+    "counted": { "$ref": "#/$defs/counted" },
+    "findings_mechanical": {
+      "description": "Copied verbatim from the scanner. Not filtered, not reordered, not added to.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "findings_judged": {
+      "description": "The model's own reading. Every entry carries a verdict from the closed set.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/judgedFinding" }
+    },
+    "judged": { "$ref": "#/$defs/judgedSummary" }
+  },
+  "$defs": {
+    "tier": {
+      "type": "string",
+      "enum": ["R", "P", "C"]
+    },
+    "verdict": {
+      "description": "The closed set. `chưa xác định` is not a violation: it means no source was available to check against.",
+      "type": "string",
+      "enum": ["đạt", "vi phạm", "chưa xác định"]
+    },
+    "countOrNull": {
+      "description": "An integer when the counter ran, null when it did not. Zero means measured and clean; null means not measured, which is what an unregistered language produces.",
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "counted": {
+      "type": "object",
+      "required": [
+        "dash",
+        "banlist",
+        "mt_artifacts",
+        "superlative",
+        "puffery",
+        "comparative",
+        "eval_candidate",
+        "same_shape_run",
+        "colon_outside_list",
+        "short_paragraph_ratio"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dash": { "type": "integer", "minimum": 0 },
+        "banlist": { "$ref": "#/$defs/countOrNull" },
+        "mt_artifacts": { "$ref": "#/$defs/countOrNull" },
+        "superlative": { "$ref": "#/$defs/countOrNull" },
+        "puffery": { "$ref": "#/$defs/countOrNull" },
+        "comparative": { "$ref": "#/$defs/countOrNull" },
+        "eval_candidate": { "$ref": "#/$defs/countOrNull" },
+        "same_shape_run": { "$ref": "#/$defs/countOrNull" },
+        "colon_outside_list": { "type": "integer", "minimum": 0 },
+        "short_paragraph_ratio": {
+          "description": "A pair [short, total] over prose paragraphs. A pair of integers rather than a ratio, because integers compare exactly in a fixture and floats do not.",
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "integer", "minimum": 0 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["rule", "span", "text", "lang", "block", "tier"],
+      "additionalProperties": false,
+      "properties": {
+        "rule": { "type": "string", "minLength": 1 },
+        "span": {
+          "description": "Half open, in UTF-16 code units, into the source file.",
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "integer", "minimum": 0 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "text": { "type": "string" },
+        "lang": { "type": ["string", "null"] },
+        "block": { "type": "integer", "minimum": 0 },
+        "tier": { "$ref": "#/$defs/tier" },
+        "block_has_data": { "type": "boolean" }
+      }
+    },
+    "judgedFinding": {
+      "type": "object",
+      "required": ["rule", "span", "text", "lang", "block", "verdict"],
+      "additionalProperties": false,
+      "properties": {
+        "rule": { "type": "string", "minLength": 1 },
+        "span": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "integer", "minimum": 0 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "text": { "type": "string" },
+        "lang": { "type": ["string", "null"] },
+        "block": { "type": "integer", "minimum": 0 },
+        "tier": { "$ref": "#/$defs/tier" },
+        "verdict": { "$ref": "#/$defs/verdict" },
+        "reason": {
+          "description": "Free text, for the reader. Never switch on this; switch on `verdict`.",
+          "type": "string"
+        }
+      }
+    },
+    "judgedSummary": {
+      "description": "One verdict per thing no scanner can reach. The keys are fixed so a consumer can rely on all six being present.",
+      "type": "object",
+      "required": [
+        "evidence_backed",
+        "comparator_named",
+        "register_uniform",
+        "four_part_arc",
+        "reader_addressed",
+        "provenance"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "evidence_backed": { "$ref": "#/$defs/verdict" },
+        "comparator_named": { "$ref": "#/$defs/verdict" },
+        "register_uniform": { "$ref": "#/$defs/verdict" },
+        "four_part_arc": { "$ref": "#/$defs/verdict" },
+        "reader_addressed": { "$ref": "#/$defs/verdict" },
+        "provenance": {
+          "description": "`chưa xác định` when no .antislop-claims.txt exists, which is the EVID-PROVENANCE-UNKNOWN case and is not a violation.",
+          "$ref": "#/$defs/verdict"
+        }
+      }
+    }
+  }
+}

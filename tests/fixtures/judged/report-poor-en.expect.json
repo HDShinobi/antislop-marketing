@@ -1,0 +1,8 @@
+{
+  "tier": "R",
+  "lang": "en",
+  "lang_declared": "en",
+  "note": "The request is in Vietnamese and the document is in English. The language of the request decides nothing, so this must load en.md and declare en. `Account structure is poor` is unbacked; the CPA and ROAS figures sit in other blocks and back nothing about structure.",
+  "must_flag": ["EVID-UNBACKED"],
+  "must_not_flag": []
+}
