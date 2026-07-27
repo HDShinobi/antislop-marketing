@@ -237,7 +237,9 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
     ],
     "mạnh": ["thế mạnh", "điểm mạnh"],
     "nhanh": ["nhanh chóng"],
-    "tốt": ["tốt nghiệp"]
+    "tốt": ["tốt nghiệp"],
+    "ổn": ["ổn định"],
+    "chậm": ["chậm nhất"]
   },
   "openers": {
     "dai_tu": [

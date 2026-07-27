@@ -11,6 +11,21 @@ test("counts em and en dashes, not hyphens", () => {
   assert.equal(src.slice(...r.findings[1].span), "\u2013")
 })
 
+test("a tight dash is a range or a compound, not punctuation", () => {
+  const src = "Chạy T9\u2013T10, tối ưu top 10\u201320, tuần 1\u20132 mỗi tháng.\n"
+  assert.equal(countDashes(splitBlocks(src)).count, 0)
+})
+
+test("a dash opening a table cell means nothing yet, not punctuation", () => {
+  const src = "| Kênh | Trạng thái |\n|---|---|\n| Ads | \u2014 (chuẩn bị) |\n"
+  assert.equal(countDashes(splitBlocks(src)).count, 0)
+})
+
+test("a spaced dash mid sentence is still counted", () => {
+  const src = "CPA giảm mạnh \u2014 nhờ tách lại ad group.\n"
+  assert.equal(countDashes(splitBlocks(src)).count, 1)
+})
+
 test("dashes inside a code fence are not counted", () => {
   const src = "Text.\n\n```\na \u2014 b\n```\n"
   assert.equal(countDashes(splitBlocks(src)).count, 0)

@@ -8,13 +8,39 @@ import { splitSentences } from "./sentences.mjs"
 
 const DASH_RE = /[\u2014\u2013]/g   // em dash, en dash. Plain hyphen is fine.
 
+/**
+ * The tell is a dash used as sentence punctuation, attaching a qualifier
+ * clause mid-sentence. Two other uses are ordinary typography and get skipped,
+ * both learned from scanning a real roadmap where 28 of 28 dashes were
+ * legitimate and the rule as written would have made the tool unusable.
+ *
+ *   tight, no space either side   T9–T10, 01–08/08, top 10–20, Cuối T10–đầu T11
+ *                                 a range or a compound, never punctuation
+ *
+ *   first character of a cell     | — (chuẩn bị BM) |
+ *                                 the spreadsheet convention for "nothing yet"
+ *
+ * A spaced dash anywhere else is counted, including a title separator. Prose
+ * would use a colon there.
+ */
 export function countDashes(blocks) {
   const findings = []
   for (const b of blocks) {
     if (b.kind === "table" || b.text === "") continue
+
     for (const m of b.text.matchAll(DASH_RE)) {
+      const i = m.index
+      const before = b.text[i - 1]
+      const after = b.text[i + 1]
+
+      const tight = before !== undefined && after !== undefined &&
+                    !/\s/.test(before) && !/\s/.test(after)
+      if (tight) continue
+
+      if (b.kind === "table_cell" && b.text.slice(0, i).trim() === "") continue
+
       findings.push({
-        span: [b.span[0] + m.index, b.span[0] + m.index + 1],
+        span: [b.span[0] + i, b.span[0] + i + 1],
         text: m[0],
         block: b.index,
       })

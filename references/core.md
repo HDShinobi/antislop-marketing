@@ -185,10 +185,22 @@ Bullet lists whose items open with a bolded phrase and a colon. Prefer prose.
 When a list genuinely helps, keep the items plain.
 
 ### `CORE-DASH`
-No em dash and no en dash, anywhere. Replace with a period, a comma, a colon,
-parentheses, or by restructuring. This is a hard constraint, not a preference.
+No em dash and no en dash **as sentence punctuation**. Replace with a period, a
+comma, a colon, parentheses, or by restructuring. A hard constraint, not a
+preference.
 
-Counted mechanically. Target is zero.
+Two uses are ordinary typography and are not counted:
+
+- **A tight dash, no space on either side.** `T9–T10`, `01–08/08`, `top 10–20`.
+  A range or a compound, never punctuation.
+- **A dash opening a table cell.** The spreadsheet convention for "nothing yet".
+
+A spaced dash anywhere else is counted, including as a title separator, because
+prose would use a colon there.
+
+This narrowed after scanning a real roadmap in which all 28 dashes were
+legitimate. The original rule would have made the tool unusable on the second
+file someone tried.
 
 ### `CORE-COLON-DENSITY`
 Mid-sentence colons used to introduce almost any follow-on idea. A colon that

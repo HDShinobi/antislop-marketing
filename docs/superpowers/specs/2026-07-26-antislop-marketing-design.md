@@ -1141,6 +1141,17 @@ Mười khoá trong `counted`, không hơn không kém. Bảng ĐẾM ĐƯỢC �
 
 Hai khoá cuối cần định nghĩa vì chúng không hiển nhiên:
 
+**`dash`** đếm em dash và en dash dùng làm **dấu câu**, tức gắn một mệnh đề phụ vào giữa câu. Hai cách dùng khác là chính tả bình thường và không tính:
+
+| Không tính | Ví dụ | Vì sao |
+|---|---|---|
+| dash sát hai bên, không khoảng trắng | `T9–T10`, `01–08/08`, `top 10–20`, `Cuối T10–đầu T11` | khoảng số hoặc từ ghép, không bao giờ là dấu câu |
+| dash mở đầu một ô bảng | `\| — (chuẩn bị BM) \|` | quy ước bảng tính cho "chưa có gì" |
+
+Dash có khoảng trắng ở chỗ khác thì tính, kể cả khi nó phân cách tiêu đề. Văn xuôi ở chỗ đó sẽ dùng dấu hai chấm.
+
+Quy tắc này hẹp lại sau khi quét một roadmap thật: **28 trên 28 dash trong đó đều hợp lệ**, và rule như viết ban đầu sẽ làm người dùng tắt công cụ sau file thứ hai.
+
 **`colon_outside_list`** đếm dấu hai chấm không đứng cuối dòng dẫn vào một danh sách hoặc bảng, và không nằm trong code span hay URL. Dấu hai chấm ở cuối một dòng mà dòng kế tiếp bắt đầu bằng `-`, `*`, `|` hoặc chữ số thì không tính. Đây là dấu hai chấm giữa câu, thứ Claude dùng nhiều hơn người viết đáng kể.
 
 **`short_paragraph_ratio`** là một cặp `[số đoạn văn xuôi có 1-2 câu, tổng số đoạn văn xuôi]`. Chỉ tính đoạn văn, không tính mục danh sách, ô bảng, heading, code fence. Xuất dạng cặp chứ không xuất tỉ lệ thập phân, vì cặp số nguyên so khớp chính xác được trong fixture còn số thực thì không.
