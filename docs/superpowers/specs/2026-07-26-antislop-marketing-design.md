@@ -192,7 +192,7 @@ Hành vi:
 | Tình huống | Kết quả |
 |---|---|
 | claim khớp nguyên văn một dòng trong file | miễn trừ, không báo |
-| có file nhưng claim không khớp dòng nào | báo `EVID-CANDIDATE` như bình thường |
+| có file nhưng claim không khớp dòng nào | xét bình thường: `*-PUFFERY` ở tầng cơ học, rồi `EVID-UNBACKED` nếu không chống lưng |
 | **không có file** | báo `EVID-PROVENANCE-UNKNOWN`, xếp vào khối `judged`, **không tính là vi phạm** |
 
 Dòng cuối là điểm quan trọng. Không có nguồn thì không kết luận. Buộc tội một tagline khách đã duyệt chính là kiểu dương tính giả mà `false-positives.md` sinh ra để chặn, và nó đắt hơn nhiều so với việc bỏ sót một câu puffery.
@@ -502,6 +502,7 @@ Dùng JSON chứ không dùng YAML. Node có `JSON.parse` sẵn; YAML thì khôn
                  "ổn", "tệ", "đáng kể", "rõ rệt", "hợp lý", "chưa tối ưu"],
   "mt_artifacts": ["được thực hiện bởi", "nơi mà", "điều mà"],
   "abbreviations": ["v.v.", "TP.", "Tp.", "ThS.", "TS.", "PGS.", "Q.", "tr."],
+  "exceptions": { "hàng đầu": ["hàng đầu tiên"] },
   "openers": {
     "dai_tu":    ["tôi", "chúng tôi", "bạn", "anh chị", "quý khách", "bên mình", "họ"],
     "lien_tu":   ["nhưng", "và", "tuy nhiên", "vì vậy", "ngoài ra", "do đó", "song"],
@@ -531,8 +532,45 @@ Quy tắc so khớp, áp cho mọi pack:
 | chữ hoa thường | không phân biệt |
 | dấu thanh, dấu phụ | **có phân biệt**, "toàn diện" khác "toan dien" |
 | khoảng trắng | gộp nhiều khoảng trắng thành một trước khi khớp |
-| biên | khớp ở biên âm tiết, không khớp giữa từ. "hàng đầu" không trúng trong "hàng đầu tiên" |
+| biên | hai đầu của cụm không được kề một chữ cái hoặc chữ số. "toàn diện" không trúng trong "toàndiện" |
+| ngoại lệ | cụm bị chặn khi nó nằm trong một chuỗi khai ở `exceptions` của pack. Xem mục dưới |
 | thứ tự ưu tiên | xét `banlist`, `mt_artifacts`, `puffery`, `comparative`, `evaluative` theo đúng thứ tự đó; một cụm trúng nhiều danh sách chỉ tính một lần, theo danh sách trúng trước |
+
+#### Vì sao không dùng "biên âm tiết"
+
+Bản trước của spec viết quy tắc biên là *"khớp ở biên âm tiết, không khớp giữa từ"*, kèm ví dụ *"hàng đầu" không trúng trong "hàng đầu tiên"*. **Quy tắc đó không triển khai được, và ví dụ mâu thuẫn với chính quy tắc.**
+
+Trong "hàng đầu tiên", vị trí sau "đầu" **đúng là một biên âm tiết**. Muốn biết cụm này không được khớp thì phải biết "đầu tiên" là một từ, mà đó là tri thức từ vựng chứ không phải biên ký tự. Không biểu thức chính quy nào làm được, và thêm một bộ tách từ tiếng Việt vào `scan.mjs` thì phá điều kiện không phụ thuộc thư viện ngoài.
+
+Thay bằng hai thứ triển khai được:
+
+**Biên ký tự.** Hai đầu của cụm không được kề `\p{L}` hoặc `\p{N}`. Đây là thứ một lookaround làm được, và nó bắt đúng ca thật sự sai là cụm dính liền vào một từ khác.
+
+**Danh sách ngoại lệ trong pack.** Khoá `exceptions` ánh xạ một cụm sang những chuỗi dài hơn mà trong đó nó không được khớp:
+
+```json
+"exceptions": {
+  "hàng đầu": ["hàng đầu tiên"],
+  "vượt": ["vượt qua khó khăn"]
+}
+```
+
+Thuật toán, chạy sau khi đã tìm khớp bình thường:
+
+```
+với mỗi khớp h của cụm T:
+    với mỗi chuỗi ngoại lệ E trong exceptions[T]:
+        với mỗi khớp e của E trong cùng văn bản:
+            nếu h nằm trọn trong e  ->  loại h
+```
+
+Nằm trọn nghĩa là `h.start >= e.start` và `h.end <= e.end`. Chuỗi ngoại lệ so khớp theo đúng ba quy tắc đầu của bảng trên.
+
+Điều kiện là chứa **theo vị trí**, không phải theo sự có mặt. Câu *"Vừa hàng đầu tiên vừa hàng đầu thị trường"* cho **một** khớp chứ không phải không khớp nào: khớp thứ nhất bị loại vì nằm trong "hàng đầu tiên", khớp thứ hai giữ lại vì không nằm trong ngoại lệ nào.
+
+`exceptions` là một danh sách lớn dần, giống bốn danh sách kia. Không cần đầy đủ mới dùng được: cụm chưa có ngoại lệ thì bị báo, và `false-positives.md` cùng model là lớp lọc thứ hai. Điều này nhất quán với nguyên tắc "danh sách là sàn, không phải cửa" ở mục 10.
+
+Vì sao không để hẳn cho model lọc mà vẫn cần `exceptions`: `puffery` ở tier R có ngưỡng cứng bằng 0, nên một khớp sai làm `counted.puffery` khác 0 và biến một cụm hợp lệ thành vi phạm ở tầng tất định. Khác với `eval_candidate`, chỗ này báo thừa có hậu quả thật.
 
 #### Năm danh sách, năm vai trò
 
@@ -572,6 +610,7 @@ Quy tắc giống nhau ở cả ba tier: nêu mốc thì đạt, không nêu th�
 | `comparative` | mảng string | có | có |
 | `evaluative` | mảng string | có | có |
 | `abbreviations` | mảng string | có | có |
+| `exceptions` | object, khoá là một cụm có trong bốn danh sách từ vựng, giá trị là mảng string | có | có, `{}` nghĩa là chưa có ngoại lệ nào |
 | `openers` | object, đúng ba khoá `dai_tu`, `lien_tu`, `trang_ngu`, mỗi khoá một mảng string | có | mảng con rỗng được |
 | `tackon` | mảng string | có | có |
 | `config_tokens` | mảng string | có | có |
@@ -805,7 +844,7 @@ Nên phân vai rõ:
 
 | Model tự tìm được | Mã |
 |---|---|
-| nhận định đánh giá ngoài `evaluative` | `*-EVID-UNBACKED` |
+| nhận định đánh giá ngoài `evaluative` | `EVID-UNBACKED` |
 | claim marketing mạnh ngoài `puffery` | `*-PUFFERY-UNLISTED` |
 | so sánh hoặc cực cấp ngoài `comparative` | `*-COMPARATIVE-UNLISTED` |
 
@@ -1126,7 +1165,23 @@ Tầng 2, fixture có lỗi biết trước. `tests/fixtures/` chứa đoạn v�
 
 Tầng này gọi một model, nên đầu ra không tất định. Để nó kiểm được, cần ba thứ.
 
-**Rule ID.** Mọi rule trong `references/` có một mã ổn định, ví dụ `CORE-CADENCE-01`, `VI-PUFFERY`, `VI-EVAL-CANDIDATE`. Mã không đổi khi sửa câu chữ của rule.
+**Rule ID.** Mọi rule có một mã ổn định. Mã không đổi khi sửa câu chữ của rule.
+
+Dạng: `<PHẠM VI>-<TÊN>`, viết hoa, nối bằng gạch ngang.
+
+| Phạm vi | Khi nào dùng | Tiền tố ngôn ngữ | Ví dụ |
+|---|---|---|---|
+| `CORE` | rule cấu trúc trong `core.md`, không dính từ vựng của ngôn ngữ nào | không | `CORE-DASH`, `CORE-CADENCE`, `CORE-ARGUMENT-ARC` |
+| mã ngôn ngữ | trúng một trong năm danh sách từ vựng của pack | **có** | `VI-BANLIST`, `VI-MT-ARTIFACT`, `VI-PUFFERY`, `VI-COMPARATIVE`, `VI-EVAL-CANDIDATE` |
+| mã ngôn ngữ | model tự tìm được, ngoài danh sách của pack | **có** | `VI-PUFFERY-UNLISTED`, `VI-COMPARATIVE-UNLISTED` |
+| mã ngôn ngữ | rule văn xuôi chỉ model áp được, `scan.mjs` không đếm | **có** | `VI-NOMINALIZATION`, `VI-ADDRESS-CONSISTENCY` |
+| `EVID` | phán xử về quan hệ giữa claim và dữ kiện | **không** | `EVID-UNBACKED`, `EVID-PROVENANCE-UNKNOWN`, `EVID-SOURCE-UNKNOWN` |
+
+Quy tắc quyết định tiền tố: **mã mang tiền tố ngôn ngữ khi và chỉ khi nó phát sinh từ từ vựng của một ngôn ngữ cụ thể.** Phán xử bằng chứng là suy luận trung tính ngôn ngữ, nên `EVID-*` không có tiền tố; finding đã mang sẵn trường `lang` nên tiền tố sẽ thừa.
+
+`VI-PUFFERY-UNLISTED` **có** tiền tố dù do model tự tìm, vì nó khẳng định một điều về từ vựng tiếng Việt: cụm này đáng lẽ nên có trong `puffery` của pack `vi`. Nó chính là đầu vào để người bảo trì bổ sung danh sách.
+
+Đây là hệ mã đã chốt, nên hạng mục "chốt hệ mã rule" ở mục 12 coi như xong.
 
 **Đầu ra máy đọc được.** `antislop-check` là một SKILL.md, không phải chương trình, nên nó không có cờ dòng lệnh. Contract phải nói bằng ngôn ngữ của skill: khi yêu cầu có chứa từ `json`, skill in thêm một khối rào ```json sau bảng dành cho người đọc. Khối này là phần cuối cùng của phản hồi.
 
@@ -1313,7 +1368,7 @@ Language pack mới, `th.md` là ứng viên gần nhất. Và nâng `vi` từ c
 ### Chặn v1
 
 1. Kiểm chứng đường dẫn tương đối từ SKILL.md tới `references/` **và tới `bin/scan.mjs`** ở cả hai harness, chạy từ một CWD nằm ngoài repo. Cùng một câu hỏi, giải một lần. Kết quả quyết định bố cục thư mục (mục 2) và quyết định `counted_source` có bao giờ đạt `"scan"` không (mục 10). Làm trước khi viết nội dung rule.
-2. Chốt hệ mã rule trước khi viết `references/`, vì mã phải nhất quán giữa `core.md`, các language pack, `scan.mjs` và fixture. Xem mục 10.
+2. ~~Chốt hệ mã rule~~ **xong**, hệ mã chốt ở mục 10, phần Rule ID.
 3. Chốt lệnh cài plugin cục bộ ở chế độ headless cho cả `claude` và `codex`, cùng cách gỡ. Cần trước khi viết `tests/fixtures.mjs`. Xem mục 10, phần Runner.
 
 ### Không chặn v1
