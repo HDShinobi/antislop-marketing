@@ -126,7 +126,7 @@ Skip `git init` if the directory is already a repository. Every later task assum
   "private": true,
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test \"tests/**/*.test.mjs\"",
     "scan": "node bin/scan.mjs",
     "validate-packs": "node bin/validate-pack.mjs --all"
   }
@@ -1698,7 +1698,7 @@ Each `.expect.json` has the shape `{ "tier": "R", "lang": "vi", "counted": {...t
 
 - [ ] **Step 5: Run the tests to verify they pass**
 
-Run: `node --test tests/`
+Run: `npm test`
 Expected: PASS, all suites
 
 - [ ] **Step 6: Commit**
@@ -2390,7 +2390,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
       - run: node bin/validate-pack.mjs --all
-      - run: node --test tests/
+      - run: npm test
 ```
 
 Tier 2 is deliberately absent: it calls a model, costs money and is not deterministic.
