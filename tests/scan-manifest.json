@@ -1,0 +1,9 @@
+[
+  { "file": "README.md",               "tier": "P", "lang": "en" },
+  { "file": "README.vi.md",            "tier": "P", "lang": "vi" },
+  { "file": "CONTRIBUTING.md",         "tier": "P", "lang": "en" },
+  { "file": "examples/report-vi.md",   "tier": "R", "lang": "vi" },
+  { "file": "examples/proposal-vi.md", "tier": "P", "lang": "vi" },
+  { "file": "examples/caption-vi.md",  "tier": "C", "lang": "vi" },
+  { "file": "examples/report-en.md",   "tier": "R", "lang": "en" }
+]

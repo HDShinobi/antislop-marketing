@@ -43,18 +43,24 @@ function suppressedByException(blockText, term, start, end, exceptions) {
  * @returns {Array<{list:string, term:string, span:[number,number], text:string}>}
  *   One position is reported once, by the first list in LIST_PRIORITY order.
  */
+// A term inside backticks is being MENTIONED, not used. Any documentation of
+// this tool has to name the phrases it bans, and so does any rule file. Blanked
+// with spaces rather than removed, so offsets stay aligned with the source.
+const blankCodeSpans = (t) => t.replace(/`[^`]*`/g, (m) => " ".repeat(m.length))
+
 export function matchLists(blockText, pack, offset = 0) {
+  const searchText = blankCodeSpans(blockText)
   const taken = []
   const out = []
   const overlaps = (a, b) => taken.some(([x, y]) => a < y && b > x)
 
   for (const list of LIST_PRIORITY) {
     for (const term of pack[list] ?? []) {
-      for (const m of blockText.matchAll(termRegex(term))) {
+      for (const m of searchText.matchAll(termRegex(term))) {
         const start = m.index
         const end = start + m[0].length
         if (overlaps(start, end)) continue
-        if (suppressedByException(blockText, term, start, end, pack.exceptions)) continue
+        if (suppressedByException(searchText, term, start, end, pack.exceptions)) continue
         taken.push([start, end])
         out.push({ list, term, span: [start + offset, end + offset], text: m[0] })
       }

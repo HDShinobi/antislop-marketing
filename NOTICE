@@ -1,0 +1,39 @@
+antislop-marketing includes material derived from two MIT-licensed projects.
+
+--------------------------------------------------------------------------
+adenaufal/anti-slop-writing
+https://github.com/adenaufal/anti-slop-writing
+
+Supplied the structural rules in references/core.md, the per-model
+fingerprints, and the tone-tier concept taken from its Indonesian pack.
+Adapted throughout.
+
+Deliberately not carried over:
+
+  - The anti-detector group (T-1 through T-5). This project is not trying to
+    defeat Turnitin or GPTZero, and rules aimed at that goal ban vocabulary a
+    marketing document legitimately needs.
+  - The deliberate-imperfection rules, including permitted comma splices.
+    A client deck should not contain manufactured errors.
+  - Every statistic it reported without a citable source. The upstream text
+    cites a corpus analysis with no link; this repo states directions rather
+    than multipliers it cannot stand behind.
+  - The 17-to-23-word sentence band. Sentence length is not the tell;
+    sameness of shape is, and same_shape_run measures that instead.
+
+--------------------------------------------------------------------------
+blader/humanizer
+https://github.com/blader/humanizer
+
+Supplied the do-not-flag list and the signs-of-human-writing list, both in
+references/false-positives.md. Adapted and translated.
+
+One entry was added that the source had no reason to need: a term in a
+language pack's loanword list is never reported. A Vietnamese marketing
+report is full of English metric names, and flagging them all would make the
+tool unusable on the first document it saw.
+
+--------------------------------------------------------------------------
+
+Both projects are MIT licensed. Their licence text is reproduced in
+LICENSE-THIRD-PARTY.

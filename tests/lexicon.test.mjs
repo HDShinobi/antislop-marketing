@@ -67,6 +67,18 @@ test("findings come back sorted by position", () => {
   assert.deepEqual(starts, [...starts].sort((a, b) => a - b))
 })
 
+test("a term inside backticks is mentioned, not used, so it is not a finding", () => {
+  assert.equal(matchLists("Cụm `vượt trội` bị cấm ở tier R.", PACK, 0).length, 0)
+  assert.equal(matchLists("Sản phẩm vượt trội.", PACK, 0).length, 1)
+})
+
+test("blanking a code span keeps later offsets aligned", () => {
+  const src = "Cụm `vượt trội` bị cấm, còn hàng đầu thì cũng vậy."
+  const m = matchLists(src, PACK, 0)
+  assert.equal(m.length, 1)
+  assert.equal(src.slice(...m[0].span), "hàng đầu")
+})
+
 test("hasDataToken finds numbers, dates, urls and config tokens", () => {
   assert.equal(hasDataToken("CPA 47 đô", PACK), true)
   assert.equal(hasDataToken("đổi ngày 12/6", PACK), true)
