@@ -25,7 +25,7 @@ Hệ quả: `counted_source` đạt được `"scan"` ở cả hai harness, nên
 **Codex sao chép vào cache lúc cài.** Sửa file trong repo **không** có hiệu lực cho tới khi cài lại. Trong lúc phát triển, sau mỗi lần đổi `references/` hoặc `bin/`:
 
 ```bash
-codex plugin remove antislop-marketing
+codex plugin remove antislop-marketing@antislop-marketing
 codex plugin marketplace remove antislop-marketing
 codex plugin marketplace add "$PWD"
 codex plugin add antislop-marketing@antislop-marketing
@@ -51,7 +51,7 @@ claude plugin marketplace remove antislop-marketing
 # Codex
 codex plugin marketplace add "$REPO"
 codex plugin add antislop-marketing@antislop-marketing
-codex plugin remove antislop-marketing
+codex plugin remove antislop-marketing@antislop-marketing
 codex plugin marketplace remove antislop-marketing
 ```
 
