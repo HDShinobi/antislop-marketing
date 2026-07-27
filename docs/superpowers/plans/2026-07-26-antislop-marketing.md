@@ -15,15 +15,15 @@
 - **Zero external dependencies in `bin/`.** No YAML parser, no POS tagger, no sentence-splitting library. Kết quả phải không đổi theo phiên bản dependency.
 - **JSON, never YAML**, for every machine-readable file and fenced data block. Node has `JSON.parse` built in; it has no YAML parser.
 - **`span` is a pair of UTF-16 code unit offsets** into the original file string, half-open `[start, end)`. Not bytes, not grapheme clusters. `text` must equal `source.slice(...span)` exactly.
-- **The pack schema has exactly fourteen keys.** See spec section 6.2.
-- **`counted` has exactly nine keys**: `dash`, `banlist`, `mt_artifacts`, `puffery`, `comparative`, `eval_candidate`, `same_shape_run`, `colon_outside_list`, `short_paragraph_ratio`.
+- **The pack schema has exactly fourteen keys.** See spec section 6.2. `cadence_band` is not one of them: the spec dropped sentence-length thresholds.
+- **`counted` has exactly ten keys**: `dash`, `banlist`, `mt_artifacts`, `superlative`, `puffery`, `comparative`, `eval_candidate`, `same_shape_run`, `colon_outside_list`, `short_paragraph_ratio`.
 - **`null` means "not measured", `0` means "measured and clean".** Never substitute one for the other.
 - **No em dash (`—`) or en dash (`–`) anywhere in repo prose.** CI enforces this on `README.md`, `README.vi.md`, and everything in `examples/`.
 - **Matching boundary is a character boundary plus a per-pack `exceptions` map.** The spec removed the "syllable boundary" rule because it was not implementable; do not reintroduce it.
 - **Rule ID format:** `<SCOPE>-<NAME>`, uppercase, hyphen-separated. `SCOPE` is `CORE`, `EVID`, or a language code (`VI`, `EN`). IDs never change when rule wording changes.
 - **License MIT.** `NOTICE` credits `adenaufal/anti-slop-writing` and `blader/humanizer`, both MIT.
 - **All prose in the repo is bilingual**: `README.md` in English, `README.vi.md` in Vietnamese. Rule files are single-language by design.
-- **Both language packs ship at the `cộng đồng` label**, not `hiệu chỉnh`, because neither has a measured `cadence_band`.
+- **Both language packs ship at the `soát rồi` label.** The spec has two labels, keyed on whether a native speaker reviewed the pack.
 
 ---
 
@@ -279,7 +279,7 @@ Blocking item 2 from spec section 12. The rule ID scheme and pack schema must be
   - `extractPackBlock(markdown: string): string | null` returns the raw JSON text of the single fenced ` ```json antislop-pack ` block, or `null` if absent.
   - `parsePack(markdown: string): { ok: true, pack: Pack } | { ok: false, errors: string[] }`
   - `PACK_SCHEMA`, the field table as data, exported for tests.
-  - `Pack` shape: `{ lang: string, banlist: string[], mt_artifacts: string[], puffery: string[], comparative: string[], evaluative: string[], abbreviations: string[], openers: { dai_tu: string[], lien_tu: string[], trang_ngu: string[] }, tackon: string[], config_tokens: string[], loanwords: string[], cadence_band: [number, number] | null, tier_keywords: { R: string[], P: string[], C: string[] } }`
+  - `Pack` shape: `{ lang: string, banlist: string[], mt_artifacts: string[], puffery: string[], comparative: string[], superlative: string[], evaluative: string[], abbreviations: string[], openers: { dai_tu: string[], lien_tu: string[], trang_ngu: string[] }, tackon: string[], config_tokens: string[], loanwords: string[], exceptions: Record<string, string[]>, tier_keywords: { R: string[], P: string[], C: string[] } }`
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -307,7 +307,7 @@ test("a valid pack parses", () => {
   const r = parsePack(read("valid"))
   assert.equal(r.ok, true)
   assert.equal(r.pack.lang, "xx")
-  assert.equal(r.pack.cadence_band, null)
+  assert.deepEqual(r.pack.exceptions, {})
 })
 
 test("a missing required key is an error", () => {
@@ -355,13 +355,13 @@ Prose section for humans.
   "mt_artifacts": [],
   "puffery": ["amazing"],
   "comparative": [],
+  "superlative": ["best"],
   "evaluative": ["good"],
   "abbreviations": ["e.g."],
   "openers": { "dai_tu": ["we"], "lien_tu": ["but"], "trang_ngu": ["after"] },
   "tackon": ["thereby"],
   "config_tokens": ["campaign"],
   "loanwords": ["ROAS"],
-  "cadence_band": null,
   "tier_keywords": { "R": ["report"], "P": ["proposal"], "C": ["caption"] }
 }
 ```
@@ -380,13 +380,13 @@ export const PACK_SCHEMA = {
   mt_artifacts:   { type: "string[]" },
   puffery:        { type: "string[]" },
   comparative:    { type: "string[]" },
+  superlative:    { type: "string[]" },
   evaluative:     { type: "string[]" },
   abbreviations:  { type: "string[]" },
   openers:        { type: "object", keys: ["dai_tu", "lien_tu", "trang_ngu"], of: "string[]" },
   tackon:         { type: "string[]" },
   config_tokens:  { type: "string[]" },
   loanwords:      { type: "string[]" },
-  cadence_band:   { type: "pair|null" },
   exceptions:     { type: "freeobject", of: "string[]" },
   tier_keywords:  { type: "object", keys: ["R", "P", "C"], of: "string[]" },
 }
@@ -416,12 +416,6 @@ function checkField(name, spec, value, errors) {
       break
     case "string[]":
       if (!isStringArray(value)) errors.push(`${name}: expected array of strings`)
-      break
-    case "pair|null":
-      if (value === null) break
-      if (!Array.isArray(value) || value.length !== 2 || !value.every(Number.isInteger)) {
-        errors.push(`${name}: expected [min, max] integers or null`)
-      }
       break
     case "freeobject": {
       if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -1022,7 +1016,7 @@ git commit -m "feat(scan): sentence signature and same_shape_run with khac guard
 **Interfaces:**
 - Consumes: `Pack` from Task 2.
 - Produces: `matchLists(blockText: string, pack: Pack, offset: number): Match[]` where
-  `Match = { list: "banlist"|"mt_artifacts"|"puffery"|"comparative"|"evaluative", term: string, span: [number, number], text: string }`.
+  `Match = { list: "banlist"|"mt_artifacts"|"superlative"|"puffery"|"comparative"|"evaluative", term: string, span: [number, number], text: string }`.
   Boundary is a character boundary (no adjacent letter or digit), plus the `exceptions` suppression from spec 6.2. There is no syllable-level analysis: the spec removed that rule because it is not implementable without a tokenizer.
   `offset` is the block's absolute start, so `span` comes back absolute. One position is reported once, by the first list in priority order `banlist, mt_artifacts, puffery, comparative, evaluative`.
   Also `hasDataToken(blockText: string, pack: Pack): boolean`.
@@ -1109,7 +1103,7 @@ Expected: FAIL with `Cannot find module '../bin/lib/lexicon.mjs'`
 - [ ] **Step 3: Implement lexicon.mjs**
 
 ```js
-export const LIST_PRIORITY = ["banlist", "mt_artifacts", "puffery", "comparative", "evaluative"]
+export const LIST_PRIORITY = ["banlist", "mt_artifacts", "superlative", "puffery", "comparative", "evaluative"]
 
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
@@ -1481,7 +1475,7 @@ git commit -m "feat(scan): effective tier resolution with data-table floor"
 - Produces:
   - `splitBlocks` re-exported from `bin/scan.mjs`.
   - `scan(text: string, opts: { tier, lang?, langMap?, tierMap?, packs? }): ScanResult`
-  - `ScanResult = { counted: {...nine keys}, findings: Finding[], blocks: BlockInfo[] }`
+  - `ScanResult = { counted: {...ten keys}, findings: Finding[], blocks: BlockInfo[] }`
   - `Finding = { rule: string, span: [number,number], text: string, lang: string, block: number, tier: string, block_has_data?: boolean }`
   - Unregistered language: `banlist`, `mt_artifacts`, `puffery`, `comparative`, `eval_candidate`, `same_shape_run` are `null`; `dash`, `colon_outside_list`, `short_paragraph_ratio` still run.
 
@@ -1498,11 +1492,12 @@ import { scan, splitBlocks } from "../bin/scan.mjs"
 const VI = JSON.parse(readFileSync(new URL("./fixtures/packs/vi-min.json", import.meta.url), "utf8"))
 const packs = { vi: VI }
 
-test("counted has exactly the nine keys", () => {
+test("counted has exactly the ten keys", () => {
   const r = scan("Một đoạn văn.\n", { tier: "P", lang: "vi", packs })
   assert.deepEqual(Object.keys(r.counted).sort(), [
     "banlist", "colon_outside_list", "comparative", "dash", "eval_candidate",
     "mt_artifacts", "puffery", "same_shape_run", "short_paragraph_ratio",
+    "superlative",
   ])
 })
 
@@ -1586,8 +1581,8 @@ import { parsePack } from "./lib/pack.mjs"
 export { splitBlocks }
 
 const RULE_OF_LIST = {
-  banlist: "BANLIST", mt_artifacts: "MT-ARTIFACT", puffery: "PUFFERY",
-  comparative: "COMPARATIVE", evaluative: "EVAL-CANDIDATE",
+  banlist: "BANLIST", mt_artifacts: "MT-ARTIFACT", superlative: "SUPERLATIVE",
+  puffery: "PUFFERY", comparative: "COMPARATIVE", evaluative: "EVAL-CANDIDATE",
 }
 
 const SCANNABLE = new Set(["paragraph", "list_item", "heading", "table_cell"])
@@ -1651,6 +1646,7 @@ export function scan(text, { tier, lang, langMap = [], tierMap = [], packs = {} 
       dash: dashes.count,
       banlist: lexicalRan ? perList.banlist : null,
       mt_artifacts: lexicalRan ? perList.mt_artifacts : null,
+      superlative: lexicalRan ? perList.superlative : null,
       puffery: lexicalRan ? perList.puffery : null,
       comparative: lexicalRan ? perList.comparative : null,
       eval_candidate: lexicalRan ? perList.evaluative : null,
@@ -1698,7 +1694,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 `emoji-diacritics.md` contains an emoji outside the basic plane and heavily accented Vietnamese, to pin the UTF-16 offset convention.
 `outside-cwd.md` is a copy of `basic-vi.md`; Task 17 runs the scanner against it from `/tmp`.
 
-Each `.expect.json` has the shape `{ "tier": "R", "lang": "vi", "counted": {...nine keys}, "rules": [...] }`. Generate the first draft by running the scanner, then read every number and confirm it by hand before committing. A fixture copied from buggy output pins the bug.
+Each `.expect.json` has the shape `{ "tier": "R", "lang": "vi", "counted": {...ten keys}, "rules": [...] }`. Generate the first draft by running the scanner, then read every number and confirm it by hand before committing. A fixture copied from buggy output pins the bug.
 
 - [ ] **Step 5: Run the tests to verify they pass**
 
@@ -1727,8 +1723,8 @@ git commit -m "feat(scan): assemble scanner, nine counted keys and CLI"
 
 In order, per spec section 6.2: Metadata, Ban list, Cụm công thức, Dấu vết dịch máy, Xưng hô theo tier, Tiểu từ theo mức, Nhịp câu, Từ khoá tier.
 
-Section 1 records `lang: vi`, `nhãn: cộng đồng`, `cadence_band: chưa hiệu chỉnh`.
-Section 7 holds the opener class table and the tack-on list explanation, and states the cadence band is unmeasured, so the substitute test is `same_shape_run >= 3`.
+Section 1 records `lang: vi`, `nhãn: soát rồi`, and who reviewed it when.
+Section 7 holds the opener class table and the tack-on list. It states plainly that there is no sentence-length threshold: `same_shape_run` measures sameness of shape, not length, and that is the tell worth catching.
 
 Each section explains its group and gives examples. **No section lists tokens.** The JSON block is the only place tokens live.
 
@@ -1737,8 +1733,9 @@ Each section explains its group and gives examples. **No section lists tokens.**
 Populate from spec section 6.5 plus the four-list table in 6.2:
 
 - `banlist`: đóng vai trò quan trọng trong việc, không chỉ, góp phần, trong thời đại số hoá ngày nay, trong bối cảnh, tóm lại, nhìn chung, hy vọng bài viết mang lại
-- `puffery`: đột phá, tiên phong, hàng đầu, vượt trội, toàn diện, đẳng cấp, đáp ứng mọi nhu cầu, giải pháp toàn diện
-- `comparative`: hơn, gấp, vượt, nhất, số một, đứng đầu
+- `puffery`: đột phá, tiên phong, vượt trội, toàn diện, đẳng cấp, đáp ứng mọi nhu cầu, giải pháp toàn diện
+- `comparative`: hơn, gấp, vượt, kém
+- `superlative`: nhất, số một, số 1, hàng đầu, đứng đầu, top, duy nhất  (**banned outright at tier C**, ad platform policy, spec 3.1)
 - `evaluative`: tốt, kém, hiệu quả, mạnh, yếu, chậm, nhanh, ổn, tệ, đáng kể, rõ rệt, tích cực, tiêu cực, hợp lý, chưa tối ưu, tận tâm, chuyên nghiệp
 - `mt_artifacts`: được thực hiện bởi, nơi mà, điều mà, một trong những
 - `abbreviations`: v.v., TP., Tp., ThS., TS., PGS., Q., tr.
@@ -1748,7 +1745,6 @@ Populate from spec section 6.5 plus the four-list table in 6.2:
 - `tackon`: góp phần, mang lại, nhằm, qua đó, từ đó, giúp cho
 - `config_tokens`: campaign, ad group, ad set, keyword, bidding, pixel, tracking, conversion, audience, placement, landing page
 - `loanwords`: ROAS, CPA, CPC, CPM, CTR, remarketing, prospecting, audience, creative, funnel, insight, brief
-- `cadence_band`: `null`
 - `tier_keywords.R`: báo cáo, audit, phân tích, tổng kết, performance, số liệu
 - `tier_keywords.P`: proposal, đề xuất, kế hoạch, plan, SoW, roadmap, báo giá, pitch
 - `tier_keywords.C`: caption, post, ad copy, content, email marketing, landing, tagline, blog
@@ -1775,7 +1771,7 @@ Expected: JSON on stdout with nine `counted` keys and no `null` among the lexica
 
 ```bash
 git add references/vi.md
-git commit -m "feat(vi): Vietnamese language pack at community label"
+git commit -m "feat(vi): Vietnamese language pack"
 ```
 
 ---
@@ -1787,17 +1783,18 @@ git commit -m "feat(vi): Vietnamese language pack at community label"
 
 **Interfaces:**
 - Consumes: `PACK_SCHEMA` from Task 2.
-- Produces: `references/en.md`, same eight sections, `cadence_band: [17, 23]`.
+- Produces: `references/en.md`, same eight sections, no sentence-length threshold.
 
 - [ ] **Step 1: Write the eight prose sections**
 
-Section 1 records `lang: en`, `nhãn: cộng đồng`. Section 7 states that `[17, 23]` is inherited from `adenaufal/anti-slop-writing` and is **not** a measurement taken by this repo, so the pack stays at the community label.
+Section 1 records `lang: en`, `nhãn: soát rồi`. Section 7 holds the opener class table and the tack-on list, and states there is no sentence-length threshold, same as `vi.md`.
 
 - [ ] **Step 2: Write the pack block**
 
 - `banlist`: in today's world, in today's fast-paced world, in the ever-evolving landscape of, as we navigate the complexities of, in conclusion, in summary, it is important to note that, at the end of the day, without further ado, last but not least, plays a crucial role in shaping, not only
 - `puffery`: groundbreaking, cutting-edge, world-class, best-in-class, unparalleled, revolutionary, seamless, comprehensive, transformative
-- `comparative`: better, best, more, most, leading, top, outperforms, superior
+- `comparative`: better, more, outperforms, superior
+- `superlative`: best, most, leading, top, number one, #1, unmatched
 - `evaluative`: good, poor, effective, strong, weak, slow, fast, solid, significant, notable, positive, negative, suboptimal
 - `mt_artifacts`: [] (English is the source language for this repo's tooling)
 - `abbreviations`: e.g., i.e., etc., Inc., Ltd., vs., Dr., Mr., Ms., St.
@@ -1807,7 +1804,6 @@ Section 1 records `lang: en`, `nhãn: cộng đồng`. Section 7 states that `[1
 - `tackon`: thereby, thus enabling, helping to, underscoring, highlighting, ensuring
 - `config_tokens`: campaign, ad group, ad set, keyword, bidding, pixel, tracking, conversion, audience, placement, landing page
 - `loanwords`: []
-- `cadence_band`: `[17, 23]`
 - `tier_keywords.R`: report, audit, analysis, recap, performance, metrics
 - `tier_keywords.P`: proposal, plan, SoW, roadmap, quote, pitch
 - `tier_keywords.C`: caption, post, ad copy, content, email, landing, tagline, blog
@@ -1822,7 +1818,7 @@ Expected: `OK    vi.md` and `OK    en.md`, exit 0
 
 ```bash
 git add references/en.md
-git commit -m "feat(en): English language pack at community label"
+git commit -m "feat(en): English language pack"
 ```
 
 ---
@@ -1846,9 +1842,16 @@ Contents, per spec sections 3 and 5.1, containing **no token from any language**
 4. The three levels from spec 3.3, and the statement that level 1 is a failure state rather than a setting.
 5. The declaration line format from spec 3.4.
 6. Block definition from spec 3.0, including the table parent and child rule.
-7. Structural rules from adenaufal, each with a `CORE-` ID: `CORE-CADENCE`, `CORE-RULE-OF-THREE`, `CORE-NEG-PARALLEL`, `CORE-FALSE-RANGE`, `CORE-TACKON`, `CORE-FORMULAIC-END`, `CORE-PARA-RHYTHM`, `CORE-BOLD-LIST`, `CORE-DASH`, `CORE-SENT-TYPE`, `CORE-PARA-PREDICT`, `CORE-SYNTAX-DEPTH`, `CORE-FUNCTION-WORDS`, `CORE-LEXICAL-DIVERSITY`, `CORE-BIMODAL`, `CORE-FRAGMENTED-PARA`.
-8. Model fingerprints from adenaufal EN-11, both the GPT and the Claude dialect, with the structural tells only. **No unsourced statistics.** Where the source gave a multiplier, state the direction without the number.
-9. The four-part sentence DNA from EN-12, as `CORE-ARGUMENT-ARC`.
+7. **The fourth tell family**, spec section 5.3b, all three judged and language neutral:
+   - `CORE-READER-VOCAB`: asking or asserting in the writer's vocabulary rather than the reader's.
+   - `CORE-RULE-RESTATE`: restating a rule instead of showing what it does.
+   - `CORE-NOUN-STACK`: compressing a sentence into noun phrases where a verb would carry it.
+
+   Include the read-aloud test verbatim: read the sentence as if speaking it to the person; if the spoken version differs a lot, the written one is the problem. Include the worked examples from the spec, and the note that `CORE-NOUN-STACK` yields to `VI-NOMINALIZATION` when both fire.
+
+8. Structural rules from adenaufal, each with a `CORE-` ID: `CORE-CADENCE`, `CORE-RULE-OF-THREE`, `CORE-NEG-PARALLEL`, `CORE-FALSE-RANGE`, `CORE-TACKON`, `CORE-FORMULAIC-END`, `CORE-PARA-RHYTHM`, `CORE-BOLD-LIST`, `CORE-DASH`, `CORE-SENT-TYPE`, `CORE-PARA-PREDICT`, `CORE-SYNTAX-DEPTH`, `CORE-FUNCTION-WORDS`, `CORE-LEXICAL-DIVERSITY`, `CORE-BIMODAL`, `CORE-FRAGMENTED-PARA`.
+9. Model fingerprints from adenaufal EN-11, both the GPT and the Claude dialect, with the structural tells only. **No unsourced statistics.** Where the source gave a multiplier, state the direction without the number.
+10. The four-part sentence DNA from EN-12, as `CORE-ARGUMENT-ARC`.
 
 - [ ] **Step 2: Check core.md contains no language tokens**
 
@@ -2437,7 +2440,7 @@ Create `LICENSE-THIRD-PARTY` with both upstream MIT texts.
 
 - [ ] **Step 2: Write README.md**
 
-Sections: what it does, what it deliberately does not do (the four out-of-scope items from spec section 1), install for Claude Code and for Codex, the three tiers in one table, an example before and after, what was taken from upstream and what was dropped with the reason, the language pack status table with both packs at `community`, and how to add a language.
+Sections: what it does, what it deliberately does not do (the four out-of-scope items from spec section 1), install for Claude Code and for Codex, the three tiers in one table, an example before and after, what was taken from upstream and what was dropped with the reason, the language pack status table with both packs at `soát rồi`, and how to add a language.
 
 Keep every claim backed. This file is scanned by CI at tier P.
 
@@ -2447,7 +2450,7 @@ Same structure in Vietnamese. Scanned at tier P with the `vi` pack.
 
 - [ ] **Step 4: Write CONTRIBUTING.md**
 
-The language pack template: the eight prose section headings, and an empty `json antislop-pack` block with every one of the fourteen keys present and empty. Plus the three status labels and what each requires, and the instruction to run `node bin/validate-pack.mjs --all` before opening a pull request.
+The language pack template: the eight prose section headings, and an empty `json antislop-pack` block with every one of the fourteen keys present and empty. Plus the two status labels and what each requires, and the instruction to run `node bin/validate-pack.mjs --all` before opening a pull request.
 
 - [ ] **Step 5: Run the full suite**
 
@@ -2468,6 +2471,5 @@ git tag v1.0.0
 
 From spec section 11 and 12:
 
-- Measure the Vietnamese cadence band, fill `cadence_band` in `vi.md`, raise the pack from `community` to `calibrated`.
 - v1.1: Cursor and Antigravity. Both need one flat file with every rule inlined, so they need `scripts/build.mjs` plus a CI check that rebuilds and diffs.
 - v1.2: further language packs. `th.md` is the nearest candidate.
