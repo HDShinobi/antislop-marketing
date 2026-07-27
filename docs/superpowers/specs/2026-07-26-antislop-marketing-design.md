@@ -16,6 +16,24 @@ Ba loại tài liệu nằm trong phạm vi:
 
 Hai ngôn ngữ ở bản đầu: tiếng Việt và tiếng Anh. Kiến trúc mở cho ngôn ngữ khác, mô tả ở mục 6.
 
+### Hợp đồng đầu vào
+
+Skill nhận **văn xuôi**. Nguồn là bảng tính, tài liệu hay slide thì agent tự
+chuyển sang văn bản; đó là việc của agent, không phải của skill. Thêm bộ đọc
+`.xlsx` vào đây sẽ kéo theo `.docx`, `.pptx`, PDF, và không cái nào liên quan
+tới việc câu văn có lộ máy hay không.
+
+Nhưng có đúng một ràng buộc **là** việc của skill: **chuyển đổi phải giữ bảng
+thành bảng.** Rule phụ thuộc vào cấu trúc khối, cụ thể là bảng số liệu tự nâng
+lên tier R và mỗi ô là một phạm vi bằng chứng riêng. Làm phẳng bảng thành đoạn
+văn thì cả hai rule bắn sai.
+
+Đây không phải suy đoán. Quét thử một roadmap thật rút từ Excel theo kiểu làm
+phẳng, và scanner báo hai dấu dash vốn là quy ước ô trống của bảng tính.
+
+Sửa file thì sửa thẳng ở nguồn, không đi qua bản chuyển đổi. Bản chuyển đổi chỉ
+để scanner đọc, không bao giờ là sản phẩm giao đi.
+
 ### Nằm ngoài phạm vi
 
 Bốn điều dưới đây không phải mục tiêu, và việc ghi rõ chúng quan trọng ngang phần trên vì nó quyết định rule nào bị loại.

@@ -17,13 +17,25 @@ Language: **the language of the block being checked. One signal, no fallback.**
 The language of the request is irrelevant. A Vietnamese request about an English
 document loads `en.md`.
 
-Print the line, then continue:
+Do not print a separate declaration line here. The report table in step 9 opens
+with one, and two lines saying the same thing is noise.
 
-```
-[R · mức 2 · trang trọng · vi]
-```
+## 2. Source that is not already text
 
-## 2. Run the scanner
+A spreadsheet, a document or a slide deck has to become text before the scanner
+can read it. Two rules, and they matter more than they look.
+
+**Preserve tables as tables.** The rules depend on block structure: a data table
+lifts itself to tier R, and each cell is its own evidence scope. Flatten a sheet
+into paragraphs and both rules misfire. A real roadmap flattened this way
+reported two dashes that were the spreadsheet convention for an empty cell.
+
+**Convert for reading, edit at the source.** The converted text is what the
+scanner reads. It is not what you rewrite. Apply fixes to the original file
+directly, matching on cell or paragraph content, and leave the original
+untouched by writing a new file beside it.
+
+## 3. Run the scanner
 
 ```bash
 node ../../bin/scan.mjs --tier <TIER> --lang <LANG> <file>
@@ -39,12 +51,12 @@ If Node is unavailable, count by reading, set `"counted_source": "model"`, and
 mark the numbers as estimates in the human table. That is a degraded mode, not
 an equal option.
 
-## 3. Copy findings_mechanical verbatim
+## 4. Copy findings_mechanical verbatim
 
 Not one code, span, text, lang, block or tier value may be altered. Do not
 filter, do not reorder, do not add.
 
-## 4. Then judge, independently
+## 5. Then judge, independently
 
 Load `../../references/evidence.md` and `../../references/false-positives.md`.
 
@@ -65,13 +77,13 @@ appeared; whether the nearby fact actually proves it is your call.
 Also judge what no scanner can reach: register uniformity, the four-part
 argument arc, and the fourth tell family in `core.md` section 6.
 
-## 5. Apply false-positives.md before reporting
+## 6. Apply false-positives.md before reporting
 
 Look for **clusters**, never isolated tells. One em dash means nothing.
 
 Never report a term from the pack's `loanwords`.
 
-## 6. Three verdicts
+## 7. Three verdicts
 
 | Verdict | When |
 |---|---|
@@ -83,13 +95,13 @@ Never report a term from the pack's `loanwords`.
 `vi phạm` makes every isolated check red and the user stops opening the tool;
 folding it into `đạt` makes the tool lie.
 
-## 7. Unregistered language and bilingual documents
+## 8. Unregistered language and bilingual documents
 
 Same rules as `antislop-write`, spec section 6.3. For an unregistered language
 the JSON block still appears, with the lexical counters `null` rather than `0`:
 `null` means not measured, `0` means measured and clean.
 
-## 8. Output
+## 9. Output
 
 The table for the reader, always:
 

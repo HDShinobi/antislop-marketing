@@ -111,7 +111,18 @@ The boundary: a second language appearing only as words and noun phrases is
 loanwords. A second language with sentences of its own is bilingual. No
 percentage threshold.
 
-## 7. Write, then check silently
+## 7. Source that is not already text
+
+When the material comes from a spreadsheet, a document or a slide deck, convert
+it to Markdown **preserving tables as tables**. The rules depend on block
+structure: a data table lifts itself to tier R, and each cell is its own
+evidence scope. A flattened sheet breaks both.
+
+Write your output in the form the user asked for. If they want the file itself
+edited, edit the original directly and write a new file beside it; the converted
+Markdown exists only so the rules can be applied, never as the deliverable.
+
+## 8. Write, then check silently
 
 Run the checklist against your draft before printing anything. **Print only the
 final text.** The draft and the list of things you fixed are noise to someone
