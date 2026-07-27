@@ -94,9 +94,11 @@ Empty for English: the metric names this tool encounters are already English.
 
 ## Match exceptions
 
-`most` is the clearest case. It is a superlative in "the most effective channel"
-and an ordinary quantifier in "most campaigns" or "for the most part". Without
-the exception every second paragraph of a report would be flagged.
+`most` needed a change to the list rather than an exception. Bare `most` is a
+quantifier far more often than a superlative: "most campaigns", "most editors",
+"matters most". The superlative reading almost always carries an article, so the
+list holds `the most` instead. Self-scanning this repo's own rule files is what
+surfaced that.
 
 The list grows: add cases as they come up.
 
@@ -133,7 +135,7 @@ The list grows: add cases as they come up.
     "unmatched",
     "unrivalled",
     "unrivaled",
-    "most",
+    "the most",
     "top-rated"
   ],
   "puffery": [
@@ -186,7 +188,6 @@ The list grows: add cases as they come up.
     "approx."
   ],
   "exceptions": {
-    "most": ["most of", "for the most part", "most campaigns", "most clients", "at most"],
     "leading": ["leading to", "leading indicator"],
     "strong": ["strong signal"],
     "fast": ["fast follow"],
