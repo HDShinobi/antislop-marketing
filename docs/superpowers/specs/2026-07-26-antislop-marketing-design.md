@@ -107,7 +107,7 @@ Hai trục độc lập. Tier quản nội dung được phép nói. Mức quả
 
 ### 3.0 Định nghĩa "khối"
 
-Từ này dùng ở ba chỗ và cả ba phải hiểu giống nhau, nếu không thì skill và `scan.mjs` cho kết quả khác nhau trên cùng một văn bản: đơn vị kiểm bằng chứng ở tier C (mục 3.1), phạm vi tìm token dữ kiện của `eval_candidate` (mục 10), và đơn vị tách văn bản song ngữ (mục 10).
+Từ này dùng ở ba chỗ và cả ba phải hiểu giống nhau, nếu không thì skill và `scan.mjs` cho kết quả khác nhau trên cùng một văn bản: đơn vị kiểm bằng chứng ở tier C (mục 3.1), phạm vi tìm token dữ kiện của `eval_candidate` (mục 9), và đơn vị tách văn bản song ngữ (mục 9).
 
 Khối định nghĩa theo cấu trúc Markdown:
 
@@ -119,7 +119,7 @@ Khối định nghĩa theo cấu trúc Markdown:
 | mỗi bảng | một khối **cha**, chứa các ô làm khối con |
 | mỗi heading | đứng riêng, không gộp với đoạn phía sau |
 
-**Bảng có hai tầng.** Ô là đơn vị kiểm bằng chứng, vì một dữ kiện ở ô này không chống lưng cho tính từ ở ô khác. Nhưng bảng cũng cần tồn tại như một khối riêng, vì tiêu chí nhận bảng số liệu (mục 10) xét trên cả bảng chứ không xét từng ô.
+**Bảng có hai tầng.** Ô là đơn vị kiểm bằng chứng, vì một dữ kiện ở ô này không chống lưng cho tính từ ở ô khác. Nhưng bảng cũng cần tồn tại như một khối riêng, vì tiêu chí nhận bảng số liệu (mục 9) xét trên cả bảng chứ không xét từng ô.
 
 Nên mỗi bảng sinh ra `1 + n` khối: một khối cha `kind: "table"` mang danh sách `children`, và `n` khối con `kind: "table_cell"` mang `parent`. Cả cha lẫn con đều có chỉ số riêng trong dãy khối.
 
@@ -141,7 +141,7 @@ Hai quy tắc biên:
 |---|---|---|---|---|
 | R | báo cáo, audit, phân tích | cấm hoàn toàn | bắt buộc | chúng tôi / quý khách |
 | P | proposal, kế hoạch, SoW | có điều kiện | bắt buộc với nhận định về thực tế | chúng tôi / anh chị |
-| C | content, ad copy, social | cho phép nếu được chống lưng | không bắt buộc | bên mình / bạn |
+| C | content, ad copy, social | cho phép nếu được chống lưng, **cực cấp cấm hẳn** | không bắt buộc | bên mình / bạn |
 
 Tier P là mặc định khi không có tín hiệu nào. Chọn P vì nó an toàn hai đầu: đoán nhầm P cho báo cáo thì lọt vài từ có điều kiện, nhìn ra ngay; đoán nhầm P cho ad copy thì chỉ hơi khô.
 
@@ -345,7 +345,7 @@ Thứ tự xét khác nhau giữa hai skill.
 Ngôn ngữ của chính khối văn bản đang soát. Hết.
 ```
 
-Một chỉ định, không có dự phòng. Tài liệu song ngữ thì mỗi khối theo ngôn ngữ của nó, theo mục 3.0 và mục 10.
+Một chỉ định, không có dự phòng. Tài liệu song ngữ thì mỗi khối theo ngôn ngữ của nó, theo mục 3.0 và mục 9.
 
 `antislop-write`, xét theo thứ tự, dừng ở dòng đầu tiên trúng:
 
@@ -386,8 +386,32 @@ Vào `false-positives.md`:
 | T-1 đến T-5, nhóm chống detector | sai mục tiêu, xem mục 1 |
 | EN-3 cho phép lỗi dấu câu | tài liệu gửi khách không được có comma splice cố ý |
 | Mọi số thống kê không nguồn: 16.9x, 82%, 4.3x, perplexity 21.2 và 35.9 | giữ rule, bỏ số. Bản gốc dẫn "a Jan 2026 corpus analysis" nhưng không có liên kết. Không kiểm chứng được thì không đưa vào |
-| Ngưỡng "17 đến 23 từ" | hiệu chỉnh cho tiếng Anh, xem mục 7 |
+| Ngưỡng "17 đến 23 từ" | hiệu chỉnh cho tiếng Anh, và spec này không đặt ngưỡng độ dài câu cho ngôn ngữ nào. Xem mục 6.2, hợp đồng mục 7 |
 | Rule 13 "Vary Syntactic Depth" | trùng lặp nguyên văn hai lần trong bản gốc, dòng 141-143 và 328-330 |
+
+#### 5.3b Họ tell thứ tư: câu không có người nhận
+
+Ba nguồn trên phủ ba họ: **từ vựng**, **cấu trúc**, **bằng chứng**. Còn một họ thứ tư mà không nguồn nào có, và nó là họ khó nhất.
+
+Một đoạn văn có thể sạch từ vựng, đa dạng cấu trúc, đủ bằng chứng, và **vẫn đọc ra máy**. Chỗ hỏng nằm ở việc câu không định vị cho một người đọc cụ thể nào.
+
+Ba biểu hiện, mỗi cái một mã:
+
+| Mã | Biểu hiện | Ví dụ hỏng | Người thật viết |
+|---|---|---|---|
+| `CORE-READER-VOCAB` | hỏi hoặc khẳng định bằng từ vựng của người viết, không phải của người đọc | "Ad copy của bạn có chịu được mức đó không?" | "Caption của bạn có hay dùng kiểu *tốt nhất thị trường* không?" |
+| `CORE-RULE-RESTATE` | nhắc lại quy tắc thay vì cho thấy hậu quả | "Tier C vẫn bắt puffery phải chống lưng" | "Nó sẽ bắt bạn thêm số vào, hoặc bỏ câu đó" |
+| `CORE-NOUN-STACK` | nén câu thành chuỗi cụm danh từ, chỗ đáng lẽ một động từ gánh được | "ngưỡng nhịp câu để v1.2 mới đo" | "đo câu tiếng Việt dài bao nhiêu thì để sau" |
+
+**Bài kiểm, dùng được ngay:** đọc câu đó lên như đang nói với người ta. Bản nói khác hẳn bản viết thì bản viết là vấn đề.
+
+Điểm chung của ba cái: câu **đúng về mọi mặt kỹ thuật** nhưng không có người nhận. Tầng bằng chứng bắt "khẳng định không có dữ kiện". Họ này bắt "câu không có người nghe".
+
+Ba mã đều **trung tính ngôn ngữ**, nằm trong `core.md`, và đều là phán xử nên ra ở `findings_judged`. `scan.mjs` không đếm được chúng: không có danh sách token nào, và cả ba đều cần biết người đọc là ai.
+
+Riêng `CORE-NOUN-STACK` có phần chồng lấn với `VI-NOMINALIZATION` ở mục 6.5. Khác nhau ở phạm vi: `VI-NOMINALIZATION` bắt một cụm đơn lẻ ("việc triển khai"), còn `CORE-NOUN-STACK` bắt cả câu bị nén. Trùng thì báo mã hẹp hơn, tức bản của ngôn ngữ.
+
+**Ghi chú về nguồn gốc.** Họ này không đến từ hai repo tham chiếu, cũng không đến từ 32 vòng review tự động. Nó đến từ một người đọc bản mô tả của chính spec này và chỉ ra ba câu trong đó nghe như máy. Hai vòng review kia đọc để tìm mâu thuẫn logic; chỉ người đọc như người đọc mới bắt được.
 
 ### 5.4 Viết mới
 
@@ -451,7 +475,7 @@ Bài phân biệt: câu đó có thể sai không. Nhận định về thực t�
 
 Phép phân biệt này là ngữ nghĩa, nên nó nằm ở `findings_judged`, không ở `counted`. `scan.mjs` vẫn báo mọi ứng viên `eval_candidate` ở tier P; việc lọc ra cái nào thuộc nhóm ý định là của model.
 
-Hệ quả cho `antislop-check`: ở tier C, chạy phép kiểm bằng chứng trên puffery và trên claim so sánh hoặc cực cấp, không chạy trên mọi tính từ. Nhưng "puffery" ở đây không giới hạn trong danh sách của pack; xem "Danh sách là sàn, không phải cửa" ở mục 10.
+Hệ quả cho `antislop-check`: ở tier C, chạy phép kiểm bằng chứng trên puffery và trên claim so sánh hoặc cực cấp, không chạy trên mọi tính từ. Nhưng "puffery" ở đây không giới hạn trong danh sách của pack; xem "Danh sách là sàn, không phải cửa" ở mục 9.
 
 Ba thứ mới còn lại:
 
@@ -470,13 +494,15 @@ Ranh giới này phải giữ nghiêm. Nếu thêm một ngôn ngữ mà phải 
 
 Mọi `<lang>.md` có đúng 8 mục, đúng thứ tự.
 
-1. Metadata. Mã ngôn ngữ, ngày hiệu chỉnh, cỡ mẫu.
+1. Metadata. Mã ngôn ngữ, nhãn trạng thái, ai soát và soát lúc nào.
 2. Ban list. Puffery, động từ AI, danh từ hoa mỹ.
 3. Cụm công thức. Negative parallelism, tack-on, mở bài, kết bài.
 4. Dấu vết dịch máy.
 5. Xưng hô theo tier R, P, C.
 6. Tiểu từ theo mức 2 và mức 3.
-7. Nhịp câu. Ba thứ: ngưỡng độ dài câu đã đo kèm cỡ mẫu (hoặc ghi rõ "chưa hiệu chỉnh"), bảng phân lớp bốn lớp đóng của từ mở đầu (lớp thứ năm `khac` là dự phòng, không khai), và danh sách token tack-on. Hai thứ sau nuôi phép tính `same_shape_run` ở mục 10.
+7. Nhịp câu. Bảng phân lớp bốn lớp đóng của từ mở đầu (lớp thứ năm `khac` là dự phòng, không khai) và danh sách token tack-on. Cả hai nuôi phép tính `same_shape_run` ở mục 9.
+
+   Không có ngưỡng độ dài câu. Spec cố tình không đặt một con số "câu tiếng Việt nên dài bao nhiêu": `same_shape_run` đo **giống khuôn**, không đo **dài ngắn**, và đó là thứ thật sự lộ máy. Giới hạn số từ, nếu cần, là chuyện người dùng nêu trong yêu cầu.
 8. Từ khoá nhận diện tier.
 
 `CONTRIBUTING.md` chứa template rỗng của 8 mục. Người đóng góp một ngôn ngữ mới không cần đọc `core.md`.
@@ -487,7 +513,7 @@ Tám mục ở trên là văn xuôi, viết cho model và cho người. Nhưng `
 
 Mỗi pack chứa **đúng một** khối rào JSON mang nhãn `antislop-pack`.
 
-Dùng JSON chứ không dùng YAML. Node có `JSON.parse` sẵn; YAML thì không, và thêm một dependency parser mâu thuẫn với quyết định giữ `bin/scan.mjs` không phụ thuộc thư viện ngoài (mục 10, phần tách câu). JSON xấu hơn khi đọc bằng mắt, nhưng đây là dữ liệu cho máy, còn phần cho người đã nằm ở tám mục văn xuôi.
+Dùng JSON chứ không dùng YAML. Node có `JSON.parse` sẵn; YAML thì không, và thêm một dependency parser mâu thuẫn với quyết định giữ `bin/scan.mjs` không phụ thuộc thư viện ngoài (mục 9, phần tách câu). JSON xấu hơn khi đọc bằng mắt, nhưng đây là dữ liệu cho máy, còn phần cho người đã nằm ở tám mục văn xuôi.
 
 ````
 ```json antislop-pack
@@ -497,7 +523,8 @@ Dùng JSON chứ không dùng YAML. Node có `JSON.parse` sẵn; YAML thì khôn
               "trong thời đại số hoá ngày nay", "tóm lại", "nhìn chung"],
   "puffery": ["đột phá", "tiên phong", "hàng đầu", "vượt trội", "toàn diện",
               "đẳng cấp", "đáp ứng mọi nhu cầu"],
-  "comparative": ["hơn", "gấp", "vượt", "nhất", "số một", "top", "đứng đầu"],
+  "comparative": ["hơn", "gấp", "vượt", "kém"],
+  "superlative": ["nhất", "số một", "số 1", "hàng đầu", "đứng đầu", "top", "duy nhất"],
   "evaluative": ["tốt", "kém", "hiệu quả", "mạnh", "yếu", "chậm", "nhanh",
                  "ổn", "tệ", "đáng kể", "rõ rệt", "hợp lý", "chưa tối ưu"],
   "mt_artifacts": ["được thực hiện bởi", "nơi mà", "điều mà"],
@@ -513,7 +540,6 @@ Dùng JSON chứ không dùng YAML. Node có `JSON.parse` sẵn; YAML thì khôn
                     "pixel", "tracking", "conversion", "audience", "placement"],
   "loanwords": ["ROAS", "CPA", "CPC", "remarketing", "prospecting",
                 "audience", "creative"],
-  "cadence_band": null,
   "tier_keywords": {
     "R": ["báo cáo", "audit", "phân tích", "tổng kết", "số liệu"],
     "P": ["proposal", "đề xuất", "kế hoạch", "báo giá"],
@@ -534,7 +560,7 @@ Quy tắc so khớp, áp cho mọi pack:
 | khoảng trắng | gộp nhiều khoảng trắng thành một trước khi khớp |
 | biên | hai đầu của cụm không được kề một chữ cái hoặc chữ số. "toàn diện" không trúng trong "toàndiện" |
 | ngoại lệ | cụm bị chặn khi nó nằm trong một chuỗi khai ở `exceptions` của pack. Xem mục dưới |
-| thứ tự ưu tiên | xét `banlist`, `mt_artifacts`, `puffery`, `comparative`, `evaluative` theo đúng thứ tự đó; một cụm trúng nhiều danh sách chỉ tính một lần, theo danh sách trúng trước |
+| thứ tự ưu tiên | xét `banlist`, `mt_artifacts`, `superlative`, `puffery`, `comparative`, `evaluative` theo đúng thứ tự đó; một cụm trúng nhiều danh sách chỉ tính một lần, theo danh sách trúng trước |
 
 #### Vì sao không dùng "biên âm tiết"
 
@@ -568,11 +594,11 @@ Nằm trọn nghĩa là `h.start >= e.start` và `h.end <= e.end`. Chuỗi ngo�
 
 Điều kiện là chứa **theo vị trí**, không phải theo sự có mặt. Câu *"Vừa hàng đầu tiên vừa hàng đầu thị trường"* cho **một** khớp chứ không phải không khớp nào: khớp thứ nhất bị loại vì nằm trong "hàng đầu tiên", khớp thứ hai giữ lại vì không nằm trong ngoại lệ nào.
 
-`exceptions` là một danh sách lớn dần, giống bốn danh sách kia. Không cần đầy đủ mới dùng được: cụm chưa có ngoại lệ thì bị báo, và `false-positives.md` cùng model là lớp lọc thứ hai. Điều này nhất quán với nguyên tắc "danh sách là sàn, không phải cửa" ở mục 10.
+`exceptions` là một danh sách lớn dần, giống bốn danh sách kia. Không cần đầy đủ mới dùng được: cụm chưa có ngoại lệ thì bị báo, và `false-positives.md` cùng model là lớp lọc thứ hai. Điều này nhất quán với nguyên tắc "danh sách là sàn, không phải cửa" ở mục 9.
 
 Vì sao không để hẳn cho model lọc mà vẫn cần `exceptions`: `puffery` ở tier R có ngưỡng cứng bằng 0, nên một khớp sai làm `counted.puffery` khác 0 và biến một cụm hợp lệ thành vi phạm ở tầng tất định. Khác với `eval_candidate`, chỗ này báo thừa có hậu quả thật.
 
-#### Năm danh sách, năm vai trò
+#### Sáu danh sách, sáu vai trò
 
 Chúng không thay thế nhau và không được gộp. Tier quyết định danh sách nào có hiệu lực, chứ danh sách không tự phân theo tier.
 
@@ -580,11 +606,35 @@ Chúng không thay thế nhau và không được gộp. Tier quyết định da
 |---|---|---|---|---|---|
 | `banlist` | không bao giờ được dùng | cấm | cấm | cấm | `*-BANLIST` |
 | `puffery` | claim marketing mạnh | cấm | cần điều kiện (a) hoặc (b) mục 3.1 | cần chống lưng | `*-PUFFERY` |
-| `comparative` | dấu hiệu so sánh, cực cấp | cần mốc nêu rõ | cần mốc nêu rõ | cần mốc nêu rõ | `*-COMPARATIVE` |
+| `comparative` | so sánh có đối tượng | cần mốc nêu rõ | cần mốc nêu rõ | cần mốc nêu rõ | `*-COMPARATIVE` |
+| `superlative` | cực cấp, khẳng định đứng đầu | cần mốc nêu rõ | cần mốc nêu rõ | **cấm** | `*-SUPERLATIVE` |
 | `evaluative` | đánh giá thông thường | cần chống lưng | cần chống lưng **nếu nói về thực tế** | tự do | `*-EVAL-CANDIDATE` |
 | `mt_artifacts` | dấu vết dịch máy | cấm | cấm | cấm | `*-MT-ARTIFACT` |
 
 Đây là nguồn dữ liệu cho phép kiểm tier C ở mục 3.1 và 5.4. Trước đây `banlist` chia theo tier và kiêm luôn vai trò của `puffery`, khiến tier C không có trường nào để dò. Tách ra thì mỗi trường một việc và bảng trên đọc thẳng thành code.
+
+#### Vì sao tier C cấm cực cấp, dù nơi khác cho phép
+
+Đây là chỗ duy nhất trong spec mà một rule tồn tại **không phải vì lý do văn phong**.
+
+Cực cấp trong ad copy làm quảng cáo bị từ chối. Meta, Google và TikTok đều có điều khoản chặn claim "số một", "tốt nhất", "hàng đầu" khi không có căn cứ được nền tảng chấp nhận, và trong thực tế thì kể cả có căn cứ vẫn hay bị chặn vì người duyệt không đọc phần chứng minh. Hậu quả là mất tiền và mất thời gian chạy lại, nặng hơn nhiều so với một câu nghe máy móc.
+
+Nên ở tier C, cực cấp **cấm hẳn**, không có đường "nêu mốc thì được" như tier R và P.
+
+```
+CẤM ở C     "Máy lọc nước tốt nhất thị trường."
+CẤM ở C     "Thương hiệu số 1 Đông Nam Á."
+CẤM ở C     "Lọc sạch nhất trong tầm giá."      kể cả có số chứng minh
+
+ĐẠT ở C     "Lọc tới 0.0001 micron, mịn gấp mười lần màng RO phổ thông."
+            So sánh có đối tượng và tỉ lệ, không phải cực cấp.
+ĐẠT ở C     "Bảo hành tận nơi trong 24 giờ."
+            Dữ kiện đứng một mình, mạnh hơn mọi tính từ.
+```
+
+Ngoại lệ duy nhất: cụm khớp nguyên văn một dòng trong `.antislop-claims.txt`. Đó là chỗ bạn khai những claim khách đã duyệt và chịu trách nhiệm, ví dụ một giải thưởng có thật.
+
+Phạm vi dừng ở đây. Bộ này **không** phải công cụ kiểm duyệt quảng cáo: nó không xét claim y tế, ảnh trước và sau, hay thuộc tính cá nhân. Nó chỉ lấy đúng phần giao giữa "tell AI" và "rủi ro policy", vì cụm cực cấp vốn đã nằm trong tầm dò của nó.
 
 **`comparative` không bị cấm ở tier R.** So sánh có mốc là cách diễn đạt minh bạch nhất trong báo cáo, không phải thứ cần tránh:
 
@@ -608,6 +658,7 @@ Quy tắc giống nhau ở cả ba tier: nêu mốc thì đạt, không nêu th�
 | `mt_artifacts` | mảng string | có | có |
 | `puffery` | mảng string | có | có |
 | `comparative` | mảng string | có | có |
+| `superlative` | mảng string | có | có |
 | `evaluative` | mảng string | có | có |
 | `abbreviations` | mảng string | có | có |
 | `exceptions` | object, khoá là một cụm có trong bốn danh sách từ vựng, giá trị là mảng string | có | có, `{}` nghĩa là chưa có ngoại lệ nào |
@@ -615,7 +666,6 @@ Quy tắc giống nhau ở cả ba tier: nêu mốc thì đạt, không nêu th�
 | `tackon` | mảng string | có | có |
 | `config_tokens` | mảng string | có | có |
 | `loanwords` | mảng string | có | có |
-| `cadence_band` | mảng hai số nguyên `[min, max]`, hoặc `null` | có | `null` nghĩa là chưa hiệu chỉnh |
 | `tier_keywords` | object, đúng ba khoá `R`, `P`, `C`, mỗi khoá một mảng string | có | mảng con rỗng được |
 
 Mọi khoá đều bắt buộc có mặt; giá trị rỗng thì được, thiếu khoá thì không. Rỗng là một tuyên bố ("ngôn ngữ này không có từ nào thuộc nhóm đó"), còn thiếu là một thiếu sót.
@@ -624,7 +674,7 @@ Khoá lạ ngoài bảng: `scan.mjs` bỏ qua, nhưng CI cảnh báo. Cho phép 
 
 `bin/validate-pack.mjs` kiểm bảng trên và chạy trong CI cho mọi pack đăng ký trong `languages.json`. Fixture gồm ít nhất: một pack hợp lệ, một pack thiếu khoá, một pack sai kiểu, một pack có khoá lạ.
 
-`scan.mjs` chỉ đọc khối này, không parse văn xuôi. Pack thiếu khối hoặc không qua `validate-pack.mjs` thì `scan.mjs` xử như ngôn ngữ chưa đăng ký (mục 10) và CI báo lỗi pack.
+`scan.mjs` chỉ đọc khối này, không parse văn xuôi. Pack thiếu khối hoặc không qua `validate-pack.mjs` thì `scan.mjs` xử như ngôn ngữ chưa đăng ký (mục 9) và CI báo lỗi pack.
 
 ### 6.3 Đăng ký
 
@@ -640,7 +690,7 @@ Thêm ngôn ngữ là thêm một dòng và thả một file. Không sửa `core
 
 Suy ra một ngôn ngữ không có trong `languages.json` thì không được bỏ chạy, cũng không được lấy pack gần giống thay thế. Tiếng Thái không dùng được `vi.md`.
 
-Hành vi: nạp `core.md` và `evidence.md`, áp các rule trung tính ngôn ngữ, và khai báo rõ trong dòng trạng thái. Phần `scan.mjs` chạy được tới đâu thì xem bảng ở mục 10.
+Hành vi: nạp `core.md` và `evidence.md`, áp các rule trung tính ngôn ngữ, và khai báo rõ trong dòng trạng thái. Phần `scan.mjs` chạy được tới đâu thì xem bảng ở mục 9.
 
 ```
 [P · mức 2 · trang trọng · th (chưa có pack)]
@@ -666,15 +716,12 @@ Ranh giới giữa hai trường hợp: nếu ngôn ngữ phụ chỉ xuất hi�
 
 | Nhãn | Điều kiện |
 |---|---|
-| hiệu chỉnh | đủ 8 mục, **mục 7 có số đo kèm cỡ mẫu**, và có người bản xứ soát |
-| cộng đồng | đủ 8 mục, mục 7 dùng bài test định tính, đã có người bản xứ soát |
+| soát rồi | đủ 8 mục, và có người bản xứ đọc output AI trong ngôn ngữ đó rồi soát pack |
 | thử nghiệm | thiếu mục, hoặc chưa ai soát |
 
-Nhãn gắn cho cả pack, và điều kiện quyết định là mục 7. Không có pack nào được gọi là hiệu chỉnh khi mục 7 còn ghi "chưa hiệu chỉnh".
+Chỉ hai bậc, và tiêu chí là **có người bản xứ soát hay chưa**. Đó là thứ duy nhất quyết định pack có dùng được không.
 
-**v1 phát hành cả `vi` và `en` ở nhãn cộng đồng.** Cả hai đủ 8 mục và được soát, nhưng chưa pack nào có số đo nhịp câu của riêng nó. Nâng lên hiệu chỉnh khi đo xong, xem mục 7.
-
-Nói rõ để tránh hiểu nhầm: `en` cũng ở nhãn cộng đồng chứ không phải hiệu chỉnh. Ngưỡng 17 đến 23 từ của bản gốc adenaufal không có nguồn kiểm chứng được, nên nó vào mục 7 của `en.md` như một giá trị kế thừa có ghi chú, không phải một số đo.
+**v1 phát hành cả `vi` và `en` ở nhãn soát rồi.**
 
 Nội dung mới mới là phần khó, không phải kiến trúc. Tell AI của một ngôn ngữ không suy ra được từ ngôn ngữ khác; nó phụ thuộc vào cấu trúc riêng và vào corpus mà model được train. Một pack dùng được cần người bản xứ đọc output AI trong ngôn ngữ đó.
 
@@ -700,30 +747,9 @@ Hai quy tắc của `vi.md` **không thực thi bằng máy được**, nên ch�
 
 Danh sách trắng thuật ngữ đáng nói riêng. Báo cáo tiếng Việt chêm thuật ngữ Anh là chuẩn ngành, không phải chuyển ngôn ngữ. Skill không được dịch "remarketing" thành "tiếp thị lại". Ngôn ngữ chính quyết định pack được nạp; từ mượn không kích hoạt pack thứ hai.
 
-## 7. Hiệu chỉnh ngưỡng nhịp câu
+## 7. antislop-check
 
-Ngưỡng "ba câu liên tiếp trong khoảng 17 đến 23 từ" của bản gốc hiệu chỉnh cho tiếng Anh. Tiếng Việt là ngôn ngữ đơn lập, đa số âm tiết rời, nên cùng một lượng thông tin tốn nhiều token hơn. Bê nguyên con số sang sẽ làm bài test bắn sai liên tục.
-
-Cách đo:
-
-1. Gom tập văn bản tiếng Việt do người viết: báo ngành, blog marketing, email công việc thật.
-2. Tính phân bố độ dài câu.
-3. Lấy khoảng chứa phần lớn câu làm vùng đều.
-4. Ghi số đo được cùng cỡ mẫu vào mục 7 của `vi.md`.
-
-Việc đo **không chặn v1**. v1 phát hành với bài test thay thế, là `same_shape_run >= 3` theo định nghĩa chữ ký ba thành phần ở mục 10, mục 7 của `vi.md` ghi ngưỡng độ dài là "chưa hiệu chỉnh", và pack mang nhãn cộng đồng theo mục 6.4. Đo xong thì bổ sung ngưỡng độ dài và nâng nhãn.
-
-Bài test thay thế này tất định và chạy được ngay, vì nó chỉ cần bảng phân lớp từ mở đầu và danh sách tack-on, cả hai đều viết tay được mà không cần corpus. Ngưỡng độ dài câu mới là thứ cần đo.
-
-Lý do không chặn: bài test định tính bắt được đúng trường hợp thường gặp nhất, là ba câu cùng khuôn cú pháp liên tiếp. Số đo làm nó chặt hơn chứ không mở ra khả năng mới. Chặn phát hành để chờ một corpus là đánh đổi sai.
-
-`en.md` cũng ở trạng thái tương tự. Mục 7 của nó ghi ngưỡng 17 đến 23 từ kế thừa từ adenaufal, kèm ghi chú rằng đó là giá trị không có nguồn kiểm chứng được, không phải số đo của repo này.
-
-Không được bịa một con số thay thế cho tiếng Việt.
-
-## 8. antislop-check
-
-### 8.1 Cách chấm
+### 7.1 Cách chấm
 
 Không dùng thang điểm tổng hợp kiểu 7 hạng mục nhân 10 điểm. Bảo model cho điểm 1 đến 10 về một hạng mục trừu tượng thì chạy hai lần ra hai kết quả khác nhau; con số trông khoa học nhưng không tái lập.
 
@@ -736,6 +762,7 @@ Thay bằng: đếm được ở đâu thì đếm, phán đoán chỉ ở chỗ
   dash (— –)                        3        0
   cụm trong ban list                7          0
   mt_artifacts                      2          0
+  superlative                       1     0 (tier C)
   câu cùng khuôn liên tiếp          4        3
   eval_candidate (ứng viên)         5    xem PHÁN ĐOÁN
   puffery                           2    theo tier
@@ -758,7 +785,7 @@ Dòng `eval_candidate` cố tình không có ngưỡng. Nó đếm **ứng viên
 
 Sau bảng là danh sách vị trí cụ thể, rồi bản viết lại nếu người dùng yêu cầu.
 
-### 8.2 Phanh chống dương tính giả
+### 7.2 Phanh chống dương tính giả
 
 `false-positives.md` chạy trước khi báo lỗi. Nó chặn những thứ trông như tell nhưng không phải: curly quote do Word tự đổi, một từ "tuy nhiên" đơn lẻ, ngữ pháp chuẩn, một câu ngắn nhấn mạnh.
 
@@ -766,9 +793,9 @@ Nguyên tắc kế thừa từ humanizer: tìm cụm tell, không phải tell đ
 
 `antislop-check` suy tier giống skill viết, vì caption và báo cáo không dùng chung thước đo.
 
-## 9. Đóng gói
+## 8. Đóng gói
 
-### 9.1 Manifest
+### 8.1 Manifest
 
 `.claude-plugin/plugin.json` khai `"skills": ["./skills/antislop-write", "./skills/antislop-check"]`.
 
@@ -778,7 +805,7 @@ Nguyên tắc kế thừa từ humanizer: tìm cụm tell, không phải tell đ
 
 Ba file này chứa metadata, không chứa dòng rule nào, nên duy trì tay không sinh rủi ro lệch bản.
 
-### 9.2 Cài đặt
+### 8.2 Cài đặt
 
 ```bash
 # Claude Code
@@ -790,7 +817,7 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-### 9.3 Giấy phép
+### 8.3 Giấy phép
 
 Repo MIT. `NOTICE` ghi công hai nguồn, cả hai đều MIT:
 
@@ -799,11 +826,11 @@ Repo MIT. `NOTICE` ghi công hai nguồn, cả hai đều MIT:
 
 README ghi rõ phần nào lấy về, phần nào loại bỏ và vì sao. Việc này vừa đúng phép, vừa cho người đọc biết repo khác bản gốc ở đâu.
 
-## 10. Kiểm thử
+## 9. Kiểm thử
 
 Đầu ra là văn xuôi không tất định, nhưng ba tầng dưới đây kiểm được.
 
-Tầng 1, quét cơ học, tự động. `bin/scan.mjs` chạy không cần model: đếm em dash và en dash, dò cụm trong năm danh sách của pack, tìm chuỗi câu cùng khuôn, đếm dấu hai chấm giữa câu và tỉ lệ đoạn ngắn. Chín khoá `counted`, xem schema bên dưới.
+Tầng 1, quét cơ học, tự động. `bin/scan.mjs` chạy không cần model: đếm em dash và en dash, dò cụm trong sáu danh sách của pack, tìm chuỗi câu cùng khuôn, đếm dấu hai chấm giữa câu và tỉ lệ đoạn ngắn. Mười khoá `counted`, xem schema bên dưới.
 
 **Ranh giới năng lực của scan.mjs.** Câu hỏi "tính từ này có được chống lưng không" là câu hỏi ngữ nghĩa, không phải regex. Một máy quét từ vựng không trả lời được nó, nên spec không được đòi. Tách làm hai khái niệm riêng, và giữ chúng riêng ở mọi chỗ:
 
@@ -831,13 +858,13 @@ Sự có mặt của token dữ kiện vẫn hữu ích, nhưng là **tín hiệ
 
 `block_has_data` nói cho model biết có gì để xét, giúp nó nhanh hơn. Nó không quyết định thay model. Ứng viên vào hết `findings_mechanical`; lọc là việc của `findings_judged`.
 
-**Danh sách là sàn, không phải cửa.** Nguyên tắc này áp cho `evaluative`, `puffery` và `comparative`, cả ba đều là lớp mở. Không danh sách hữu hạn nào phủ hết. Ví dụ ngay trên, "tận tâm", không có trong `evaluative` mẫu. Nếu model chỉ xét những gì `scan.mjs` đưa cho thì nó lọt, và cả cơ chế bằng chứng thành ra chỉ mạnh bằng độ dài của một danh sách.
+**Danh sách là sàn, không phải cửa.** Nguyên tắc này áp cho `evaluative`, `puffery`, `comparative` và `superlative`, cả bốn đều là lớp mở. Không danh sách hữu hạn nào phủ hết. Ví dụ ngay trên, "tận tâm", không có trong `evaluative` mẫu. Nếu model chỉ xét những gì `scan.mjs` đưa cho thì nó lọt, và cả cơ chế bằng chứng thành ra chỉ mạnh bằng độ dài của một danh sách.
 
 Nên phân vai rõ:
 
 | Tầng | Trách nhiệm |
 |---|---|
-| `scan.mjs` + ba danh sách | bảo đảm **sàn**: những từ đã biết thì không bao giờ lọt, và hồi quy bắt được |
+| `scan.mjs` + bốn danh sách lớp mở | bảo đảm **sàn**: những từ đã biết thì không bao giờ lọt, và hồi quy bắt được |
 | `antislop-check` | quét ngữ nghĩa **độc lập**, tìm mọi nhận định đánh giá, mọi claim marketing mạnh, mọi so sánh và cực cấp, kể cả không có trong danh sách |
 
 `antislop-check` không được coi `findings_mechanical` là danh sách đầy đủ những chỗ cần xét. Nó đọc toàn văn bản và tự tìm. Cái gì nó tìm thêm được thì vào `findings_judged`, với mã theo loại:
@@ -846,7 +873,8 @@ Nên phân vai rõ:
 |---|---|
 | nhận định đánh giá ngoài `evaluative` | `EVID-UNBACKED` |
 | claim marketing mạnh ngoài `puffery` | `*-PUFFERY-UNLISTED` |
-| so sánh hoặc cực cấp ngoài `comparative` | `*-COMPARATIVE-UNLISTED` |
+| so sánh ngoài `comparative` | `*-COMPARATIVE-UNLISTED` |
+| cực cấp ngoài `superlative` | `*-SUPERLATIVE-UNLISTED` |
 
 Chỗ này quan trọng nhất ở tier C. Tier C cho đánh giá thông thường đi tự do, nhưng vẫn bắt puffery và claim so sánh phải chống lưng (mục 3.1). Nếu chỉ dò theo danh sách thì một claim mạnh không có trong pack sẽ bị xếp nhầm vào nhóm "đánh giá thông thường" và lọt hoàn toàn. Đó là lỗ hổng lớn nhất có thể có ở tier C, vì tier C chính là nơi ad copy sống.
 
@@ -906,7 +934,7 @@ Ba quyết định:
 
 Fixture phải có ít nhất một lần chạy với CWD nằm ngoài repo, nếu không lỗi này không bao giờ lộ trong CI.
 
-Không yêu cầu Node phải có. Harness không chạy được Node thì `counted_source` là `"model"` theo bảng ở mục 10, và đó là chế độ suy giảm đã lường trước.
+Không yêu cầu Node phải có. Harness không chạy được Node thì `counted_source` là `"model"` theo bảng ở mục 9, và đó là chế độ suy giảm đã lường trước.
 
 Khối không có trong `langMap` thì dùng `lang` nếu có, không thì xử như ngôn ngữ chưa đăng ký.
 
@@ -945,7 +973,7 @@ scan(text, { tier: "P", tierMap: [{ block: 7, tier: "R" }] })
 
 **Không phải mọi bảng Markdown đều là bảng số liệu.** Một bảng so sánh tính năng trong bản nháp landing page là bảng nội dung, và nâng nó lên R sẽ cấm nhầm ngôn ngữ marketing hợp lệ. Cần một tiêu chí tất định.
 
-Tiêu chí: **quá nửa số ô thân bảng không rỗng có chứa một token khớp mẫu "số"** (mục 10, bảng token dữ kiện).
+Tiêu chí: **quá nửa số ô thân bảng không rỗng có chứa một token khớp mẫu "số"** (mục 9, bảng token dữ kiện).
 
 Mẫu số là **toàn bộ ô thân không rỗng**, tức mọi ô ngoài hàng tiêu đề, kể cả cột nhãn. Không loại trừ cột nào. Ô rỗng và ô chỉ chứa khoảng trắng không tính vào mẫu số. Ngưỡng là lớn hơn một nửa, đúng một nửa thì không đạt.
 
@@ -985,7 +1013,7 @@ Ban list của hai ngôn ngữ vẫn không trộn: `scan` chọn pack theo từ
 
 | Bộ đếm | Gộp bằng |
 |---|---|
-| `dash`, `banlist`, `mt_artifacts`, `puffery`, `comparative`, `eval_candidate`, `colon_outside_list` | cộng |
+| `dash`, `banlist`, `mt_artifacts`, `superlative`, `puffery`, `comparative`, `eval_candidate`, `colon_outside_list` | cộng |
 | `same_shape_run` | **max** |
 | `short_paragraph_ratio` | tính lại trên toàn tài liệu, không gộp từ khối |
 
@@ -1004,7 +1032,7 @@ Hành vi chốt:
 | `dash` | chạy, trung tính hoàn toàn |
 | `colon_outside_list`, `short_paragraph_ratio` | chạy, thuần cơ học, không cần pack |
 | `same_shape_run` | `null` |
-| `banlist`, `mt_artifacts`, `puffery`, `comparative`, `eval_candidate` | `null` |
+| `banlist`, `mt_artifacts`, `superlative`, `puffery`, `comparative`, `eval_candidate` | `null` |
 
 Dùng `null` chứ không dùng `0`. Số 0 nghĩa là đã kiểm và sạch; `null` nghĩa là không kiểm được. Nhầm hai cái này thì người dùng tưởng văn bản đã qua kiểm.
 
@@ -1098,8 +1126,8 @@ Model phải chép nguyên `findings_mechanical`, nên định dạng của th�
 
 ```json
 {
-  "counted": { "dash": 2, "banlist": 5, "mt_artifacts": 2, "puffery": 1,
-               "comparative": 0, "eval_candidate": 1, "same_shape_run": 3,
+  "counted": { "dash": 2, "banlist": 5, "mt_artifacts": 2, "superlative": 1,
+               "puffery": 1, "comparative": 0, "eval_candidate": 1, "same_shape_run": 3,
                "colon_outside_list": 9, "short_paragraph_ratio": [11, 14] },
   "findings": [
     { "rule": "VI-BANLIST", "span": [120, 145],
@@ -1109,7 +1137,7 @@ Model phải chép nguyên `findings_mechanical`, nên định dạng của th�
 }
 ```
 
-Chín khoá trong `counted`, không hơn không kém. Bảng ĐẾM ĐƯỢC ở mục 8.1 hiển thị đúng chín khoá này, nên mọi dòng trong bảng đó đều có nguồn.
+Mười khoá trong `counted`, không hơn không kém. Bảng ĐẾM ĐƯỢC ở mục 7.1 hiển thị đúng mười khoá này, nên mọi dòng trong bảng đó đều có nguồn.
 
 Hai khoá cuối cần định nghĩa vì chúng không hiển nhiên:
 
@@ -1172,8 +1200,8 @@ Dạng: `<PHẠM VI>-<TÊN>`, viết hoa, nối bằng gạch ngang.
 | Phạm vi | Khi nào dùng | Tiền tố ngôn ngữ | Ví dụ |
 |---|---|---|---|
 | `CORE` | rule cấu trúc trong `core.md`, không dính từ vựng của ngôn ngữ nào | không | `CORE-DASH`, `CORE-CADENCE`, `CORE-ARGUMENT-ARC` |
-| mã ngôn ngữ | trúng một trong năm danh sách từ vựng của pack | **có** | `VI-BANLIST`, `VI-MT-ARTIFACT`, `VI-PUFFERY`, `VI-COMPARATIVE`, `VI-EVAL-CANDIDATE` |
-| mã ngôn ngữ | model tự tìm được, ngoài danh sách của pack | **có** | `VI-PUFFERY-UNLISTED`, `VI-COMPARATIVE-UNLISTED` |
+| mã ngôn ngữ | trúng một trong sáu danh sách từ vựng của pack | **có** | `VI-BANLIST`, `VI-MT-ARTIFACT`, `VI-SUPERLATIVE`, `VI-PUFFERY`, `VI-COMPARATIVE`, `VI-EVAL-CANDIDATE` |
+| mã ngôn ngữ | model tự tìm được, ngoài danh sách của pack | **có** | `VI-PUFFERY-UNLISTED`, `VI-COMPARATIVE-UNLISTED`, `VI-SUPERLATIVE-UNLISTED` |
 | mã ngôn ngữ | rule văn xuôi chỉ model áp được, `scan.mjs` không đếm | **có** | `VI-NOMINALIZATION`, `VI-ADDRESS-CONSISTENCY` |
 | `EVID` | phán xử về quan hệ giữa claim và dữ kiện | **không** | `EVID-UNBACKED`, `EVID-PROVENANCE-UNKNOWN`, `EVID-SOURCE-UNKNOWN` |
 
@@ -1181,7 +1209,7 @@ Quy tắc quyết định tiền tố: **mã mang tiền tố ngôn ngữ khi v�
 
 `VI-PUFFERY-UNLISTED` **có** tiền tố dù do model tự tìm, vì nó khẳng định một điều về từ vựng tiếng Việt: cụm này đáng lẽ nên có trong `puffery` của pack `vi`. Nó chính là đầu vào để người bảo trì bổ sung danh sách.
 
-Đây là hệ mã đã chốt, nên hạng mục "chốt hệ mã rule" ở mục 12 coi như xong.
+Đây là hệ mã đã chốt, nên hạng mục "chốt hệ mã rule" ở mục 11 coi như xong.
 
 **Đầu ra máy đọc được.** `antislop-check` là một SKILL.md, không phải chương trình, nên nó không có cờ dòng lệnh. Contract phải nói bằng ngôn ngữ của skill: khi yêu cầu có chứa từ `json`, skill in thêm một khối rào ```json sau bảng dành cho người đọc. Khối này là phần cuối cùng của phản hồi.
 
@@ -1189,8 +1217,8 @@ Quy tắc quyết định tiền tố: **mã mang tiền tố ngôn ngữ khi v�
 {
   "tier": "R", "lang": "vi",
   "counted_source": "scan",
-  "counted": { "dash": 3, "banlist": 7, "mt_artifacts": 2, "puffery": 2,
-               "comparative": 1, "eval_candidate": 5, "same_shape_run": 4,
+  "counted": { "dash": 3, "banlist": 7, "mt_artifacts": 2, "superlative": 1,
+               "puffery": 2, "comparative": 1, "eval_candidate": 5, "same_shape_run": 4,
                "colon_outside_list": 9, "short_paragraph_ratio": [11, 14] },
   "findings_mechanical": [
     { "rule": "VI-EVAL-CANDIDATE", "span": [412, 431],
@@ -1227,7 +1255,7 @@ Runner tầng 2 fail nếu `counted_source` khác `"scan"`, cùng nhóm với l�
 | `findings_mechanical` | chép nguyên từ `scan.mjs` | không, một mã cũng không | có |
 | `findings_judged` | model tự sinh | có, đây là việc của nó | không |
 
-`findings_mechanical` là kết quả từ vựng: trúng `banlist`, `mt_artifacts`, `puffery`, `comparative`, `evaluative`, đếm dash, chuỗi cùng khuôn. Model chép nguyên, không lọc, không thêm.
+`findings_mechanical` là kết quả từ vựng: trúng `banlist`, `mt_artifacts`, `superlative`, `puffery`, `comparative`, `evaluative`, đếm dash, chuỗi cùng khuôn. Model chép nguyên, không lọc, không thêm.
 
 `findings_judged` là phán xử ngữ nghĩa: một ứng viên `eval_candidate` có thật sự thiếu chống lưng không, một `comparative` có nêu mốc không, `false-positives.md` có tha cái nào không. Đây là nơi model làm việc thật, và đúng vì thế mà không assert được.
 
@@ -1314,7 +1342,7 @@ Prompt fixture có dạng cố định: gọi `antislop-check`, kèm nội dung 
 2. **Dò canary.** Chạy một prompt tối thiểu và kiểm skill đã nạp thật chưa, ví dụ yêu cầu in dòng khai báo tier. Không thấy dòng đó thì **dừng toàn bộ và báo lỗi môi trường**, không chạy fixture nào. Kết quả fixture khi skill chưa nạp là vô nghĩa và nguy hiểm hơn là không có kết quả.
 3. **Gỡ** sau khi chạy xong, kể cả khi có test fail, để lần chạy sau bắt đầu từ trạng thái sạch.
 
-Lệnh chính xác cho từng backend chưa chốt. Nó vào danh sách phải kiểm chứng ở mục 12, cùng nhóm với câu hỏi đường dẫn `references/`. Không đoán lệnh ở đây, vì đoán sai thì CI đỏ vì lý do không liên quan tới nội dung rule.
+Lệnh chính xác cho từng backend chưa chốt. Nó vào danh sách phải kiểm chứng ở mục 11, cùng nhóm với câu hỏi đường dẫn `references/`. Không đoán lệnh ở đây, vì đoán sai thì CI đỏ vì lý do không liên quan tới nội dung rule.
 
 Nếu khối JSON không xuất hiện hoặc không parse được, test tính là fail chứ không bỏ qua. Đó chính là tín hiệu contract đầu ra của skill bị trôi.
 
@@ -1339,7 +1367,7 @@ README chọn tier P vì nó là tài liệu giới thiệu và thuyết phục,
 
 Không kiểm tự động được: câu hỏi "đoạn này đọc có ra người không". Chỗ đó cần người đọc. Kế hoạch là ba tầng trên tự động từ v1, chất lượng thật đánh giá qua hai đến ba tuần dùng vào việc thật.
 
-## 11. Phạm vi phát hành
+## 10. Phạm vi phát hành
 
 ### v1
 
@@ -1347,11 +1375,11 @@ Claude Code và Codex. Hai nền tảng này dùng chung layout `skills/<name>/S
 
 Nội dung: hai skill, `core.md`, `languages.json`, `vi.md`, `en.md`, `evidence.md`, `false-positives.md`, examples, tests, `CONTRIBUTING.md` kèm template language pack, `NOTICE`, `LICENSE`, README song ngữ.
 
-Kèm theo: hệ mã rule ổn định (mục 10), contract đầu ra JSON của `antislop-check` cùng runner `tests/fixtures.mjs` (mục 10), và cơ chế nhãn dữ kiện thiếu `[cần ...]` (mục 4.1).
+Kèm theo: hệ mã rule ổn định (mục 9), contract đầu ra JSON của `antislop-check` cùng runner `tests/fixtures.mjs` (mục 9), và cơ chế nhãn dữ kiện thiếu `[cần ...]` (mục 4.1).
 
-Cả `vi` và `en` phát hành ở nhãn cộng đồng, không phải hiệu chỉnh. Xem mục 6.4.
+Cả `vi` và `en` phát hành ở nhãn soát rồi. Xem mục 6.4.
 
-Cột "ngưỡng" trong bảng mục 8.1 có ba loại giá trị: một con số là ngưỡng cứng; "theo tier" nghĩa là lấy từ bảng bốn danh sách ở mục 6.2 theo tier đang xét; "tham chiếu" và "xem PHÁN ĐOÁN" nghĩa là chỉ hiển thị, không kết luận cơ học.
+Cột "ngưỡng" trong bảng mục 7.1 có ba loại giá trị: một con số là ngưỡng cứng; "theo tier" nghĩa là lấy từ bảng bốn danh sách ở mục 6.2 theo tier đang xét; "tham chiếu" và "xem PHÁN ĐOÁN" nghĩa là chỉ hiển thị, không kết luận cơ học.
 
 ### v1.1
 
@@ -1361,16 +1389,14 @@ Hoãn sang v1.1 vì hai tuần đầu rule còn sửa liên tục, và không n�
 
 ### v1.2 trở đi
 
-Language pack mới, `th.md` là ứng viên gần nhất. Và nâng `vi` từ cộng đồng lên hiệu chỉnh sau khi đo xong ngưỡng nhịp câu.
+Language pack mới. `th.md` là ứng viên gần nhất, và bạn có sẵn người bản xứ để soát.
 
-## 12. Việc phải làm
+## 11. Việc phải làm
 
 ### Chặn v1
 
-1. Kiểm chứng đường dẫn tương đối từ SKILL.md tới `references/` **và tới `bin/scan.mjs`** ở cả hai harness, chạy từ một CWD nằm ngoài repo. Cùng một câu hỏi, giải một lần. Kết quả quyết định bố cục thư mục (mục 2) và quyết định `counted_source` có bao giờ đạt `"scan"` không (mục 10). Làm trước khi viết nội dung rule.
-2. ~~Chốt hệ mã rule~~ **xong**, hệ mã chốt ở mục 10, phần Rule ID.
-3. Chốt lệnh cài plugin cục bộ ở chế độ headless cho cả `claude` và `codex`, cùng cách gỡ. Cần trước khi viết `tests/fixtures.mjs`. Xem mục 10, phần Runner.
+1. Kiểm chứng đường dẫn tương đối từ SKILL.md tới `references/` **và tới `bin/scan.mjs`** ở cả hai harness, chạy từ một CWD nằm ngoài repo. Cùng một câu hỏi, giải một lần. Kết quả quyết định bố cục thư mục (mục 2) và quyết định `counted_source` có bao giờ đạt `"scan"` không (mục 9). Làm trước khi viết nội dung rule.
+2. ~~Chốt hệ mã rule~~ **xong**, hệ mã chốt ở mục 9, phần Rule ID.
+3. Chốt lệnh cài plugin cục bộ ở chế độ headless cho cả `claude` và `codex`, cùng cách gỡ. Cần trước khi viết `tests/fixtures.mjs`. Xem mục 9, phần Runner.
 
-### Không chặn v1
-
-4. Đo ngưỡng nhịp câu tiếng Việt, xem mục 7. v1 phát hành với bài test định tính; đo xong thì nâng nhãn `vi` lên hiệu chỉnh.
+Không còn hạng mục nào ở nhóm không chặn.
