@@ -17,19 +17,28 @@ thi hai bộ rule khác nhau.
 
 Cụm không bao giờ được dùng, bất kể tier. Ba nhóm.
 
+Trong file này mọi cụm đều viết trong backtick. Backtick nghĩa là cụm đang được
+**gọi tên**, không phải đang được dùng, và `scan.mjs` bỏ qua code span đúng vì
+lý do đó. Nhờ vậy một pack mô tả được ban list của chính nó mà không tự đỏ khi
+self-scan.
+
 **Bản dịch của các tell AI tiếng Anh.** Nhóm này lộ nhất vì nó không phải cách
 người Việt nói, mà là cách máy dịch một khuôn tiếng Anh.
 
-*"đóng vai trò quan trọng trong việc"* là bản dịch của "plays a crucial role in",
-trigram AI phổ biến nhất năm 2026. *"không chỉ ... mà còn"* là negative
-parallelism. *"góp phần"* và *"mang lại hiệu quả"* là participial tack-on: chúng
-dán một mệnh đề vào cuối câu để câu trông sâu sắc hơn.
+`đóng vai trò quan trọng trong việc` là bản dịch của `plays a crucial role in`.
+`không chỉ ... mà còn` là negative parallelism. `góp phần` và
+`mang lại hiệu quả` là participial tack-on: chúng dán một mệnh đề vào cuối câu
+để câu trông sâu sắc hơn.
 
-**Mở bài và kết bài công thức.** *"Trong thời đại số hoá ngày nay"*,
-*"Trong bối cảnh"*, *"Tóm lại"*, *"Nhìn chung"*. Chúng không mang thông tin, chỉ
+Bản trước ghi kèm `plays a crucial role in` một xếp hạng "trigram AI phổ biến
+nhất năm 2026". Con số đó lấy từ nguồn upstream và không dẫn được về đâu, nên
+đã bỏ. Cùng chính sách với ngưỡng độ dài câu ở mục 7.
+
+**Mở bài và kết bài công thức.** `Trong thời đại số hoá ngày nay`,
+`Trong bối cảnh`, `Tóm lại`, `Nhìn chung`. Chúng không mang thông tin, chỉ
 báo hiệu rằng một đoạn sắp bắt đầu hoặc vừa kết thúc.
 
-**Tàn dư hội thoại.** *"Hy vọng bài viết mang lại"*, *"Chúc bạn thành công"*.
+**Tàn dư hội thoại.** `Hy vọng bài viết mang lại`, `Chúc bạn thành công`.
 Đây là chữ của chatbot bị dán nhầm vào tài liệu.
 
 ## 3. Cụm công thức, và hai rule chỉ model áp được
@@ -45,11 +54,11 @@ theo khối không có. Chúng có mã riêng để `antislop-check` báo đư�
 "sự cải thiện về mặt chi phí"     ->  "chi phí giảm"
 ```
 
-Cần ngữ cảnh, vì *"việc"* không phải lúc nào cũng thừa: *"việc này khó"* là bình
+Cần ngữ cảnh, vì `việc` không phải lúc nào cũng thừa: `việc này khó` là bình
 thường.
 
 **`VI-ADDRESS-CONSISTENCY`.** Xưng hô chọn một lần và giữ nguyên cả tài liệu.
-Nửa đầu *"chúng tôi đề xuất"* rồi nửa sau *"bên mình sẽ chạy"* là lỗi. Cần theo
+Nửa đầu `chúng tôi đề xuất` rồi nửa sau `bên mình sẽ chạy` là lỗi. Cần theo
 dõi xuyên khối, ngoài tầm một máy quét theo khối.
 
 ## 4. Dấu vết dịch máy
@@ -58,13 +67,13 @@ Cấu trúc tiếng Anh dịch thẳng sang, giữ nguyên khung câu gốc.
 
 | Dấu vết | Gốc tiếng Anh | Người Việt viết |
 |---|---|---|
-| được thực hiện bởi | was performed by | do ... làm |
-| nơi mà | where | chỗ, hoặc bỏ hẳn |
-| điều mà | which | bỏ hẳn |
-| một trong những | one of the | bỏ, hoặc nêu thẳng |
+| `được thực hiện bởi` | `was performed by` | do ... làm |
+| `nơi mà` | `where` | chỗ, hoặc bỏ hẳn |
+| `điều mà` | `which` | bỏ hẳn |
+| `một trong những` | `one of the` | bỏ, hoặc nêu thẳng |
 
-*"Một trong những"* đáng nói riêng. Nó gần như luôn đi kèm một cực cấp
-(*"một trong những thương hiệu hàng đầu"*) và làm câu vừa dài vừa yếu.
+`Một trong những` đáng nói riêng. Nó gần như luôn đi kèm một cực cấp
+(`một trong những thương hiệu hàng đầu`) và làm câu vừa dài vừa yếu.
 
 ## 5. Xưng hô theo tier
 
@@ -74,8 +83,8 @@ Cấu trúc tiếng Anh dịch thẳng sang, giữ nguyên khung câu gốc.
 | P | chúng tôi | anh chị, quý khách |
 | C | bên mình | bạn |
 
-Tier R thường không cần đại từ chỉ người đọc. *"CPA giảm 26 phần trăm"* mạnh hơn
-*"chúng tôi đã giúp quý khách giảm CPA 26 phần trăm"*.
+Tier R thường không cần đại từ chỉ người đọc. `CPA giảm 26 phần trăm` mạnh hơn
+`chúng tôi đã giúp quý khách giảm CPA 26 phần trăm`.
 
 Chọn một lần, giữ cả tài liệu. Xem `VI-ADDRESS-CONSISTENCY` ở mục 3.
 
@@ -83,12 +92,12 @@ Chọn một lần, giữ cả tài liệu. Xem `VI-ADDRESS-CONSISTENCY` ở m�
 
 | Mức | Tiểu từ |
 |---|---|
-| 2 TỰ NHIÊN | tắt. Không *nhé*, không *nha*, không *ấy* |
-| 3 ĐỜI THƯỜNG | bật: *thì, mà, ấy, nhé, nha, đấy, luôn* |
+| 2 TỰ NHIÊN | tắt. Không `nhé`, không `nha`, không `ấy` |
+| 3 ĐỜI THƯỜNG | bật: `thì, mà, ấy, nhé, nha, đấy, luôn` |
 
-Mức 2 vẫn cho phép *thì* khi nó làm nhiệm vụ ngữ pháp thật
-(*"nếu chạy Search thì CPA thấp hơn"*), chỉ cấm *thì* dùng như tiểu từ đệm
-(*"cái này thì cũng ổn thì phải"*).
+Mức 2 vẫn cho phép `thì` khi nó làm nhiệm vụ ngữ pháp thật
+(`nếu chạy Search thì CPA thấp hơn`), chỉ cấm `thì` dùng như tiểu từ đệm
+(`cái này thì cũng ổn thì phải`).
 
 ## 7. Nhịp câu
 
@@ -108,32 +117,61 @@ quyết định.
 ## Danh sách trắng thuật ngữ
 
 Báo cáo tiếng Việt chêm thuật ngữ tiếng Anh là chuẩn ngành, không phải chuyển
-ngôn ngữ. Skill không được dịch `remarketing` thành *tiếp thị lại*, cũng không
-được dịch `insight` thành *sự thấu hiểu*. Danh sách ở khoá `loanwords`.
+ngôn ngữ. Skill không được dịch `remarketing` thành `tiếp thị lại`, cũng không
+được dịch `insight` thành `sự thấu hiểu`. Danh sách ở khoá `loanwords`.
 
 Từ mượn không kích hoạt pack thứ hai. Một báo cáo dày thuật ngữ vẫn là văn bản
 một ngôn ngữ.
 
 ## Từ đã soát và cố ý không đưa vào
 
-*Chuyên nghiệp* và *uy tín* là từ vựng kinh doanh chuẩn của tiếng Việt, không
-phải slop. *"Đội ngũ chuyên nghiệp"* trong một proposal đọc bình thường, và bắt
+`Chuyên nghiệp` và `uy tín` là từ vựng kinh doanh chuẩn của tiếng Việt, không
+phải slop. `Đội ngũ chuyên nghiệp` trong một proposal đọc bình thường, và bắt
 người viết chứng minh chữ đó mỗi lần sẽ tạo ma sát trên hầu hết tài liệu mà
 không đổi lại được gì.
 
 Đây là quyết định của người bản xứ soát pack, và nó là nội dung thật của nhãn
 `soát rồi` ở mục 1.
 
+## Cơ sở pháp lý của rule cực cấp
+
+Rule "tier C cấm cực cấp" ở `core.md` mục 2 là rule cứng cho thị trường Việt
+Nam, và đây là chỗ ghi vì sao. `core.md` không chứa token của ngôn ngữ nào nên
+không dẫn được luật của một nước; pack là chỗ đúng.
+
+| Văn bản | Nội dung |
+|---|---|
+| Luật Quảng cáo 2012, Điều 8 khoản 11 | cấm quảng cáo dùng `nhất`, `duy nhất`, `tốt nhất`, `số một` hoặc từ ngữ có ý nghĩa tương tự mà không có tài liệu hợp pháp chứng minh |
+| Luật 75/2025/QH15 | sửa đổi bổ sung Luật Quảng cáo, hiệu lực 1/1/2026 |
+| Thông tư 12/2026/TT-BVHTTDL | quy định tài liệu chứng minh nào hợp lệ, hiệu lực 5/7/2026 |
+| Nghị định 38/2021/NĐ-CP, Điều 34 | phạt 10 đến 20 triệu đồng với cá nhân, tổ chức gấp đôi |
+
+Tài liệu hợp pháp chứng minh, theo hướng dẫn hiện hành, là kết quả khảo sát thị
+trường của tổ chức có chức năng nghiên cứu thị trường, hoặc giấy chứng nhận do
+cơ quan có thẩm quyền cấp tại cuộc thi, triển lãm hay giải thưởng quy mô toàn
+quốc, khu vực, quốc tế. Một con số nội bộ không đủ.
+
+Nguồn:
+
+- <https://thuvienphapluat.vn/van-ban/Thuong-mai/Luat-Quang-cao-sua-doi-2025-so-75-2025-QH15-555035.aspx>
+- <https://dms.gov.vn/tin-chi-tiet/-/chi-tiet/noi-dung-quang-cao-su-dung-tu-nhat-duy-nhat-tot-nhat-so-mot-hoac-cac-tu-ngu-co-y-nghia-tuong-tu-chi-%C4%91uoc-phep-khi-nao--70657-3.html>
+- <https://vcci.com.vn/legal-document/nghi-dinh-382021nd-cp-quy-dinh-xu-phat-vi-pham-hanh-chinh-trong-linh-vuc-van-hoa-va-quang-cao>
+
+Bản trước của repo nói Meta, Google và TikTok đều từ chối quảng cáo mang cực
+cấp, kể cả khi có căn cứ. Câu đó không đứng được. TikTok có cấm absolute term
+thật, Google thì xét claim theo độ chính xác chứ không theo từ vựng, và không
+nguồn nào nói mọi nền tảng đều chặn. Xem `en.md` mục "Cực cấp ngoài Việt Nam".
+
 ## Ngoại lệ khớp
 
 Khoá `exceptions` chặn một cụm khi nó nằm trong một chuỗi dài hơn.
 
-Nhóm thứ nhất là **trùng âm ngẫu nhiên**. *"Hàng đầu"* là cực cấp, nhưng
-*"hàng đầu tiên"* nghĩa là thứ tự và hoàn toàn vô hại. *"Tốt"* là đánh giá,
-*"tốt nghiệp"* thì không.
+Nhóm thứ nhất là **trùng âm ngẫu nhiên**. `Hàng đầu` là cực cấp, nhưng
+`hàng đầu tiên` nghĩa là thứ tự và hoàn toàn vô hại. `Tốt` là đánh giá,
+`tốt nghiệp` thì không.
 
 Nhóm thứ hai là **cụm danh từ cố định của ngành**, và nhóm này quan trọng hơn.
-*"Hiệu quả"* là từ đánh giá, nhưng *"báo cáo hiệu quả"* và *"hiệu quả quảng
+`Hiệu quả` là từ đánh giá, nhưng `báo cáo hiệu quả` và *"hiệu quả quảng
 cáo"* là tên gọi của một loại tài liệu và một chỉ số. Nếu để lọt thì mọi tiêu đề
 báo cáo đều bị báo lỗi, và người dùng sẽ tắt công cụ.
 

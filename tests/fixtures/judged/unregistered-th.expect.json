@@ -1,0 +1,8 @@
+{
+  "tier": "P",
+  "lang": "th",
+  "lang_declared": "th",
+  "note": "Thai has no pack. The lexical counters and same_shape_run must come back null rather than 0, because 0 means measured and clean. dash and colon_outside_list need no pack and are still measured. The json block still appears, because the request asked for it and nothing about an unregistered language changes that.",
+  "must_flag": [],
+  "must_not_flag": []
+}

@@ -1,0 +1,9 @@
+{
+  "tier": "P",
+  "lang": "vi",
+  "lang_declared": "vi",
+  "note": "Tier P splits claims about reality from statements of intent. `phân mảnh` is a claim about a verifiable state and is unbacked. `đề xuất ưu tiên Search` is a recommendation and `phù hợp với mục tiêu` is a statement of fit, and neither has a truth value to check. Neither word is in the evaluative list, so this is judged from end to end.",
+  "must_flag": ["EVID-UNBACKED"],
+  "must_not_flag": [],
+  "must_not_flag_text": ["phù hợp với mục tiêu", "đề xuất ưu tiên"]
+}

@@ -38,6 +38,13 @@ Tier controls what may be said. It is inferred, never asked.
 | **P** | proposal, plan, SoW, quote | conditional | required for claims about reality |
 | **C** | ad copy, caption, social, blog | allowed when backed, **superlatives banned outright** | not required for ordinary evaluation |
 
+The tier C superlative ban is the one rule here whose grounds sit outside this
+file. Advertising law is written per country and platform policy is written per
+platform, so neither can live in a language-neutral file. Each language pack
+carries the citations for its own market, and they do not agree with each other:
+in one the rule is statute, in another it is a guardrail. The rule is the same
+either way, which is why it stays in this table.
+
 ### Deciding the tier
 
 Match in order, stop at the first hit. The keyword lists come from the language

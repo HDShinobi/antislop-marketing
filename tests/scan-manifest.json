@@ -1,9 +1,32 @@
-[
-  { "file": "README.md",               "tier": "P", "lang": "en" },
-  { "file": "README.vi.md",            "tier": "P", "lang": "vi" },
-  { "file": "CONTRIBUTING.md",         "tier": "P", "lang": "en" },
-  { "file": "examples/report-vi.md",   "tier": "R", "lang": "vi" },
-  { "file": "examples/proposal-vi.md", "tier": "P", "lang": "vi" },
-  { "file": "examples/caption-vi.md",  "tier": "C", "lang": "vi" },
-  { "file": "examples/report-en.md",   "tier": "R", "lang": "en" }
-]
+{
+  "single_language": [
+    { "file": "README.md",               "tier": "P", "lang": "en" },
+    { "file": "README.vi.md",            "tier": "P", "lang": "vi" },
+    { "file": "CONTRIBUTING.md",         "tier": "P", "lang": "en" },
+    { "file": "examples/report-vi.md",   "tier": "R", "lang": "vi" },
+    { "file": "examples/proposal-vi.md", "tier": "P", "lang": "vi" },
+    { "file": "examples/caption-vi.md",  "tier": "C", "lang": "vi" },
+    { "file": "examples/report-en.md",   "tier": "R", "lang": "en" }
+  ],
+
+  "every_language": [
+    "references/core.md",
+    "references/evidence.md",
+    "references/false-positives.md",
+    "references/vi.md",
+    "references/en.md",
+    "skills/antislop-write/SKILL.md",
+    "skills/antislop-check/SKILL.md"
+  ],
+
+  "not_scanned": [
+    {
+      "path": "docs/",
+      "why": "Design notes and the cross-model critique transcripts. Not shipped with the plugin, and a critique quotes the prose it is criticising."
+    },
+    {
+      "path": "tests/fixtures/",
+      "why": "Fixtures are supposed to break the rules. That is what makes them fixtures."
+    }
+  ]
+}

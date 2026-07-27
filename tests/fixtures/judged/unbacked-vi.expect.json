@@ -1,6 +1,8 @@
 {
   "tier": "R",
   "lang": "vi",
+  "lang_declared": "vi",
+  "note": "Two unbacked claims at tier R, both from the pack lists, so the scanner sees them and the model only has to agree. Provenance is not the issue here: the claims are ordinary evaluation and a superlative, not an approved tagline.",
   "must_flag": ["EVID-UNBACKED"],
   "must_not_flag": ["EVID-PROVENANCE-UNKNOWN"]
 }

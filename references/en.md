@@ -17,23 +17,31 @@ skill and `scan.mjs` enforce two different rule sets.
 
 Phrases that are never allowed, at any tier. Three groups.
 
-**Temporal openers.** "In today's world", "In today's fast-paced world", "In an
-era of", "As we navigate the complexities of". They carry no information and
-exist only to fill the space before the first real sentence.
+Phrases are written in backticks throughout this file. A term in backticks is
+being named, not used, and `scan.mjs` skips code spans for exactly that reason,
+so a pack can describe its own ban list without failing the self-scan.
 
-**Compulsory closers.** "In conclusion", "In summary", "At the end of the day",
-"The bottom line is". If a piece needs an ending, the ending should say
+**Temporal openers.** `in today's world`, `in today's fast-paced world`,
+`in an era of`, `as we navigate the complexities of`. They carry no information
+and exist only to fill the space before the first real sentence.
+
+**Compulsory closers.** `in conclusion`, `in summary`, `at the end of the day`,
+`the bottom line is`. If a piece needs an ending, the ending should say
 something new.
 
-**Formulaic sentence shapes.** "Not only ... but also" is the negative
-parallelism; a 2026 study of a thousand pages found it had the largest negative
-correlation with reader engagement of any construction measured. "Plays a
-crucial role in" is the most over-represented AI trigram of the same period.
+**Formulaic sentence shapes.** `not only ... but also` is the negative
+parallelism. `plays a crucial role in` is the phrase that survives longest in
+text someone has already tried to clean up.
+
+Both arrived from the upstream source with figures attached: a study, a sample
+size, a ranking of correlations. None of it was citable, so the figures are
+gone and the two observations stand on their own. Same policy as the sentence
+length band in section 7.
 
 ## 3. Formulaic phrases
 
-Chat residue belongs here too: "I hope this helps", "Great question", "Certainly",
-"Let me know if". These are correspondence, pasted into a document by accident.
+Chat residue belongs here too: `i hope this helps`, `great question`,
+`let me know if`. These are correspondence, pasted into a document by accident.
 
 Unlike `vi.md`, English has no prose-only rules in this pack. Nominalisation and
 address consistency are handled by the language-neutral `CORE-NOUN-STACK` and by
@@ -87,6 +95,27 @@ repo does not carry numbers it cannot stand behind.
 
 In the JSON block. This is data for the decision table in `core.md`, not the
 decision table itself.
+
+## Cực cấp ngoài Việt Nam
+
+Tier C bans superlatives outright. In Vietnam that rule is statute, and
+`vi.md` carries the citations. For English-language markets there is no
+equivalent blanket ban, so the rule has to be justified differently or it will
+not survive contact with a client who asks why.
+
+| Source | What it actually says |
+|---|---|
+| TikTok, misleading and false content | ad content must not feature absolute terms about a product in relation to time, region or brand. Their own example is `Number 1 song on TikTok`. Comparative claims may be allowed with evidence or a disclaimer. |
+| Google Ads, unreliable claims | inaccurate claims, and claims that entice with an improbable result as the likely outcome, are not allowed. The policy addresses accuracy, not vocabulary. There is no list of banned superlative words. |
+
+- <https://ads.tiktok.com/help/article/tiktok-ads-policy-misleading-and-false-content>
+- <https://support.google.com/adspolicy/answer/15936857>
+
+So for English the honest framing is a **conservative guardrail**: a superlative
+is the claim most likely to need substantiation you do not have, and the
+cheapest fix is almost always a number. It is not a guarantee of rejection, and
+this pack does not claim one. Anyone who needs a real compliance check has to
+split the policy by platform, industry and market.
 
 ## Loanword whitelist
 

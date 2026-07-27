@@ -43,7 +43,8 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-Cần Node 18 trở lên cho phần scanner. Còn lại là Markdown.
+Cần Node 20 trở lên cho phần scanner. Còn lại là Markdown. CI chạy đúng mức sàn
+đã công bố và một bản cao hơn, nên con số này được kiểm chứ không phải nói suông.
 
 ## Dùng
 
@@ -77,10 +78,26 @@ Tier quyết định được nói gì. Skill tự suy, không hỏi.
 | **P** | proposal, kế hoạch, SoW, báo giá | có điều kiện | bắt buộc với nhận định về thực tế |
 | **C** | ad copy, caption, social | cho phép nếu được chống lưng, cực cấp cấm hẳn | không áp cho đánh giá thường |
 
-Cực cấp cấm ở tier C vì lý do không liên quan gì tới văn phong. Meta, Google và
-TikTok đều từ chối quảng cáo mang claim `số một` hay `tốt nhất` không có căn cứ
-được nền tảng chấp nhận, và thực tế thì kể cả có căn cứ vẫn hay bị chặn. Quảng
-cáo bị từ chối tốn tiền.
+Cực cấp cấm ở tier C vì lý do không liên quan gì tới văn phong, và lý do khác
+nhau theo thị trường.
+
+**Ở Việt Nam đây là luật.** Điều 8 khoản 11 Luật Quảng cáo 2012 cấm quảng cáo
+dùng `nhất`, `duy nhất`, `tốt nhất`, `số một` hoặc từ ngữ có ý nghĩa tương tự mà
+không có tài liệu hợp pháp chứng minh. Nghị định 38/2021 Điều 34 đặt mức phạt 10
+đến 20 triệu đồng, tổ chức gấp đôi. Thông tư 12/2026 của Bộ Văn hoá, Thể thao và
+Du lịch, hiệu lực từ 5/7/2026, quy định tài liệu nào được tính là hợp lệ. Đây là
+thị trường công cụ này được viết cho, nên ở đây rule là rule cứng.
+
+**Chính sách nền tảng mỏng hơn, và nên nói cho đúng.** TikTok cấm hẳn absolute
+term về sản phẩm, ví dụ của chính họ là `Number 1 song on TikTok`. Google xét
+claim theo độ chính xác chứ không theo từ vựng: policy unreliable claims nhắm
+vào kết quả sai hoặc phi thực tế, không nhắm vào chữ `best`. Vậy nên quảng cáo
+mang cực cấp không chắc chắn bị từ chối ở mọi nơi, và repo này không còn nói thế
+nữa.
+
+Ngoài Việt Nam, hãy đọc rule tier C như một guardrail cố ý bảo thủ. Muốn biến nó
+thành check compliance thì phải tách policy theo nền tảng, ngành và thị trường
+trước. Nguồn nằm trong `references/vi.md`.
 
 ## Bắt được gì
 
@@ -163,11 +180,29 @@ ANTISLOP_RUNNER=claude npm run test:fixtures   # tầng 2, có gọi model
 node bin/scan.mjs --tier R --lang vi file.md
 ```
 
+Tầng 2 cài plugin thật, nên nó đọc registry trước khi đụng vào, giữ nguyên thứ
+gì đã cài sẵn, và từ chối chạy nếu có marketplace cùng tên trỏ đi chỗ khác thay
+vì trỏ về checkout của bạn. Chi tiết nằm ở `CONTRIBUTING.md`.
+
+Khối json mà `antislop-check` xuất được mô tả trong
+`schema/check-output.schema.json`, và ví dụ trong skill được test lại với cả
+schema lẫn một lần chạy scanner thật.
+
 CI chỉ chạy tầng 1 và 3. Tầng 2 gọi model và tốn tiền nên để chạy tay.
 
-Repo tự quét văn của chính nó. File nào phá rule mà nó mô tả thì CI đỏ. Đó là
+Repo tự quét văn của chính nó, file nào phá rule mà nó mô tả thì CI đỏ. Đó là
 cách mục `most` trong pack tiếng Anh được sửa: `most` trần là lượng từ nhiều hơn
 là cực cấp.
+
+Phạm vi quét được ép chứ không phải nói suông. Mọi file markdown trong repo hoặc
+được quét, hoặc nằm trong `tests/scan-manifest.json` kèm lý do, và có test đỏ
+nếu một file không thuộc nhóm nào. File rule, hai skill và hai language pack đều
+bị quét với mọi pack đã đăng ký, không riêng pack của chính nó. Sáu counter
+được kiểm: dash, ban list, dấu vết dịch máy, cực cấp, puffery, và chuỗi câu cùng
+khuôn.
+
+Một pack mô tả được ban list của chính nó vì cụm trong backtick là đang được gọi
+tên chứ không phải đang dùng, và scanner bỏ qua code span.
 
 ## Giấy phép
 

@@ -152,8 +152,12 @@ who needs a document to send. Show them only if asked.
 
 ### Tier C
 
-- **No superlatives at all.** Not "best", not "number one", not "leading", even
-  with proof. This is ad platform policy, not style: the ad gets rejected.
+- **No superlatives at all.** Not `best`, not `number one`, not `leading`, not
+  `tốt nhất`, not `số một`, even with proof. This is not style. In Vietnam it is
+  statute, and the citations are in `../../references/vi.md`. Elsewhere it is a
+  conservative guardrail against a claim you would have to substantiate; see
+  `../../references/en.md`. Do not tell the user the ad will certainly be
+  rejected, because that depends on the platform.
 - Puffery only when a fact in the same block proves it.
 - Ordinary evaluation is free here.
 - Particles and fragments are on.

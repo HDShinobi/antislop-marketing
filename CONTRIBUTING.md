@@ -78,7 +78,7 @@ group; a missing key is an omission and fails validation.
 |---|---|
 | `banlist` | never allowed, any tier |
 | `mt_artifacts` | translation carry-over, never allowed |
-| `superlative` | claims to be first or best. **Banned outright at tier C**, because ad platforms reject them |
+| `superlative` | claims to be first or best. **Banned outright at tier C.** Say in your pack why that holds in your market: statute, platform policy, or a guardrail you chose. Vietnamese cites advertising law, English cites TikTok and Google and calls the rest a guardrail |
 | `puffery` | strong marketing claims, allowed when backed |
 | `comparative` | comparison markers, allowed when the comparator is named |
 | `evaluative` | ordinary praise and criticism, needs backing at R and P, free at C |
@@ -120,4 +120,50 @@ CI. When that happens, fix the prose. If the rule itself is wrong, fix the rule
 and say why in the commit.
 
 To mention a banned phrase in documentation, put it in backticks. A term inside
-backticks is being mentioned rather than used, and the scanner skips it.
+backticks is being mentioned rather than used, and the scanner skips it. This is
+how a language pack describes its own ban list without failing the self-scan.
+
+Every markdown file in the repo is either scanned or listed in
+`tests/scan-manifest.json` under `not_scanned` with a reason. A new file that is
+neither fails the coverage test, on purpose: the alternative is a manifest that
+quietly shrinks until the self-scan means nothing.
+
+## The output contract
+
+`schema/check-output.schema.json` describes the json block `antislop-check`
+emits. It is ordinary JSON Schema, so a consumer outside Node can read it, and
+`bin/lib/output-schema.mjs` walks the same file rather than restating it.
+
+Two things to know before changing it. `verdict` is a closed set of three
+strings and they stay Vietnamese in every language, because they are
+identifiers; the sentence explaining a verdict goes in `reason`. And the example
+in `skills/antislop-check/SKILL.md` is tested against both the schema and a real
+scanner run, so an example that drifts fails CI rather than misleading whoever
+reads it next.
+
+## Running the agent fixtures
+
+```bash
+ANTISLOP_RUNNER=claude npm run test:fixtures
+ANTISLOP_RUNNER=codex  npm run test:fixtures
+```
+
+This calls a model, so it costs money and is not in CI. It also has to install
+the plugin for real, because that is the only way a skill gets loaded. Three
+things keep that from damaging your setup:
+
+- It reads the registry before touching it, and leaves installed whatever was
+  installed before the run.
+- The undo handler is registered before the first install, so a crash halfway
+  through still removes the half that succeeded.
+- It refuses to run when a marketplace named `antislop-marketing` already points
+  somewhere other than your checkout, because replacing it is destructive and
+  the runner cannot put the original back. Remove it yourself, or accept the
+  loss with `ANTISLOP_FIXTURE_FORCE=1`.
+
+A fixture is a markdown file in `tests/fixtures/judged/` plus an
+`.expect.json` beside it. The expect file needs a `note` explaining what the
+fixture is for, and `tests/judged-fixtures.test.mjs` checks the whole set
+without spending a token: paired files, legal tiers and languages, rule codes
+that something can actually emit, and coverage across tiers, languages and
+provenance.

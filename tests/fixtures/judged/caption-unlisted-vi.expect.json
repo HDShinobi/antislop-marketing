@@ -1,0 +1,8 @@
+{
+  "tier": "C",
+  "lang": "vi",
+  "lang_declared": "vi",
+  "note": "The scanner finds nothing here. `không đâu bằng` is a superlative the pack has never heard of, so the whole point is whether the model reads the document itself instead of trusting findings_mechanical. Tier C is the worst place for that gap, because tier C lets ordinary evaluation through.",
+  "must_flag": ["VI-SUPERLATIVE-UNLISTED"],
+  "must_not_flag": ["EVID-UNBACKED"]
+}
