@@ -114,6 +114,16 @@ ngôn ngữ. Skill không được dịch `remarketing` thành *tiếp thị l�
 Từ mượn không kích hoạt pack thứ hai. Một báo cáo dày thuật ngữ vẫn là văn bản
 một ngôn ngữ.
 
+## Từ đã soát và cố ý không đưa vào
+
+*Chuyên nghiệp* và *uy tín* là từ vựng kinh doanh chuẩn của tiếng Việt, không
+phải slop. *"Đội ngũ chuyên nghiệp"* trong một proposal đọc bình thường, và bắt
+người viết chứng minh chữ đó mỗi lần sẽ tạo ma sát trên hầu hết tài liệu mà
+không đổi lại được gì.
+
+Đây là quyết định của người bản xứ soát pack, và nó là nội dung thật của nhãn
+`soát rồi` ở mục 1.
+
 ## Ngoại lệ khớp
 
 Khoá `exceptions` chặn một cụm khi nó nằm trong một chuỗi dài hơn.
@@ -200,8 +210,6 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
     "hợp lý",
     "chưa tối ưu",
     "tận tâm",
-    "chuyên nghiệp",
-    "uy tín",
     "ấn tượng",
     "khả quan"
   ],
