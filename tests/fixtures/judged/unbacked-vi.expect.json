@@ -1,0 +1,6 @@
+{
+  "tier": "R",
+  "lang": "vi",
+  "must_flag": ["EVID-UNBACKED"],
+  "must_not_flag": ["EVID-PROVENANCE-UNKNOWN"]
+}

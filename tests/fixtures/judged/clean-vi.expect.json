@@ -1,0 +1,6 @@
+{
+  "tier": "R",
+  "lang": "vi",
+  "must_flag": [],
+  "must_not_flag": ["EVID-UNBACKED"]
+}
