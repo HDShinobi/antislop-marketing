@@ -7,7 +7,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test \"tests/**/*.test.mjs\"",
+    "test": "node --test",
     "test:fixtures": "node tests/fixtures.mjs",
     "scan": "node bin/scan.mjs",
     "validate-packs": "node bin/validate-pack.mjs --all"

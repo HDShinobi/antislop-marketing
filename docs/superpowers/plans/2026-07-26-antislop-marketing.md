@@ -126,7 +126,7 @@ Skip `git init` if the directory is already a repository. Every later task assum
   "private": true,
   "engines": { "node": ">=18" },
   "scripts": {
-    "test": "node --test \"tests/**/*.test.mjs\"",
+    "test": "node --test",
     "scan": "node bin/scan.mjs",
     "validate-packs": "node bin/validate-pack.mjs --all"
   }

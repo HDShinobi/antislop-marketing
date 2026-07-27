@@ -4,13 +4,19 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 20 is the floor package.json declares. 22 is what development uses.
+        # Testing both catches the class of bug where a shell or a Node version
+        # expands something the other does not.
+        node: ["20", "22"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ matrix.node }}
 
-      # Every registered language pack must satisfy the schema.
       - run: node bin/validate-pack.mjs --all
 
       # Tiers 1 and 3: the mechanical scanner, and the repo scanning its own
