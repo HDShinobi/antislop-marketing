@@ -1,13 +1,22 @@
+<div align="center">
+
 # antislop-marketing
 
-`antislop-marketing` là plugin dành cho Claude Code và Codex, hỗ trợ viết và
-kiểm tra nội dung tiếng Việt hoặc tiếng Anh.
+**`antislop-marketing` là plugin dành cho Claude Code và Codex, hỗ trợ viết và
+kiểm tra nội dung tiếng Việt hoặc tiếng Anh.**
 
 Plugin phát hiện những cách diễn đạt khiến báo cáo, proposal, README và nội
 dung quảng cáo đọc giống văn bản do AI tạo ra. Khi chỉnh sửa, plugin giữ nguyên
 dữ kiện và các thuật ngữ chuyên ngành cần thiết.
 
-[English](README.md)
+[![ci](https://github.com/HDShinobi/antislop-marketing/actions/workflows/ci.yml/badge.svg)](https://github.com/HDShinobi/antislop-marketing/actions/workflows/ci.yml)
+[![version](https://img.shields.io/github/package-json/v/HDShinobi/antislop-marketing?label=version&color=3b4252)](package.json)
+[![node](https://img.shields.io/badge/node-20%2B-3b4252)](package.json)
+[![licence](https://img.shields.io/badge/licence-MIT-3b4252)](LICENSE)
+
+[English](README.md) · **Tiếng Việt**
+
+</div>
 
 ## Plugin này giúp giải quyết vấn đề gì?
 
@@ -44,8 +53,10 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-Scanner yêu cầu Node.js 20 trở lên. CI kiểm thử plugin trên Node.js 20 và 22.
-Phần còn lại của plugin được viết bằng Markdown.
+> [!NOTE]
+> Scanner yêu cầu Node.js 20 trở lên.
+> CI kiểm thử plugin trên Node.js 20 và 22.
+> Phần còn lại của plugin được viết bằng Markdown.
 
 ## Cách sử dụng
 
@@ -100,10 +111,11 @@ tier R.
 
 ### Lưu ý đối với nội dung quảng cáo tại Việt Nam
 
-Với tier C, plugin không sử dụng các khẳng định như `tốt nhất`, `số một` hoặc
-`duy nhất`. Điều 8 khoản 11 Luật Quảng cáo 2012 chỉ cho phép dùng những từ này
-trong quảng cáo khi có tài liệu hợp pháp chứng minh. Vì vậy, plugin áp dụng quy
-tắc này mặc định cho nội dung quảng cáo tại Việt Nam.
+> [!IMPORTANT]
+> Với tier C, plugin không sử dụng các khẳng định như `tốt nhất`, `số một` hoặc
+> `duy nhất`. Điều 8 khoản 11 Luật Quảng cáo 2012 chỉ cho phép dùng những từ này
+> trong quảng cáo khi có tài liệu hợp pháp chứng minh. Vì vậy, plugin áp dụng quy
+> tắc này mặc định cho nội dung quảng cáo tại Việt Nam.
 
 Phạm vi pháp lý, tài liệu chứng minh và khác biệt giữa chính sách của từng nền
 tảng được trình bày trong [`references/vi.md`](references/vi.md).
@@ -154,8 +166,11 @@ Những vấn đề cần hiểu ngữ cảnh được giao cho mô hình và đ
 quả phán đoán.
 
 Với nội dung tiếng Việt, cả hai skill đều dùng thêm bộ quy tắc biên tập trong
-[`references/vi-editorial.md`](references/vi-editorial.md) và bộ quy tắc riêng cho slide trong [`references/vi-slide-presentation.md`](references/vi-slide-presentation.md). Các tài liệu này xử
-lý README, tài liệu sản phẩm, slide thuyết trình (action titles, bullet telegraphic), tiêu đề, câu thiếu thành phần, tham chiếu mơ hồ,
+[`references/vi-editorial.md`](references/vi-editorial.md) và bộ quy tắc riêng
+cho slide trong
+[`references/vi-slide-presentation.md`](references/vi-slide-presentation.md).
+Các tài liệu này xử lý README, tài liệu sản phẩm, slide thuyết trình (action
+titles, bullet telegraphic), tiêu đề, câu thiếu thành phần, tham chiếu mơ hồ,
 cách pha tiếng Anh và giọng biên tập.
 
 ## Ngôn ngữ được hỗ trợ
@@ -193,6 +208,9 @@ ANTISLOP_RUNNER=claude npm run test:fixtures
 node bin/scan.mjs --tier R --lang vi file.md
 ```
 
+<details>
+<summary>Mỗi lệnh kiểm thử chạy những gì</summary>
+
 `npm test` kiểm tra scanner, schema, manifest, fixture và các tài liệu được phát
 hành cùng plugin. Bộ fixture dùng mô hình được chạy riêng vì có chi phí và cần
 cài plugin vào môi trường kiểm thử.
@@ -202,6 +220,8 @@ một mình, từ này thường là lượng từ chứ không phải từ cự
 
 Quy trình phát triển, cách bảo vệ plugin registry và hướng dẫn thêm gói ngôn
 ngữ nằm trong [CONTRIBUTING.md](CONTRIBUTING.md).
+
+</details>
 
 ## Giấy phép
 

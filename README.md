@@ -1,12 +1,21 @@
+<div align="center">
+
 # antislop-marketing
 
-Write and review human-facing documents that do not read like machine output,
-without losing the professional vocabulary they need.
+**Write and review human-facing documents that do not read like machine output,
+without losing the professional vocabulary they need.**
 
 The plugin includes two skills for Claude Code and Codex, with support for
 Vietnamese and English.
 
-[Tiếng Việt](README.vi.md)
+[![ci](https://github.com/HDShinobi/antislop-marketing/actions/workflows/ci.yml/badge.svg)](https://github.com/HDShinobi/antislop-marketing/actions/workflows/ci.yml)
+[![version](https://img.shields.io/github/package-json/v/HDShinobi/antislop-marketing?label=version&color=3b4252)](package.json)
+[![node](https://img.shields.io/badge/node-20%2B-3b4252)](package.json)
+[![licence](https://img.shields.io/badge/licence-MIT-3b4252)](LICENSE)
+
+**English** · [Tiếng Việt](README.vi.md)
+
+</div>
 
 ## What problem this solves
 
@@ -30,10 +39,10 @@ Four things, stated because they decide which rules got cut.
 - **It does not try to defeat AI detectors.** Turnitin, GPTZero and the rest are
   not the target. The whole T-1 to T-5 group from the upstream source is gone,
   along with every rule that manufactures errors.
-- Not for fiction, academic writing, or theses.
-- Not for source code, configuration or machine-oriented API schemas. It can
+- **Not for fiction, academic writing, or theses.**
+- **Not for source code, configuration or machine-oriented API schemas.** It can
   edit human-facing README files, product documentation and guides.
-- It does not write your content. It governs how something is said, not what.
+- **It does not write your content.** It governs how something is said, not what.
 
 ## Install
 
@@ -47,15 +56,16 @@ codex plugin marketplace add https://github.com/HDShinobi/antislop-marketing
 codex plugin add antislop-marketing@antislop-marketing
 ```
 
-Node 20 or later, for the scanner. Everything else is Markdown. CI tests the
-plugin on Node 20 and 22.
+> [!NOTE]
+> Node 20 or later, for the scanner. Everything else is Markdown.
+> CI tests the plugin on Node 20 and 22.
 
 ## Use
 
 Just write. The skill picks the document type and the language itself, prints
 one line saying what it picked, and continues.
 
-```
+```text
 you   Viết báo cáo hiệu quả tháng 6. CPA 47 đô, mục tiêu 35. ROAS 3.4, mục tiêu 2.8.
 
 it    [R · mức 2 · trang trọng · vi]
@@ -66,7 +76,7 @@ Wrong guess? Say `tier C` and it redoes it. Right guess? Ignore the line.
 
 To audit something that already exists:
 
-```
+```text
 you   Soát lại bản proposal này giúp tôi
 ```
 
@@ -82,10 +92,11 @@ The tier decides what may be said. It is inferred, never asked.
 | **P** | proposal, plan, SoW, README, product documentation | conditional | required for claims about reality |
 | **C** | ad copy, caption, social | allowed when backed, superlatives banned | not required for ordinary evaluation |
 
-For tier C, the plugin does not use claims such as `nhất`, `duy nhất`, `tốt
-nhất` or `số một`. Article 8(11) of Vietnam's 2012 Advertising Law permits
-these terms in advertising only with qualifying proof. The plugin therefore
-uses this as its conservative default for Vietnamese advertising.
+> [!IMPORTANT]
+> For tier C, the plugin does not use claims such as `nhất`, `duy nhất`, `tốt
+> nhất` or `số một`. Article 8(11) of Vietnam's 2012 Advertising Law permits
+> these terms in advertising only with qualifying proof. The plugin therefore
+> uses this as its conservative default for Vietnamese advertising.
 
 The legal scope, qualifying evidence and differences between platform policies
 are documented in [`references/vi.md`](references/vi.md). The plugin provides
@@ -98,7 +109,7 @@ report.
 
 ## What it catches
 
-```
+```text
 before   Trong bối cảnh hiện nay, chiến dịch đã mang lại hiệu quả tích cực.
          Đội ngũ tận tâm đóng vai trò quan trọng trong việc tối ưu ngân sách.
 
@@ -113,7 +124,7 @@ More in [examples/](examples/).
 The rule everyone underestimates: **an evaluative adjective must be backed by a
 fact that proves that adjective**, not one that merely sits nearby.
 
-```
+```text
 not backed   The team is dedicated, and CPA this month was 31.
 backed       CPA fell from 42 to 31 after the team rebuilt the ad groups
              around intent in the first week.
@@ -183,6 +194,9 @@ ANTISLOP_RUNNER=claude npm run test:fixtures   # tier 2, calls a model
 node bin/scan.mjs --tier R --lang vi file.md
 ```
 
+<details>
+<summary>What each tier costs, and what the repo checks about itself</summary>
+
 Tier 2 installs the plugin for real, so it reads your registry before touching
 it, leaves alone whatever was already installed, and refuses to run if a
 marketplace of the same name points somewhere other than your checkout.
@@ -208,6 +222,8 @@ puffery, and runs of same-shaped sentences.
 
 A pack can describe its own ban list because a phrase in backticks is being
 named rather than used, and the scanner skips code spans.
+
+</details>
 
 ## Licence
 
