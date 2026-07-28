@@ -7,6 +7,9 @@
     { "file": "examples/proposal-vi.md", "tier": "P", "lang": "vi" },
     { "file": "examples/caption-vi.md",  "tier": "C", "lang": "vi" },
     { "file": "examples/slide-vi.md",    "tier": "P", "lang": "vi" },
+    { "file": "examples/social-vi.md",   "tier": "C", "lang": "vi" },
+    { "file": "examples/sales-vi.md",    "tier": "C", "lang": "vi" },
+    { "file": "examples/seo-geo-vi.md",  "tier": "P", "lang": "vi" },
     { "file": "examples/report-en.md",   "tier": "R", "lang": "en" }
   ],
 
@@ -17,6 +20,9 @@
     "references/vi.md",
     "references/vi-editorial.md",
     "references/vi-slide-presentation.md",
+    "references/vi-social.md",
+    "references/vi-sales.md",
+    "references/vi-seo-geo.md",
     "references/en.md",
     "skills/antislop-write/SKILL.md",
     "skills/antislop-check/SKILL.md"

@@ -75,7 +75,7 @@ Infer both:
 
 1. tier, from the table above;
 2. document profile, from the target: continuous prose, README, product guide,
-   policy, email, slide, sheet or another human-facing form.
+   policy, email, slide, social, sales, seo_geo, sheet or another human-facing form.
 
 A request to "review" or "check" does not make the target tier R. Review the
 document under its own tier. A README normally remains P; a performance report

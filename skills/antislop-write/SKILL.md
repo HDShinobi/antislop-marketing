@@ -29,6 +29,9 @@ For Vietnamese human-facing prose, also load
 `../../references/vi-editorial.md`. Apply it to every document profile,
 including README files and product documentation. For presentation slides,
 decks and action plans, also load `../../references/vi-slide-presentation.md`.
+For social media posts and captions, also load `../../references/vi-social.md`.
+For sales copy and landing pages, also load `../../references/vi-sales.md`.
+For SEO, GEO and AEO content, also load `../../references/vi-seo-geo.md`.
 Do not apply it to source code, configuration or machine-oriented API schemas.
 
 ## 2. Infer the tier and document profile
@@ -38,8 +41,7 @@ pack's `tier_keywords`. Default is P when nothing matches.
 
 Infer the document profile separately. A README, guide, policy or product
 document normally uses tier P. A presentation, slide deck, PPTX or action plan
-uses profile `slide` (normally tier P). Do not invent a new tier for editorial
-format.
+uses profile `slide`. Social posts use profile `social` (tier C). Sales copy and landing pages use profile `sales` (tier C/P). SEO articles use profile `seo_geo` (tier P/R). Do not invent a new tier for editorial format.
 
 ## 3. Infer the language
 

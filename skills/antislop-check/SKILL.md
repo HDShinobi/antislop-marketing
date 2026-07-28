@@ -87,21 +87,26 @@ argument arc, and the fourth tell family in `core.md` section 6.
 
 For Vietnamese, run the two editorial passes from `vi-editorial.md` after the
 evidence pass. For presentation slides, decks and action plans, also load
-`../../references/vi-slide-presentation.md`. Do not stop because the mechanical counters are clean. Inspect
-the whole document for:
+`../../references/vi-slide-presentation.md`. For social posts, also load `../../references/vi-social.md`.
+For sales copy and landing pages, also load `../../references/vi-sales.md`.
+For SEO, GEO and AEO content, also load `../../references/vi-seo-geo.md`.
+Do not stop because the mechanical counters are clean. Inspect the whole document for:
 
 - information ordered for the writer rather than the reader;
 - vague or compressed headings (or non-action slide headings: `VI-SLIDE-NONACTION-HEADER`);
-- sentence fragments in explanatory prose (waived for slide bullets);
+- sentence fragments in explanatory prose (waived for slide bullets and social posts);
 - prose-slide mismatch where long paragraphs are jammed into slides (`VI-SLIDE-PROSE-MISMATCH`);
 - hyper-correction where wording is awkwardly paraphrased to avoid banlists (`VI-HYPER-CORRECTION`);
+- weak social hooks or stiff social tone (`VI-SOCIAL-WEAK-HOOK`, `VI-SOCIAL-STIFF-TONE`);
+- sales copy featuring only technical specs without benefits or proof (`VI-SALES-FEATURE-ONLY`, `VI-SALES-UNBACKED-CLAIM`);
+- SEO/GEO headers missing 1-3 sentence direct answers or extractable tables (`VI-GEO-MISSING-DIRECT-ANSWER`, `VI-GEO-POOR-EXTRACTABILITY`);
 - unclear referents such as “nó”, “bộ này” or “cái đó”;
 - avoidable English terms and inconsistent terminology;
 - forced punchiness, defensive phrasing or register changes.
 
 Put these findings in `findings_judged` with the stable `VI-*` codes from those
-references. Map architecture, heading, slide heading and referent failures to the legacy
-aggregate `judged.reader_addressed`. Map sentence, code-switch and
+references. Map architecture, heading, slide heading, SEO heading and referent failures to the legacy
+aggregate `judged.reader_addressed`. Map sentence, code-switch, hyper-correction, social tone, sales claim and
 editorial-tone failures to the legacy aggregate `judged.register_uniform`.
 Keep the specific `VI-*` code in `findings_judged`; the aggregate key names
 predate the Vietnamese editorial layer and do not replace a specific finding.

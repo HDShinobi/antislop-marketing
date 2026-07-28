@@ -191,15 +191,14 @@ Báo khi văn bản cố tình né từ cấm bằng cách dùng câu diễn đ�
 đồng nghĩa gượng ép hoặc viết dài dòng một cách kỳ quặc, khiến câu văn đọc khó hiểu
 và thiếu tự nhiên hơn văn bản ban đầu.
 
-## 6b. Biên tập Slide & Presentation Deck
+## 6b. Biên tập các Document Profiles chuyên biệt
 
-Đối với Slide thuyết trình, Pitch deck hoặc Action Plan, tải thêm
-`vi-slide-presentation.md`. Áp dụng các định dạng đặc thù:
+Tải tài liệu quy tắc bổ sung tương ứng với profile của văn bản:
 
-- Dùng **Action Titles** thay cho tiêu đề danh từ chung chung (`VI-SLIDE-NONACTION-HEADER`);
-- Dùng bullet telegraphic, metric-first, bold lead-in và cấu trúc chỉ số `dẫn đầu`;
-- Tránh đưa các đoạn văn xuôi tròn trịa dông dài vào slide (`VI-SLIDE-PROSE-MISMATCH`);
-- Cho phép dùng dấu hai chấm (`:`), dấu gạch ngang (`-`), và dấu mũi tên (`→`) để phục vụ nhịp đọc quét (visual scanning).
+- **Slide & Presentation (`slide` / `deck`)**: Tải `vi-slide-presentation.md`. Áp dụng **Action Titles** (`VI-SLIDE-NONACTION-HEADER`), bullet telegraphic, metric-first, bold lead-in và cấu trúc chỉ số `dẫn đầu`. Tránh nhét văn xuôi vào slide (`VI-SLIDE-PROSE-MISMATCH`).
+- **Social Content (`social`)**: Tải `vi-social.md`. Áp dụng Hook 3s (`VI-SOCIAL-WEAK-HOOK`), giọng văn hội thoại tự nhiên (`VI-SOCIAL-STIFF-TONE`), ngắt dòng thoáng và tránh spam icon (`VI-SOCIAL-OVERUSED-ICONS`).
+- **Nội dung Bán hàng & Landing Page (`sales`)**: Tải `vi-sales.md`. Áp dụng khung PAS/AIDA, chuyển đổi tính năng sang lợi ích (`VI-SALES-FEATURE-ONLY`), bổ sung bằng chứng chứng nhận (`VI-SALES-UNBACKED-CLAIM`) và offer rõ ràng (`VI-SALES-VAGUE-OFFER`).
+- **Nội dung SEO, GEO & AEO (`seo_geo`)**: Tải `vi-seo-geo.md`. Áp dụng câu trả lời trực tiếp 1-3 câu dưới H2/H3 (`VI-GEO-MISSING-DIRECT-ANSWER`), Bảng so sánh và danh sách dữ liệu dễ trích xuất (`VI-GEO-POOR-EXTRACTABILITY`), tránh nhồi từ khóa (`VI-SEO-KEYWORD-STUFFING`).
 
 ## 7. Biên tập theo hai lượt
 
@@ -212,7 +211,7 @@ Lượt một kiểm nội dung:
 Lượt hai đọc như người nhận:
 
 - tiêu đề có giúp tìm thông tin không;
-- câu có đầy đủ và rõ chủ thể không (trừ slide bullets);
+- câu có đầy đủ và rõ chủ thể không (trừ slide bullets và social fragments);
 - từ tiếng Anh có thật sự cần không;
 - giọng có phù hợp quan hệ giữa người viết và người đọc không;
 - chi tiết có nằm đúng tài liệu không.
@@ -233,12 +232,21 @@ Không bắt đầu bằng thay từ đồng nghĩa. Nếu vấn đề nằm ở
 - `VI-HYPER-CORRECTION`
 - `VI-SLIDE-NONACTION-HEADER`
 - `VI-SLIDE-PROSE-MISMATCH`
+- `VI-SOCIAL-WEAK-HOOK`
+- `VI-SOCIAL-STIFF-TONE`
+- `VI-SOCIAL-OVERUSED-ICONS`
+- `VI-SALES-FEATURE-ONLY`
+- `VI-SALES-UNBACKED-CLAIM`
+- `VI-SALES-VAGUE-OFFER`
+- `VI-GEO-MISSING-DIRECT-ANSWER`
+- `VI-GEO-POOR-EXTRACTABILITY`
+- `VI-SEO-KEYWORD-STUFFING`
 
 Trong phần tổng kết:
 
-- lỗi kiến trúc, tiêu đề, tiêu đề slide hoặc tham chiếu làm nhóm “cấu trúc và hướng tới người
+- lỗi kiến trúc, tiêu đề, tiêu đề slide, tiêu đề SEO hoặc tham chiếu làm nhóm “cấu trúc và hướng tới người
   đọc” (`reader_addressed`) thành `vi phạm`;
-- lỗi câu, pha ngôn ngữ, văn gượng ép (hyper-correction) hoặc giọng biên tập làm nhóm “câu chữ và giọng biên
+- lỗi câu, pha ngôn ngữ, văn gượng ép (hyper-correction), giọng social, hoặc giọng biên tập làm nhóm “câu chữ và giọng biên
   tập” (`register_uniform`) thành `vi phạm`;
 - dùng `chưa xác định` chỉ khi thật sự thiếu ngữ cảnh về người đọc, không dùng
   để né một lỗi đã nhìn thấy trong văn bản.

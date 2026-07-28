@@ -166,12 +166,11 @@ Những vấn đề cần hiểu ngữ cảnh được giao cho mô hình và đ
 quả phán đoán.
 
 Với nội dung tiếng Việt, cả hai skill đều dùng thêm bộ quy tắc biên tập trong
-[`references/vi-editorial.md`](references/vi-editorial.md) và bộ quy tắc riêng
-cho slide trong
-[`references/vi-slide-presentation.md`](references/vi-slide-presentation.md).
-Các tài liệu này xử lý README, tài liệu sản phẩm, slide thuyết trình (action
-titles, bullet telegraphic), tiêu đề, câu thiếu thành phần, tham chiếu mơ hồ,
-cách pha tiếng Anh và giọng biên tập.
+[`references/vi-editorial.md`](references/vi-editorial.md) và các bộ quy tắc chuyên biệt theo định dạng:
+[`references/vi-slide-presentation.md`](references/vi-slide-presentation.md) (slide thuyết trình, pitch deck),
+[`references/vi-social.md`](references/vi-social.md) (bài đăng social content, caption, hook 3s),
+[`references/vi-sales.md`](references/vi-sales.md) (sales copy, landing page, PAS/AIDA), và
+[`references/vi-seo-geo.md`](references/vi-seo-geo.md) (bài viết SEO, GEO & AEO với direct answers, bảng biểu dễ trích xuất).
 
 ## Ngôn ngữ được hỗ trợ
 
