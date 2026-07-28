@@ -210,21 +210,22 @@ The over-correction named above, stated separately because it is the one that
 appears in current output. Combine related ideas.
 
 ### `CORE-BOLD-LIST`
-Bullet lists whose items open with a bolded phrase and a colon. Prefer prose.
-When a list genuinely helps, keep the items plain.
+Bullet lists whose items open with a bolded phrase and a colon. Prefer prose in continuous documents.
+When a list genuinely helps, keep the items plain. **Exemption:** In `slide` / `deck` profiles, bolded lead-ins (`**Key:** Value`) are encouraged for visual scanning.
 
 ### `CORE-DASH`
 No em dash and no en dash **as sentence punctuation**. Replace with a period, a
 comma, a colon, parentheses, or by restructuring. A hard constraint, not a
 preference.
 
-Two uses are ordinary typography and are not counted:
+Three uses are ordinary typography and are not counted:
 
 - **A tight dash, no space on either side.** `T9–T10`, `01–08/08`, `top 10–20`.
   A range or a compound, never punctuation.
 - **A dash opening a table cell.** The spreadsheet convention for "nothing yet".
+- **A dash in slide bullet items or range indicators.** In `slide` / `deck` profiles, dashes separating metrics or bullet phrases are permitted.
 
-A spaced dash anywhere else is counted, including as a title separator, because
+A spaced dash anywhere else in continuous prose is counted, including as a title separator, because
 prose would use a colon there.
 
 This narrowed after scanning a real roadmap in which all 28 dashes were
@@ -233,7 +234,7 @@ file someone tried.
 
 ### `CORE-COLON-DENSITY`
 Mid-sentence colons used to introduce almost any follow-on idea. A colon that
-introduces a list or a table is fine. Counted as `colon_outside_list`.
+introduces a list, a table, or a slide key-value pair (`**Metric:** 10.6x`) is fine. Counted as `colon_outside_list`.
 
 ### `CORE-SENT-TYPE`
 Only declarative sentences. Mix in a genuine question, an imperative, a

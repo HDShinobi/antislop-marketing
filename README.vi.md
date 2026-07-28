@@ -24,7 +24,7 @@ có căn cứ và giọng văn phù hợp với người đọc.
 Plugin phù hợp với nội dung viết cho người đọc, gồm:
 
 - báo cáo, audit và phân tích;
-- proposal, kế hoạch, báo giá và phạm vi công việc;
+- proposal, kế hoạch, slide thuyết trình, pitch deck và phạm vi công việc;
 - README, tài liệu sản phẩm, chính sách và hướng dẫn sử dụng;
 - email, landing page, quảng cáo, caption và bài đăng mạng xã hội.
 
@@ -154,8 +154,8 @@ Những vấn đề cần hiểu ngữ cảnh được giao cho mô hình và đ
 quả phán đoán.
 
 Với nội dung tiếng Việt, cả hai skill đều dùng thêm bộ quy tắc biên tập trong
-[`references/vi-editorial.md`](references/vi-editorial.md). Bộ quy tắc này xử
-lý README, tài liệu sản phẩm, tiêu đề, câu thiếu thành phần, tham chiếu mơ hồ,
+[`references/vi-editorial.md`](references/vi-editorial.md) và bộ quy tắc riêng cho slide trong [`references/vi-slide-presentation.md`](references/vi-slide-presentation.md). Các tài liệu này xử
+lý README, tài liệu sản phẩm, slide thuyết trình (action titles, bullet telegraphic), tiêu đề, câu thiếu thành phần, tham chiếu mơ hồ,
 cách pha tiếng Anh và giọng biên tập.
 
 ## Ngôn ngữ được hỗ trợ

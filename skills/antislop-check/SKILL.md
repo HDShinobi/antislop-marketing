@@ -86,18 +86,21 @@ Also judge what no scanner can reach: register uniformity, the four-part
 argument arc, and the fourth tell family in `core.md` section 6.
 
 For Vietnamese, run the two editorial passes from `vi-editorial.md` after the
-evidence pass. Do not stop because the mechanical counters are clean. Inspect
+evidence pass. For presentation slides, decks and action plans, also load
+`../../references/vi-slide-presentation.md`. Do not stop because the mechanical counters are clean. Inspect
 the whole document for:
 
 - information ordered for the writer rather than the reader;
-- vague or compressed headings;
-- sentence fragments in explanatory prose;
+- vague or compressed headings (or non-action slide headings: `VI-SLIDE-NONACTION-HEADER`);
+- sentence fragments in explanatory prose (waived for slide bullets);
+- prose-slide mismatch where long paragraphs are jammed into slides (`VI-SLIDE-PROSE-MISMATCH`);
+- hyper-correction where wording is awkwardly paraphrased to avoid banlists (`VI-HYPER-CORRECTION`);
 - unclear referents such as “nó”, “bộ này” or “cái đó”;
 - avoidable English terms and inconsistent terminology;
 - forced punchiness, defensive phrasing or register changes.
 
-Put these findings in `findings_judged` with the stable `VI-*` codes from that
-reference. Map architecture, heading and referent failures to the legacy
+Put these findings in `findings_judged` with the stable `VI-*` codes from those
+references. Map architecture, heading, slide heading and referent failures to the legacy
 aggregate `judged.reader_addressed`. Map sentence, code-switch and
 editorial-tone failures to the legacy aggregate `judged.register_uniform`.
 Keep the specific `VI-*` code in `findings_judged`; the aggregate key names

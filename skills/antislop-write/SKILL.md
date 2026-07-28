@@ -27,17 +27,19 @@ through.
 
 For Vietnamese human-facing prose, also load
 `../../references/vi-editorial.md`. Apply it to every document profile,
-including README files and product documentation. Do not apply it to source
-code, configuration or machine-oriented API schemas.
+including README files and product documentation. For presentation slides,
+decks and action plans, also load `../../references/vi-slide-presentation.md`.
+Do not apply it to source code, configuration or machine-oriented API schemas.
 
-## 2. Infer the tier
+## 2. Infer the tier and document profile
 
 Use the decision table in `core.md` section 2, with the keyword lists from the
 pack's `tier_keywords`. Default is P when nothing matches.
 
 Infer the document profile separately. A README, guide, policy or product
-document normally uses tier P, but its headings and information order follow
-the document profile. Do not invent a new tier for editorial format.
+document normally uses tier P. A presentation, slide deck, PPTX or action plan
+uses profile `slide` (normally tier P). Do not invent a new tier for editorial
+format.
 
 ## 3. Infer the language
 
@@ -139,7 +141,7 @@ who needs a document to send. Show them only if asked.
 
 ### Every tier
 
-- Zero em dashes and zero en dashes.
+- Zero em dashes and zero en dashes as sentence punctuation (dashes in tight ranges or slide bullets permitted).
 - No phrase from the pack's `banlist` or `mt_artifacts`.
 - Sentence shapes vary: not three consecutive sentences sharing an opener class,
   a clause count and a tack-on state.
@@ -148,13 +150,13 @@ who needs a document to send. Show them only if asked.
 - Mix sentence types. Not every sentence declarative.
 - Paragraphs of uneven length. Not a spray of one-sentence paragraphs.
 - Break the four-part argument arc at least twice.
-- Mid-sentence colons are rare. A colon introducing a list is fine.
+- Mid-sentence colons are rare in prose (permitted in slide bullet formatting).
 - For Vietnamese, run both passes in `vi-editorial.md`: first content and
-  structure, then the read-aloud editorial pass.
-- Make headings useful to the reader. Use conventional short headings when
-  clear; otherwise name the subject or question.
+  structure, then the read-aloud editorial pass. For slides, also run `vi-slide-presentation.md`.
+- Make headings useful to the reader. On slides, use **Action Titles** stating key conclusions.
 - Use complete sentences in explanatory prose. Fragments remain available for
-  labels, bullets and tier C copy.
+  labels, bullets, slide items and tier C copy.
+- Avoid hyper-correction ("văn gượng ép"): do not paraphrase natural business terms into awkward academic phrases to avoid banlists.
 - Keep referents explicit and code-switch only where the audience needs the
   English term.
 - Remove defensive or performatively blunt phrasing. Natural prose can be

@@ -279,7 +279,9 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
       "báo cáo hiệu quả",
       "hiệu quả quảng cáo",
       "hiệu quả chiến dịch",
-      "chỉ số hiệu quả"
+      "chỉ số hiệu quả",
+      "đo lường hiệu quả",
+      "tối ưu hiệu quả"
     ],
     "mạnh": ["thế mạnh", "điểm mạnh"],
     "nhanh": ["nhanh chóng"],
@@ -317,10 +319,12 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
     "creative", "budget", "funnel"
   ],
   "loanwords": [
-    "ROAS", "ROI", "CPA", "CPC", "CPM", "CTR", "CVR", "AOV", "LTV",
+    "ROAS", "ROI", "CPA", "CPC", "CPM", "CTR", "CVR", "AOV", "LTV", "GMV", "SKU", "CPAS",
     "remarketing", "retargeting", "prospecting", "audience", "creative",
     "funnel", "insight", "brief", "budget", "bidding", "impression",
-    "reach", "engagement", "lookalike", "pixel", "tracking", "landing page"
+    "reach", "engagement", "lookalike", "pixel", "tracking", "landing page",
+    "geo-target", "geo-targeting", "partnership ads", "koc", "kol", "koc/kol",
+    "seller center", "odoo", "pos", "deck", "slide", "action plan", "paid media"
   ],
   "tier_keywords": {
     "R": [
@@ -331,7 +335,7 @@ Danh sách này lớn dần: gặp ca mới thì thêm vào.
       "proposal", "đề xuất", "kế hoạch", "plan", "sow", "roadmap",
       "báo giá", "pitch", "phương án", "readme", "tài liệu hướng dẫn",
       "hướng dẫn sử dụng", "tài liệu sản phẩm", "chính sách",
-      "ghi chú phát hành"
+      "ghi chú phát hành", "slide", "presentation", "deck", "action plan"
     ],
     "C": [
       "caption", "post", "ad copy", "content", "email marketing",

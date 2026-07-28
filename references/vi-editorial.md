@@ -185,6 +185,22 @@ Báo khi văn bản có một cụm dấu hiệu:
 Một câu mạnh hoặc thân mật riêng lẻ không phải vi phạm. Hãy xét cả đoạn và mục
 đích của tài liệu.
 
+### `VI-HYPER-CORRECTION`
+
+Báo khi văn bản cố tình né từ cấm bằng cách dùng câu diễn đạt vòng vèo, chọn từ
+đồng nghĩa gượng ép hoặc viết dài dòng một cách kỳ quặc, khiến câu văn đọc khó hiểu
+và thiếu tự nhiên hơn văn bản ban đầu.
+
+## 6b. Biên tập Slide & Presentation Deck
+
+Đối với Slide thuyết trình, Pitch deck hoặc Action Plan, tải thêm
+`vi-slide-presentation.md`. Áp dụng các định dạng đặc thù:
+
+- Dùng **Action Titles** thay cho tiêu đề danh từ chung chung (`VI-SLIDE-NONACTION-HEADER`);
+- Dùng bullet telegraphic, metric-first, bold lead-in và cấu trúc chỉ số `dẫn đầu`;
+- Tránh đưa các đoạn văn xuôi tròn trịa dông dài vào slide (`VI-SLIDE-PROSE-MISMATCH`);
+- Cho phép dùng dấu hai chấm (`:`), dấu gạch ngang (`-`), và dấu mũi tên (`→`) để phục vụ nhịp đọc quét (visual scanning).
+
 ## 7. Biên tập theo hai lượt
 
 Lượt một kiểm nội dung:
@@ -196,7 +212,7 @@ Lượt một kiểm nội dung:
 Lượt hai đọc như người nhận:
 
 - tiêu đề có giúp tìm thông tin không;
-- câu có đầy đủ và rõ chủ thể không;
+- câu có đầy đủ và rõ chủ thể không (trừ slide bullets);
 - từ tiếng Anh có thật sự cần không;
 - giọng có phù hợp quan hệ giữa người viết và người đọc không;
 - chi tiết có nằm đúng tài liệu không.
@@ -214,12 +230,15 @@ Không bắt đầu bằng thay từ đồng nghĩa. Nếu vấn đề nằm ở
 - `VI-REFERENT-CLARITY`
 - `VI-CODE-SWITCH`
 - `VI-EDITORIAL-TONE`
+- `VI-HYPER-CORRECTION`
+- `VI-SLIDE-NONACTION-HEADER`
+- `VI-SLIDE-PROSE-MISMATCH`
 
 Trong phần tổng kết:
 
-- lỗi kiến trúc, tiêu đề hoặc tham chiếu làm nhóm “cấu trúc và hướng tới người
+- lỗi kiến trúc, tiêu đề, tiêu đề slide hoặc tham chiếu làm nhóm “cấu trúc và hướng tới người
   đọc” (`reader_addressed`) thành `vi phạm`;
-- lỗi câu, pha ngôn ngữ hoặc giọng biên tập làm nhóm “câu chữ và giọng biên
+- lỗi câu, pha ngôn ngữ, văn gượng ép (hyper-correction) hoặc giọng biên tập làm nhóm “câu chữ và giọng biên
   tập” (`register_uniform`) thành `vi phạm`;
 - dùng `chưa xác định` chỉ khi thật sự thiếu ngữ cảnh về người đọc, không dùng
   để né một lỗi đã nhìn thấy trong văn bản.
